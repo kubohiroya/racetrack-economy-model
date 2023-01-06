@@ -57,8 +57,6 @@ function stop() {
 }
 
 function reset() {
-    startButton.disabled = false;
-    stopButton.disabled = true;
     model.reset(tmaxSlider.value, sigmaSlider.value);
 }
 

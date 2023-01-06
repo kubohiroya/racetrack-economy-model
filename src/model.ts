@@ -6,7 +6,7 @@ export class Model {
     country: Country;
     started: boolean = false;
     listeners: Array<(model: Model) => void> = new Array<(model: Model) => void>();
-    timer: number;
+    timer: number = -1;
 
     constructor(numCities: number, tmax: number, sigma: number) {
         this.numCities = numCities;
@@ -24,30 +24,35 @@ export class Model {
     }
 
     cancelTimer(){
-        clearInterval(this.timer);
-    }
-
-    start(tmax: number, sigma: number) {
-        if (!this.started) {
-            this.country.setTmax(tmax);
-            this.country.setSigma(sigma);
-            this.country.calcDistanceMatrix();
-            this.started = true;
-            this.startTimer();
+        if(this.timer > 0){
+            clearInterval(this.timer);
         }
     }
 
-    stop() {
-        this.started = false;
-        this.cancelTimer();
-    }
-
-    reset(tmax: number, sigma: number) {
+    init(tmax: number, sigma: number){
         this.country = new Country(this.numCities);
         this.country.disturb();
         this.country.setTmax(tmax);
         this.country.setSigma(sigma);
         this.country.calcDistanceMatrix();
+        this.country.procedure();
+        this.update();
+    }
+
+    reset(tmax: number, sigma: number) {
+        this.init(tmax, sigma);
+    }
+
+    stop() {
+        this.started = false;
+        this.cancelTimer();
+        this.timer = 0;
+    }
+
+    start(tmax: number, sigma: number) {
+        if(this.timer < 0){
+            this.init(tmax, sigma);
+        }
         if (!this.started) {
             this.started = true;
             this.startTimer();
