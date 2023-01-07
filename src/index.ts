@@ -2,11 +2,11 @@ import {Model} from "./model";
 import {View} from "./view";
 
 import {
-  defineComponents,
-  IgcButtonComponent,
-  IgcIconComponent,
-  IgcSliderComponent,
-  registerIconFromText
+    defineComponents,
+    IgcButtonComponent,
+    IgcIconComponent,
+    IgcSliderComponent,
+    registerIconFromText
 } from 'igniteui-webcomponents';
 import 'igniteui-webcomponents/themes/light/bootstrap.css';
 import './SliderStyle.css';

@@ -30,7 +30,6 @@ export class Country {
         this.cities = new Array<City>(numCities);
         this.distanceMatrix = new Array<Array<number>>(numCities);
         for (let i = 0; i < numCities; i++) {
-            // @ts-ignore
             this.distanceMatrix[i] = new Array<number>(numCities).fill(0);
             this.cities[i] = new City(this, i, 0.0, 0.0);
         }
@@ -52,7 +51,7 @@ export class Country {
         const numCities = this.cities.length;
         for (let i = 0; i < numCities; i++) {
             for (let j = i; j < numCities; j++) {
-                const dist = (i == j)? 0 : 2.0 * Math.min(j - i, i + numCities - j) / numCities;
+                const dist = (i == j) ? 0 : 2.0 * Math.min(j - i, i + numCities - j) / numCities;
                 this.distanceMatrix[j][i] = this.distanceMatrix[i][j] = Math.exp(Math.log(this.tmax) * dist);
             }
         }
@@ -69,10 +68,9 @@ export class Country {
 
     disturb(): void {
         const numCities = this.cities.length;
-        let dd = 1.0 / numCities * 0.05;
+        const dd = 1.0 / numCities * 0.05;
         for (let i = 0; i < numCities; i++) {
             const index = Math.floor(Math.random() * numCities);
-            // console.log(index+" / "+this.cities.length);
             this.cities[index].changeMShare(dd);
         }
         this.rescale();
@@ -85,8 +83,8 @@ export class Country {
             a += city.AShare;
         });
         this.cities.forEach((city) => {
-            city.MShare /= m;
-            city.AShare /= a;
+            city.setMShare(city.MShare / m);
+            city.setAShare(city.AShare / a);
         });
     }
 
@@ -153,5 +151,4 @@ export class Country {
         this.calcDynamics();
         this.applyDynamics();
     }
-
 }

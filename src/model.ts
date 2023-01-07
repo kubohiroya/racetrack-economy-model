@@ -26,11 +26,11 @@ export class Model {
         }, 10);
     }
 
-    cancelTimer(timer: NodeJS.Timer){
+    cancelTimer(timer: NodeJS.Timer) {
         clearInterval(timer);
     }
 
-    init(tmax: number, sigma: number){
+    init(tmax: number, sigma: number) {
         this.initialized = true;
         this.country = new Country(this.numCities);
         this.country.disturb();
@@ -47,17 +47,17 @@ export class Model {
 
     stop() {
         this.started = false;
-        if(this.initialized && this.timer){
+        if (this.initialized && this.timer) {
             this.cancelTimer(this.timer);
         }
         this.timer = null;
     }
 
     start(tmax: number, sigma: number) {
-        if(! this.initialized){
+        if (!this.initialized) {
             this.init(tmax, sigma);
         }
-        if (! this.started) {
+        if (!this.started) {
             this.started = true;
             this.timer = this.startTimer();
         }
@@ -79,7 +79,7 @@ export class Model {
     }
 
     update() {
-        this.listeners.forEach((listener) => {
+        this.listeners.forEach(listener => {
             listener(this);
         });
     }

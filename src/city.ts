@@ -66,7 +66,7 @@ export class City {
     }
 
     calcRealWage(): void {
-        this.realWage = this.nominalWage * Math.pow(this.priceIndex, - this.country.mu);
+        this.realWage = this.nominalWage * Math.pow(this.priceIndex, -this.country.mu);
     }
 
     calcNominalWage(): void {
