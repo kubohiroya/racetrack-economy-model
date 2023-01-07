@@ -4,9 +4,12 @@ export class Model {
 
     numCities: number;
     country: Country;
+
+    initialized: boolean = false;
     started: boolean = false;
+
     listeners: Array<(model: Model) => void> = new Array<(model: Model) => void>();
-    timer: number = -1;
+    timer: NodeJS.Timer|null = null;
 
     constructor(numCities: number, tmax: number, sigma: number) {
         this.numCities = numCities;
@@ -16,18 +19,19 @@ export class Model {
         this.country.setSigma(sigma);
     }
 
-    startTimer(): number{
+    startTimer(): NodeJS.Timer {
         return setInterval(() => {
             this.country.procedure();
             this.update();
-        }, 10);
+        }, 5);
     }
 
-    cancelTimer(timer: number){
+    cancelTimer(timer: NodeJS.Timer){
         clearInterval(timer);
     }
 
     init(tmax: number, sigma: number){
+        this.initialized = true;
         this.country = new Country(this.numCities);
         this.country.disturb();
         this.country.setTmax(tmax);
@@ -43,49 +47,31 @@ export class Model {
 
     stop() {
         this.started = false;
-        if(this.timer > 0){
+        if(this.initialized && this.timer){
             this.cancelTimer(this.timer);
         }
-        this.timer = 0;
+        this.timer = null;
     }
 
     start(tmax: number, sigma: number) {
-        if(this.timer < 0){
+        if(! this.initialized){
             this.init(tmax, sigma);
         }
-        if (!this.started) {
+        if (! this.started) {
             this.started = true;
             this.timer = this.startTimer();
         }
     }
 
     changeTmax(tmax: number) {
-        let r = false;
-        if (this.started) {
-            this.started = false;
-            r = true;
-        }
         this.country.setTmax(tmax);
         this.country.calcDistanceMatrix();
         this.country.procedure();
-        //update();
-        if (r) {
-            this.started = true;
-        }
     }
 
     changeSigma(sigma: number) {
-        let r = false;
-        if (this.started) {
-            this.started = false;
-            r = true;
-        }
         this.country.setSigma(sigma);
         this.country.procedure();
-        //update();
-        if (r) {
-            this.started = true;
-        }
     }
 
     addUpdateEventListener(listener: (model: Model) => void) {
