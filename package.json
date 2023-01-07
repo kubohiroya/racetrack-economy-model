@@ -5,7 +5,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "igniteui-webcomponents": "^4.1.0"
+    "igniteui-webcomponents": "^4.1.0",
+    "@types/node": "^18.11.18"
   },
   "devDependencies": {
     "vite": "^4.0.4"
