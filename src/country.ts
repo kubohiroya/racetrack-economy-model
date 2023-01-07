@@ -23,20 +23,16 @@ export class Country {
     /* average real wage of the country */
     avgRealWage: number;
 
-    /* the number of the cities in the county */
-    numCities: number;
-
     /* speed of adjustment */
 
     constructor(numCities: number) {
         this.avgRealWage = 1.0;
-        this.cities = new Array<City>();
-        this.numCities = numCities;
+        this.cities = new Array<City>(numCities);
         this.distanceMatrix = new Array<Array<number>>(numCities);
-        for (let i = 0; i < this.numCities; i++) {
+        for (let i = 0; i < numCities; i++) {
             // @ts-ignore
             this.distanceMatrix[i] = new Array<number>(numCities).fill(0);
-            this.cities.push(new City(this, i, 0.0, 0.0));
+            this.cities[i] = new City(this, i, 0.0, 0.0);
         }
         this.equalize();
     }
@@ -53,10 +49,10 @@ export class Country {
 
     /* calc and print distance matrix */
     calcDistanceMatrix(): void {
-        const n = this.numCities;
-        for (let i = 0; i < n; i++) {
-            for (let j = i; j < n; j++) {
-                const dist = (i == j)? 0 : 2.0 * Math.min(j - i, i + n - j) / n;
+        const numCities = this.cities.length;
+        for (let i = 0; i < numCities; i++) {
+            for (let j = i; j < numCities; j++) {
+                const dist = (i == j)? 0 : 2.0 * Math.min(j - i, i + numCities - j) / numCities;
                 this.distanceMatrix[j][i] = this.distanceMatrix[i][j] = Math.exp(Math.log(this.tmax) * dist);
             }
         }
@@ -64,16 +60,20 @@ export class Country {
 
     /* set manufacturing shares equal/disturb/rescale */
     equalize(): void {
+        const numCities = this.cities.length;
         this.cities.forEach((city) => {
-            city.setMShare(1.0 / this.numCities);
-            city.setAShare(1.0 / this.numCities);
+            city.setMShare(1.0 / numCities);
+            city.setAShare(1.0 / numCities);
         });
     }
 
     disturb(): void {
-        let dd = 1.0 / this.numCities * 0.05;
-        for (let i = 0; i < this.numCities; i++) {
-            this.cities[Math.floor(Math.random() * this.numCities)].changeMShare(dd);
+        const numCities = this.cities.length;
+        let dd = 1.0 / numCities * 0.05;
+        for (let i = 0; i < numCities; i++) {
+            const index = Math.floor(Math.random() * numCities);
+            // console.log(index+" / "+this.cities.length);
+            this.cities[index].changeMShare(dd);
         }
         this.rescale();
     }

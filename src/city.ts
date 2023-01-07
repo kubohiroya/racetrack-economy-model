@@ -82,10 +82,10 @@ export class City {
     }
 
     applyDynamics(): void {
-        if (this.MShare > 1.0 / this.country.numCities / 10.0) {
+        if (this.MShare > 1.0 / this.country.cities.length / 10.0) {
             this.MShare += this.dMShare;
         } else {
-            this.MShare = 1.0 / this.country.numCities / 10.0;
+            this.MShare = 1.0 / this.country.cities.length / 10.0;
         }
     }
 }

@@ -23,7 +23,7 @@ export class Model {
         return setInterval(() => {
             this.country.procedure();
             this.update();
-        }, 5);
+        }, 10);
     }
 
     cancelTimer(timer: NodeJS.Timer){
