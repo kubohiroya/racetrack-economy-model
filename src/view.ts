@@ -7,7 +7,7 @@ export class View {
     width: number;
     height: number;
 
-    canvas: HTMLCanvasElement = null;
+    canvas: HTMLCanvasElement;
 
     constructor(canvas: HTMLCanvasElement, model: Model) {
         this.canvas = canvas;
@@ -18,22 +18,21 @@ export class View {
 
     repaint() {
         const ctx = this.canvas.getContext("2d");
+        if(! ctx || !this.model) return;
         const wScale = this.width / this.model.country.numCities;
         const hScale = this.height / 0.5;
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, this.width, this.height);
-        const delta = this.model.country.getDelta();
-        const data = this.model.country.getMShare();
-        for (let i = 0; i < this.model.country.numCities; i++) {
-            if (delta && delta[i] < 0) {
+        this.model.country.cities.forEach((city, index)=>{
+            if (city.dMShare < 0) {
                 ctx.fillStyle = '#ff0000'
             } else {
                 ctx.fillStyle = '#0000ff';
             }
-            ctx.fillRect(i * wScale,
-                this.height - data[i] * hScale,
+            ctx.fillRect(index * wScale,
+                this.height - city.MShare * hScale,
                 wScale - 1,
-                data[i] * hScale);
-        }
+                city.MShare * hScale);
+        });
     }
 }

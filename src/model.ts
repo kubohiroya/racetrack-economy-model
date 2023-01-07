@@ -16,17 +16,15 @@ export class Model {
         this.country.setSigma(sigma);
     }
 
-    startTimer(){
-        this.timer = setInterval(() => {
+    startTimer(): number{
+        return setInterval(() => {
             this.country.procedure();
             this.update();
         }, 10);
     }
 
-    cancelTimer(){
-        if(this.timer > 0){
-            clearInterval(this.timer);
-        }
+    cancelTimer(timer: number){
+        clearInterval(timer);
     }
 
     init(tmax: number, sigma: number){
@@ -45,7 +43,9 @@ export class Model {
 
     stop() {
         this.started = false;
-        this.cancelTimer();
+        if(this.timer > 0){
+            this.cancelTimer(this.timer);
+        }
         this.timer = 0;
     }
 
@@ -55,7 +55,7 @@ export class Model {
         }
         if (!this.started) {
             this.started = true;
-            this.startTimer();
+            this.timer = this.startTimer();
         }
     }
 
@@ -93,7 +93,7 @@ export class Model {
     }
 
     update() {
-        this.listeners.forEach(function (listener) {
+        this.listeners.forEach((listener) => {
             listener(this);
         });
     }

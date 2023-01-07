@@ -14,9 +14,6 @@ export class City {
     nominalWage: number;
     nominalWage0: number;
     dMShare: number;
-
-    name: string;
-    population: number;
     id: number;
 
     constructor(c: Country, i: number, ms: number, as: number) {

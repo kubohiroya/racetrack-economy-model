@@ -38,11 +38,7 @@ export class Country {
         this.equalize();
     }
 
-
     /* setters of global params */
-    setMu(d: number): void {
-        this.mu = d;
-    }
 
     setSigma(d: number): void {
         this.sigma = d + 0.1;
@@ -50,6 +46,10 @@ export class Country {
 
     setTmax(d: number): void {
         this.tmax = d;
+    }
+
+    setMu(d: number): void {
+        this.mu = d;
     }
 
     setGamma(d: number): void {
@@ -62,8 +62,7 @@ export class Country {
         for (let i = 0; i < n; i++) {
             for (let j = i; j < n; j++) {
                 const dist = (i == j)? 0 : 2.0 * Math.min(j - i, i + n - j) / n;
-                this.distanceMatrix[i][j] = Math.exp(Math.log(this.tmax) * dist);
-                this.distanceMatrix[j][i] = this.distanceMatrix[i][j];
+                this.distanceMatrix[j][i] = this.distanceMatrix[i][j] = Math.exp(Math.log(this.tmax) * dist);
             }
         }
     }
@@ -90,28 +89,12 @@ export class Country {
         return this.avgRealWage;
     }
 
-    getMShare(): number[] {
-        const d = new Array<number>(this.numCities);
-        for (let i = 0; i < this.numCities; i++) {
-            d[i] = this.cities[i].MShare;
-        }
-        return d;
-    }
-
-    getDelta(): number[] {
-        const d = new Array<number>(this.numCities);
-        for (let i = 0; i < this.numCities; i++) {
-            d[i] = this.cities[i].dMShare;
-        }
-        return d;
-    }
-
     /* set manufacturing shares equal/disturb/rescale */
     equalize(): void {
-        for (let i = 0; i < this.numCities; i++) {
-            this.cities[i].setMShare(1.0 / this.numCities);
-            this.cities[i].setAShare(1.0 / this.numCities);
-        }
+        this.cities.forEach((city, index) => {
+            city.setMShare(1.0 / this.numCities);
+            city.setAShare(1.0 / this.numCities);
+        });
     }
 
     disturb(): void {
@@ -124,65 +107,65 @@ export class Country {
 
     rescale(): void {
         let m = 0, a = 0;
-        for (let i = 0; i < this.numCities; i++) {
-            m += this.cities[i].MShare;
-            a += this.cities[i].AShare;
-        }
-        for (let i = 0; i < this.numCities; i++) {
-            this.cities[i].MShare /= m;
-            this.cities[i].AShare /= a;
-        }
+        this.cities.forEach((city, index) => {
+            m += city.MShare;
+            a += city.AShare;
+        });
+        this.cities.forEach((city, index) => {
+            city.MShare /= m;
+            city.AShare /= a;
+        });
     }
 
     /* simulation body */
     push(): void {
-        for (let i = 0; i < this.numCities; i++) {
-            this.cities[i].push();
-        }
+        this.cities.forEach((city, index) => {
+            city.push();
+        });
     }
 
     calcIncome(): void {
-        for (let i = 0; i < this.numCities; i++) {
-            this.cities[i].calcIncome();
-        }
+        this.cities.forEach((city, index) => {
+            city.calcIncome();
+        });
     }
 
     calcPriceIndex(): void {
-        for (let i = 0; i < this.numCities; i++) {
-            this.cities[i].calcPriceIndex();
-        }
+        this.cities.forEach((city, index) => {
+            city.calcPriceIndex();
+        });
     }
 
     calcNominalWage(): void {
-        for (let i = 0; i < this.numCities; i++) {
-            this.cities[i].calcNominalWage();
-        }
+        this.cities.forEach((city, index) => {
+            city.calcNominalWage();
+        });
     }
 
     calcRealWage(): void {
-        for (let i = 0; i < this.numCities; i++) {
-            this.cities[i].calcRealWage();
-        }
+        this.cities.forEach((city, index) => {
+            city.calcRealWage();
+        });
     }
 
     calcAvgRealWage(): void {
         let avgRealWage = 0;
-        for (let i = 0; i < this.numCities; i++) {
-            avgRealWage += (this.cities[i].realWage * this.cities[i].MShare);
-        }
+        this.cities.forEach((city, index) => {
+            avgRealWage += (city.realWage * city.MShare);
+        });
         this.avgRealWage = avgRealWage;
     }
 
     calcDynamics(): void {
-        for (let i = 0; i < this.numCities; i++) {
-            this.cities[i].calcDynamics();
-        }
+        this.cities.forEach((city, index) => {
+            city.calcDynamics();
+        });
     }
 
     applyDynamics(): void {
-        for (let i = 0; i < this.numCities; i++) {
-            this.cities[i].applyDynamics();
-        }
+        this.cities.forEach((city, index) => {
+            city.applyDynamics();
+        });
         this.rescale();
     }
 
