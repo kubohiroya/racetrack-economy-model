@@ -2,28 +2,31 @@ import {City} from './city';
 
 export class Country {
 
-    tmax: number = 5.0;
     /* maximum value of the distance */
+    tmax: number = 5.0;
+
+    /*  ratio of workers */
     mu: number = 0.4;
 
     gamma: number = 1.0;
 
-    /*  mu=ratio of manuf. workers */
-    sigma: number = 10;
     /* elasticity of substitution */
+    sigma: number = 10;
 
-    /* speed of adjustment */
-    distanceMatrix: Array<Array<number>>;
     /* distance between cities */
+    distanceMatrix: Array<Array<number>>;
 
     /* ordinary methods and variables */
-    cities: Array<City>;
     /* a country has her cities in this vector */
-    avgRealWage: number;
-    /* average real wage of the country */
-    numCities: number;
-    /* the number of the cities in the county */
+    cities: Array<City>;
 
+    /* average real wage of the country */
+    avgRealWage: number;
+
+    /* the number of the cities in the county */
+    numCities: number;
+
+    /* speed of adjustment */
 
     constructor(numCities: number) {
         this.avgRealWage = 1.0;
@@ -48,14 +51,6 @@ export class Country {
         this.tmax = d;
     }
 
-    setMu(d: number): void {
-        this.mu = d;
-    }
-
-    setGamma(d: number): void {
-        this.gamma = d;
-    }
-
     /* calc and print distance matrix */
     calcDistanceMatrix(): void {
         const n = this.numCities;
@@ -67,31 +62,9 @@ export class Country {
         }
     }
 
-    printDM(): void {
-        const n = this.distanceMatrix.length;
-        for (let i = 0; i < n; i++) {
-            for (let j = 0; j < n; j++) {
-                console.log(this.distanceMatrix[i][j] + " ");
-            }
-            console.log();
-        }
-    }
-
-    /* print tool for debug */
-    static printAll(d: number[]): void {
-        for (let i = 0; i < d.length; i++) {
-            console.log(d[i] + " ");
-        }
-        console.log();
-    }
-
-    getAvgRealWage(): number {
-        return this.avgRealWage;
-    }
-
     /* set manufacturing shares equal/disturb/rescale */
     equalize(): void {
-        this.cities.forEach((city, index) => {
+        this.cities.forEach((city) => {
             city.setMShare(1.0 / this.numCities);
             city.setAShare(1.0 / this.numCities);
         });
@@ -107,11 +80,11 @@ export class Country {
 
     rescale(): void {
         let m = 0, a = 0;
-        this.cities.forEach((city, index) => {
+        this.cities.forEach((city) => {
             m += city.MShare;
             a += city.AShare;
         });
-        this.cities.forEach((city, index) => {
+        this.cities.forEach((city) => {
             city.MShare /= m;
             city.AShare /= a;
         });
@@ -119,51 +92,51 @@ export class Country {
 
     /* simulation body */
     push(): void {
-        this.cities.forEach((city, index) => {
+        this.cities.forEach((city) => {
             city.push();
         });
     }
 
     calcIncome(): void {
-        this.cities.forEach((city, index) => {
+        this.cities.forEach((city) => {
             city.calcIncome();
         });
     }
 
     calcPriceIndex(): void {
-        this.cities.forEach((city, index) => {
+        this.cities.forEach((city) => {
             city.calcPriceIndex();
         });
     }
 
     calcNominalWage(): void {
-        this.cities.forEach((city, index) => {
+        this.cities.forEach((city) => {
             city.calcNominalWage();
         });
     }
 
     calcRealWage(): void {
-        this.cities.forEach((city, index) => {
+        this.cities.forEach((city) => {
             city.calcRealWage();
         });
     }
 
     calcAvgRealWage(): void {
         let avgRealWage = 0;
-        this.cities.forEach((city, index) => {
+        this.cities.forEach((city) => {
             avgRealWage += (city.realWage * city.MShare);
         });
         this.avgRealWage = avgRealWage;
     }
 
     calcDynamics(): void {
-        this.cities.forEach((city, index) => {
+        this.cities.forEach((city) => {
             city.calcDynamics();
         });
     }
 
     applyDynamics(): void {
-        this.cities.forEach((city, index) => {
+        this.cities.forEach((city) => {
             city.applyDynamics();
         });
         this.rescale();

@@ -9,7 +9,7 @@ export class Model {
     started: boolean = false;
 
     listeners: Array<(model: Model) => void> = new Array<(model: Model) => void>();
-    timer: NodeJS.Timer|null = null;
+    timer: NodeJS.Timer | null = null;
 
     constructor(numCities: number, tmax: number, sigma: number) {
         this.numCities = numCities;
