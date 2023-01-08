@@ -32,7 +32,7 @@ const resetButton = document.getElementById("reset") as IgcButtonComponent;
 const tmaxSlider = document.getElementById("tmaxSlider") as IgcSliderComponent;
 const sigmaSlider = document.getElementById("sigmaSlider") as IgcSliderComponent;
 
-const model = new Model(100, 5, 10);
+const model = new Model(50, 5, 10);
 const view = new View(canvas, model);
 model.addUpdateEventListener(() => {
         view.repaint();
