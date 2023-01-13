@@ -20,7 +20,7 @@ export class View {
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.model.country.cities.forEach((city, index) => {
             if (city.dMShare < 0) {
-                ctx.fillStyle = '#ff0000'
+                ctx.fillStyle = '#8888ff'
             } else {
                 ctx.fillStyle = '#0000ff';
             }

@@ -13,10 +13,7 @@ export class Model {
 
     constructor(numCities: number, tmax: number, sigma: number) {
         this.numCities = numCities;
-        this.country = new Country(this.numCities);
-        this.country.disturb();
-        this.country.setTmax(tmax);
-        this.country.setSigma(sigma);
+        this.country = this.createCountry(numCities, tmax, sigma);
     }
 
     startTimer(): NodeJS.Timer {
@@ -30,12 +27,17 @@ export class Model {
         clearInterval(timer);
     }
 
+    createCountry(numCities:number, tmax: number, sigma: number){
+        const country = new Country(this.numCities);
+        country.disturb();
+        country.setTmax(tmax);
+        country.setSigma(sigma);
+        return country;
+    }
+
     init(tmax: number, sigma: number) {
         this.initialized = true;
-        this.country = new Country(this.numCities);
-        this.country.disturb();
-        this.country.setTmax(tmax);
-        this.country.setSigma(sigma);
+        this.country = this.createCountry(this.numCities, tmax, sigma);
         this.country.calcDistanceMatrix();
         this.country.procedure();
         this.update();
@@ -61,6 +63,11 @@ export class Model {
             this.started = true;
             this.timer = this.startTimer();
         }
+    }
+
+    changeNCities(numCities: number, tmax: number, sigma: number) {
+        this.numCities = numCities;
+        this.country = this.createCountry(this.numCities, tmax, sigma);
     }
 
     changeTmax(tmax: number) {

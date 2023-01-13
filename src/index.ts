@@ -29,6 +29,7 @@ const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const startButton = document.getElementById("start") as IgcButtonComponent;
 const stopButton = document.getElementById("stop") as IgcButtonComponent;
 const resetButton = document.getElementById("reset") as IgcButtonComponent;
+const nCitiesSlider = document.getElementById("nCitiesSlider") as IgcSliderComponent;
 const tmaxSlider = document.getElementById("tmaxSlider") as IgcSliderComponent;
 const sigmaSlider = document.getElementById("sigmaSlider") as IgcSliderComponent;
 
@@ -60,6 +61,11 @@ function reset() {
     model.reset(tmaxSlider.value, sigmaSlider.value);
 }
 
+function onNCitiesChanged() {
+    model.changeNCities(nCitiesSlider.value, tmaxSlider.value, sigmaSlider.value);
+    model.reset(tmaxSlider.value, sigmaSlider.value);
+}
+
 function onTmaxChanged() {
     model.changeTmax(tmaxSlider.value);
 }
@@ -71,5 +77,6 @@ function onSigmaChanged() {
 startButton.addEventListener('click', start);
 stopButton.addEventListener('click', stop);
 resetButton.addEventListener('click', reset);
+nCitiesSlider.addEventListener('igcChange', onNCitiesChanged);
 tmaxSlider.addEventListener('igcChange', onTmaxChanged);
 sigmaSlider.addEventListener('igcChange', onSigmaChanged);
