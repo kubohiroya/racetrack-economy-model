@@ -18,77 +18,103 @@
     </style>
   </head>
   <body>
-    <div id="root">
-      <canvas
-			  id="canvas"
-			  width="900" height="300"
-			  style="display: flex; justify-content: center; border: solid 1px lightgrey; margin: auto; margin-top:10px ">
-      </canvas>
+  <div id="root">
+	  <div style="display:flex">
+		  <canvas
+				  id="canvas"
+				  width="900" height="300"
+				  style="display: flex; justify-content: center; border: solid 1px lightgrey; margin: auto; margin-top:10px ">
+		  </canvas>
+		  <div style="display: flex; justify-content: center; justify-items: center; flex-direction: column; padding-right: 30px">
+			  <igc-button variant="flat" id="scale">x 1</igc-button>
+			  <igc-dropdown id="scaleDropdown">
+				  <igc-dropdown-item>x 5</igc-dropdown-item>
+				  <igc-dropdown-item>x 3</igc-dropdown-item>
+				  <igc-dropdown-item>x 2</igc-dropdown-item>
+				  <igc-dropdown-item selected>x 1</igc-dropdown-item>
+				  <igc-dropdown-item>x 0.5</igc-dropdown-item>
+				  <igc-dropdown-item>x 0.25</igc-dropdown-item>
+				  <igc-dropdown-item>x 0.125</igc-dropdown-item>
+			  </igc-dropdown>
+		  </div>
+	  </div>
 
-		<div class="slider-container">
-			<span class="slider-label">N</span>
-			<igc-slider
-					id="nCitiesSlider"
-					min="0" max="500"
-					step="1"
-					ticks="100"
-					value="50"></igc-slider>
-		</div>
-		<div class="slider-container">
-			<span class="slider-label">τ</span>
-			<igc-slider
-					id="tmaxSlider"
-					min="1" max="10" step="0.01"
-					primary-ticks="10"
-					value="5"></igc-slider>
-		</div>
+	  <div>
+		  <div class="slider-container">
+			  <span class="slider-label">N = <span id="nCities"></span></span>
+			  <igc-slider
+					  id="nCitiesSlider"
+					  min="0" max="500"
+					  step="1"
+					  primary-ticks="11"
+					  value="50"></igc-slider>
+		  </div>
+		  <div class="slider-container">
+			  <span class="slider-label">τ = <span id="tmax"></span></span>
+			  <igc-slider
+					  id="tmaxSlider"
+					  min="1" max="10" step="0.1"
+					  primary-ticks="10"
+					  value="5"></igc-slider>
+		  </div>
 
-	<div class="slider-container">
-		<span class="slider-label">σ</span>
-		<igc-slider
-				id="sigmaSlider"
-				min="1" max="20" step="0.01"
-				primary-ticks="20"
-				value="10"></igc-slider>
-	</div>
+		  <div class="slider-container">
+			  <span class="slider-label">σ = <span id="sigma"></span></span>
+			  <igc-slider
+					  id="sigmaSlider"
+					  min="1" max="20" step="0.1"
+					  primary-ticks="20"
+					  value="10"></igc-slider>
+		  </div>
 
-		<div id="buttonPanel" style="margin-top: 50px; display: flex; justify-content: center;">
+		  <div class="slider-container">
+			  <span class="slider-label">Mu = <span id="mu"></span></span>
+			  <igc-slider
+					  id="muSlider"
+					  min="0" max="1.0" step="0.01"
+					  primary-ticks="11"
+					  value="0.4"></igc-slider>
+		  </div>
+	  </div>
+
+	  <div id="buttonPanel" style="margin-top: 50px; display: flex; justify-content: center;">
 	  
-  	  <igc-button 
-	    id="start"
-	    variant="outlined"
-	    >
-            <igc-icon size="small" name="start" collection="material"></igc-icon>
-	    Start
-	  </igc-button>
+		  <igc-button
+				  id="start"
+				  variant="outlined"
+		  >
+			  <igc-icon size="small" name="start" collection="material"></igc-icon>
+			  Start
+		  </igc-button>
 
-	  <igc-button 
-	    id="stop"
-	    variant="outlined"
-	    >
-            <igc-icon size="small" name="stop" collection="material"></igc-icon>
-	    Stop
-	  </igc-button>
+		  <igc-button
+				  id="stop"
+				  variant="outlined"
+		  >
+			  <igc-icon size="small" name="stop" collection="material"></igc-icon>
+			  Stop
+		  </igc-button>
 
-	  <igc-button
-	    id="reset"
-	    variant="outlined"
-	    >
-	    <igc-icon size="small" name="reset" collection="material"></igc-icon>
-	    Reset
-	  </igc-button>
-	  
-	</div>
+		  <igc-button
+				  id="reset"
+				  variant="outlined"
+		  >
+			  <igc-icon size="small" name="reset" collection="material"></igc-icon>
+			  Reset
+		  </igc-button>
 
-	<div>
-	  <ul>
-		  <li>Nは都市の数。</li>
-		  <li>Tは輸送費の水準。１が輸送費が低い状態、10が輸送費が高い状態を示す。</li>
-	    <li>σは多様性選好の度合い。１は多様性を非常に強く好む状態、20は多様性をあまり好まない状態を示す。</li>
-	  </ul>
-	</div>
-    </div>
-    
-    <script type="module" src="src/index.ts"></script>
+	  </div>
+
+	  <div>
+		  <ul>
+			  <li>Nは都市の数。</li>
+			  <li>Tは輸送費の水準。１が輸送費が低い状態、10が輸送費が高い状態を示す。</li>
+			  <li>σは多様性選好の度合い。１は多様性を非常に強く好む状態、20は多様性をあまり好まない状態を示す。</li>
+			  <li>Muは工業労働者の割合。0に近いほど農民(都市間を移動しない)の割合が高く、1に近いほど工業労働者(都市間を移動する)の割合が高いことを示す。</li>
+		  </ul>
+	  </div>
+  </div>
+
+  <script type="module" src="src/index.ts"></script>
   </body>
 </html>

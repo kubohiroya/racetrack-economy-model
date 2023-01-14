@@ -5,15 +5,17 @@ export class Model {
     numCities: number;
     country: Country;
 
+    scale: number = 1.0;
+
     initialized: boolean = false;
     started: boolean = false;
 
     listeners: Array<(model: Model) => void> = new Array<(model: Model) => void>();
     timer: NodeJS.Timer | null = null;
 
-    constructor(numCities: number, tmax: number, sigma: number) {
+    constructor(numCities: number, tmax: number, sigma: number, mu: number) {
         this.numCities = numCities;
-        this.country = this.createCountry(numCities, tmax, sigma);
+        this.country = this.createCountry(numCities, tmax, sigma, mu);
     }
 
     startTimer(): NodeJS.Timer {
@@ -27,24 +29,24 @@ export class Model {
         clearInterval(timer);
     }
 
-    createCountry(numCities:number, tmax: number, sigma: number){
-        const country = new Country(this.numCities);
+    createCountry(numCities:number, tmax: number, sigma: number, mu: number){
+        const country = new Country(this.numCities, mu);
         country.disturb();
         country.setTmax(tmax);
         country.setSigma(sigma);
         return country;
     }
 
-    init(tmax: number, sigma: number) {
+    init(tmax: number, sigma: number, mu: number) {
         this.initialized = true;
-        this.country = this.createCountry(this.numCities, tmax, sigma);
+        this.country = this.createCountry(this.numCities, tmax, sigma, mu);
         this.country.calcDistanceMatrix();
         this.country.procedure();
         this.update();
     }
 
-    reset(tmax: number, sigma: number) {
-        this.init(tmax, sigma);
+    reset(tmax: number, sigma: number, mu: number) {
+        this.init(tmax, sigma, mu);
     }
 
     stop() {
@@ -55,9 +57,9 @@ export class Model {
         this.timer = null;
     }
 
-    start(tmax: number, sigma: number) {
+    start(tmax: number, sigma: number, mu: number) {
         if (!this.initialized) {
-            this.init(tmax, sigma);
+            this.init(tmax, sigma, mu);
         }
         if (!this.started) {
             this.started = true;
@@ -65,9 +67,9 @@ export class Model {
         }
     }
 
-    changeNCities(numCities: number, tmax: number, sigma: number) {
+    changeNCities(numCities: number, tmax: number, sigma: number, mu: number) {
         this.numCities = numCities;
-        this.country = this.createCountry(this.numCities, tmax, sigma);
+        this.country = this.createCountry(this.numCities, tmax, sigma, mu);
     }
 
     changeTmax(tmax: number) {
@@ -79,6 +81,14 @@ export class Model {
     changeSigma(sigma: number) {
         this.country.setSigma(sigma);
         this.country.procedure();
+    }
+
+    changeMu(mu: number) {
+        this.country.setMu(mu);
+    }
+
+    setScale(scale: number){
+        this.scale = scale;
     }
 
     addUpdateEventListener(listener: (model: Model) => void) {

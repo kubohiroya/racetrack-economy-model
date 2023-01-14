@@ -15,7 +15,7 @@ export class View {
         const ctx = this.canvas.getContext("2d");
         if (!ctx || !this.model) return;
         const wScale = this.canvas.width / this.model.country.cities.length;
-        const hScale = this.canvas.height / 0.5;
+        const hScale = this.canvas.height * this.model.numCities / 64 * this.model.scale;
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.model.country.cities.forEach((city, index) => {
@@ -27,7 +27,7 @@ export class View {
             ctx.fillRect(index * wScale,
                 this.canvas.height - city.MShare * hScale,
                 wScale - 1,
-                city.MShare * hScale);
+                city.MShare * hScale );
         });
     }
 }

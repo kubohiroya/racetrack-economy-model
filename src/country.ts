@@ -25,7 +25,8 @@ export class Country {
 
     /* speed of adjustment */
 
-    constructor(numCities: number) {
+    constructor(numCities: number, mu: number) {
+        this.mu = mu;
         this.avgRealWage = 1.0;
         this.cities = new Array<City>(numCities);
         this.distanceMatrix = new Array<Array<number>>(numCities);
@@ -44,6 +45,10 @@ export class Country {
 
     setTmax(d: number): void {
         this.tmax = d;
+    }
+
+    setMu(mu: number): void {
+        this.mu = mu;
     }
 
     /* calc and print distance matrix */
