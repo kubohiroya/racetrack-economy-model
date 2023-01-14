@@ -16,7 +16,7 @@ export class View {
         if (!ctx || !this.model) return;
         const wScale = this.canvas.width / this.model.country.cities.length;
         const hScale = this.canvas.height * this.model.numCities / 64 * this.model.scale;
-        ctx.fillStyle = '#f8f8f8';
+        ctx.fillStyle = '#f4f4f4';
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.model.country.cities.forEach((city, index) => {
             if (city.dMShare < 0) {

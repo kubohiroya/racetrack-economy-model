@@ -2,7 +2,6 @@ import {Country} from './country';
 
 export class City {
 
-    country: Country;
     realWage: number;
     priceIndex: number;
     priceIndex0: number;
@@ -16,8 +15,7 @@ export class City {
     dMShare: number;
     id: number;
 
-    constructor(c: Country, i: number, ms: number, as: number) {
-        this.country = c;
+    constructor(i: number, ms: number, as: number) {
         this.id = i;
         this.MShare = ms;
         this.MShare0 = ms;
@@ -53,39 +51,39 @@ export class City {
         this.MShare0 = this.MShare;
     }
 
-    calcIncome(): void {
-        this.income = this.country.mu * this.MShare * this.nominalWage + (1 - this.country.mu) * this.AShare;
+    calcIncome(country: Country): void {
+        this.income = country.mu * this.MShare * this.nominalWage + (1 - country.mu) * this.AShare;
     }
 
-    calcPriceIndex(): void {
+    calcPriceIndex(country: Country): void {
         let priceIndex = 0;
-        this.country.cities.forEach(city => {
-            priceIndex += city.MShare * Math.pow((city.nominalWage0 * this.country.distanceMatrix[this.id][city.id]), 1 - this.country.sigma);
+        country.cities.forEach(city => {
+            priceIndex += city.MShare * Math.pow((city.nominalWage0 * country.distanceMatrix[this.id][city.id]), 1 - country.sigma);
         });
-        this.priceIndex = Math.pow(priceIndex, (1 / (1 - this.country.sigma)));
+        this.priceIndex = Math.pow(priceIndex, (1 / (1 - country.sigma)));
     }
 
-    calcRealWage(): void {
-        this.realWage = this.nominalWage * Math.pow(this.priceIndex, -this.country.mu);
+    calcRealWage(country: Country): void {
+        this.realWage = this.nominalWage * Math.pow(this.priceIndex, -country.mu);
     }
 
-    calcNominalWage(): void {
+    calcNominalWage(country: Country): void {
         let nominalWage = 0;
-        this.country.cities.forEach(city => {
-            nominalWage += city.income0 * Math.pow(this.country.distanceMatrix[this.id][city.id], 1 - this.country.sigma) * Math.pow(city.priceIndex0, this.country.sigma - 1);
+        country.cities.forEach(city => {
+            nominalWage += city.income0 * Math.pow(country.distanceMatrix[this.id][city.id], 1 - country.sigma) * Math.pow(city.priceIndex0, country.sigma - 1);
         });
-        this.nominalWage = Math.pow(nominalWage, (1 / this.country.sigma));
+        this.nominalWage = Math.pow(nominalWage, (1 / country.sigma));
     }
 
-    calcDynamics(): void {
-        this.dMShare = this.country.gamma * (this.realWage - this.country.avgRealWage) * this.MShare;
+    calcDynamics(country: Country): void {
+        this.dMShare = country.gamma * (this.realWage - country.avgRealWage) * this.MShare;
     }
 
-    applyDynamics(): void {
-        if (this.MShare > 1.0 / this.country.cities.length / 10.0) {
+    applyDynamics(country: Country): void {
+        if (this.MShare > 1.0 / country.cities.length / 10.0) {
             this.MShare += this.dMShare;
         } else {
-            this.MShare = 1.0 / this.country.cities.length / 10.0;
+            this.MShare = 1.0 / country.cities.length / 10.0;
         }
     }
 }

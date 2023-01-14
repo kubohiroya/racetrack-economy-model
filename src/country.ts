@@ -2,13 +2,14 @@ import {City} from './city';
 
 export class Country {
 
+    /*  ratio of workers */
+    mu: number;
+
+    /* average real wage of the country */
+    avgRealWage: number;
+
     /* maximum value of the distance */
     tmax: number = 5.0;
-
-    /*  ratio of workers */
-    mu: number = 0.4;
-
-    gamma: number = 1.0;
 
     /* elasticity of substitution */
     sigma: number = 10;
@@ -16,25 +17,25 @@ export class Country {
     /* distance between cities */
     distanceMatrix: Array<Array<number>>;
 
-    /* ordinary methods and variables */
     /* a country has her cities in this vector */
     cities: Array<City>;
 
-    /* average real wage of the country */
-    avgRealWage: number;
-
     /* speed of adjustment */
+    gamma: number = 1.0;
 
-    constructor(numCities: number, mu: number) {
+    constructor(numCities: number, tmax: number, sigma: number, mu: number) {
+        this.setTmax(tmax);
+        this.setSigma(sigma);
         this.mu = mu;
         this.avgRealWage = 1.0;
         this.cities = new Array<City>(numCities);
         this.distanceMatrix = new Array<Array<number>>(numCities);
         for (let i = 0; i < numCities; i++) {
             this.distanceMatrix[i] = new Array<number>(numCities).fill(0);
-            this.cities[i] = new City(this, i, 0.0, 0.0);
+            this.cities[i] = new City(i, 0.0, 0.0);
         }
         this.equalize();
+        this.calcDistanceMatrix();
     }
 
     /* setters of global params */
@@ -102,25 +103,25 @@ export class Country {
 
     calcIncome(): void {
         this.cities.forEach((city) => {
-            city.calcIncome();
+            city.calcIncome(this);
         });
     }
 
     calcPriceIndex(): void {
         this.cities.forEach((city) => {
-            city.calcPriceIndex();
+            city.calcPriceIndex(this);
         });
     }
 
     calcNominalWage(): void {
         this.cities.forEach((city) => {
-            city.calcNominalWage();
+            city.calcNominalWage(this);
         });
     }
 
     calcRealWage(): void {
         this.cities.forEach((city) => {
-            city.calcRealWage();
+            city.calcRealWage(this);
         });
     }
 
@@ -134,13 +135,13 @@ export class Country {
 
     calcDynamics(): void {
         this.cities.forEach((city) => {
-            city.calcDynamics();
+            city.calcDynamics(this);
         });
     }
 
     applyDynamics(): void {
         this.cities.forEach((city) => {
-            city.applyDynamics();
+            city.applyDynamics(this);
         });
         this.rescale();
     }

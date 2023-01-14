@@ -31,23 +31,18 @@ export class Model {
     }
 
     createCountry(numCities:number, tmax: number, sigma: number, mu: number){
-        const country = new Country(this.numCities, mu);
-        country.disturb();
-        country.setTmax(tmax);
-        country.setSigma(sigma);
-        return country;
+        return new Country(numCities, tmax, sigma, mu);
     }
 
     init(tmax: number, sigma: number, mu: number) {
         this.initialized = true;
         this.country = this.createCountry(this.numCities, tmax, sigma, mu);
-        this.country.calcDistanceMatrix();
-        this.country.procedure();
         this.update();
     }
 
     reset(tmax: number, sigma: number, mu: number) {
         this.init(tmax, sigma, mu);
+        this.country.disturb();
     }
 
     stop() {
@@ -63,6 +58,7 @@ export class Model {
             this.init(tmax, sigma, mu);
         }
         if (!this.started) {
+            this.country.disturb();
             this.started = true;
             this.timer = this.startTimer();
         }
@@ -71,17 +67,15 @@ export class Model {
     changeNCities(numCities: number, tmax: number, sigma: number, mu: number) {
         this.numCities = numCities;
         this.country = this.createCountry(this.numCities, tmax, sigma, mu);
+        this.country.disturb();
     }
 
     changeTmax(tmax: number) {
         this.country.setTmax(tmax);
-        this.country.calcDistanceMatrix();
-        this.country.procedure();
     }
 
     changeSigma(sigma: number) {
         this.country.setSigma(sigma);
-        this.country.procedure();
     }
 
     changeMu(mu: number) {
