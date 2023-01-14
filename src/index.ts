@@ -46,7 +46,7 @@ const startButton = document.getElementById("start") as IgcButtonComponent;
 const stopButton = document.getElementById("stop") as IgcButtonComponent;
 const resetButton = document.getElementById("reset") as IgcButtonComponent;
 
-const model = new Model(50, 5, 10, 0.4);
+const model = new Model(50, 5, 10, 0.4, 1.0);
 const view = new View(canvas, model);
 
 model.addUpdateEventListener(() => {

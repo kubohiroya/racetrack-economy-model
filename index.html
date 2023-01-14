@@ -19,13 +19,14 @@
   </head>
   <body>
   <div id="root">
-	  <div style="display:flex">
+	  <div style="display: flex; justify-content: center;">
 		  <canvas
 				  id="canvas"
 				  width="900" height="300"
-				  style="display: flex; justify-content: center; border: solid 1px lightgrey; margin: auto; margin-top:10px ">
+				  style="border: solid 1px lightgrey; margin-top:10px ">
 		  </canvas>
-		  <div style="display: flex; justify-content: center; justify-items: center; flex-direction: column; padding-right: 30px">
+		  <div style="position: absolute; top: 20px; right: 0; width: 70px; height: 30px;
+		  display: flex; justify-content: center; justify-items: center; flex-direction: column; padding-right: 20px">
 			  <igc-button variant="flat" id="scale">x 1</igc-button>
 			  <igc-dropdown id="scaleDropdown">
 				  <igc-dropdown-item>x 5</igc-dropdown-item>

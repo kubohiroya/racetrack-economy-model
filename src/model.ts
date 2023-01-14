@@ -5,7 +5,7 @@ export class Model {
     numCities: number;
     country: Country;
 
-    scale: number = 1.0;
+    scale: number;
 
     initialized: boolean = false;
     started: boolean = false;
@@ -13,8 +13,9 @@ export class Model {
     listeners: Array<(model: Model) => void> = new Array<(model: Model) => void>();
     timer: NodeJS.Timer | null = null;
 
-    constructor(numCities: number, tmax: number, sigma: number, mu: number) {
+    constructor(numCities: number, tmax: number, sigma: number, mu: number, scale: number) {
         this.numCities = numCities;
+        this.scale = scale;
         this.country = this.createCountry(numCities, tmax, sigma, mu);
     }
 
@@ -89,6 +90,7 @@ export class Model {
 
     setScale(scale: number){
         this.scale = scale;
+        this.update();
     }
 
     addUpdateEventListener(listener: (model: Model) => void) {
