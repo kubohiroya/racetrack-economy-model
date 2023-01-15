@@ -2,8 +2,10 @@ import {Country} from "./country";
 
 export class Model {
 
+
     numCities: number;
     country: Country;
+    counter: number;
 
     scale: number;
 
@@ -15,14 +17,16 @@ export class Model {
 
     constructor(numCities: number, tmax: number, sigma: number, mu: number, scale: number) {
         this.numCities = numCities;
-        this.scale = scale;
         this.country = this.createCountry(numCities, tmax, sigma, mu);
+        this.counter = 0;
+        this.scale = scale;
     }
 
     startTimer(): NodeJS.Timer {
         return setInterval(() => {
             this.country.procedure();
             this.update();
+            this.counter++;
         }, 10);
     }
 
@@ -42,7 +46,9 @@ export class Model {
 
     reset(tmax: number, sigma: number, mu: number) {
         this.init(tmax, sigma, mu);
+        this.counter = 0;
         this.country.disturb();
+        this.update();
     }
 
     stop() {

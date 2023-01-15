@@ -13,6 +13,8 @@ import {
 import 'igniteui-webcomponents/themes/light/bootstrap.css';
 import './SliderStyle.css';
 
+console.log('hoge');
+
 defineComponents(IgcSliderComponent);
 defineComponents(IgcButtonComponent);
 defineComponents(IgcIconComponent);
@@ -46,11 +48,15 @@ const startButton = document.getElementById("start") as IgcButtonComponent;
 const stopButton = document.getElementById("stop") as IgcButtonComponent;
 const resetButton = document.getElementById("reset") as IgcButtonComponent;
 
+const counterElem = document.getElementById("counter") as HTMLDivElement;
+
 const model = new Model(50, 5, 10, 0.4, 1.0);
 const view = new View(canvas, model);
 
 model.addUpdateEventListener(() => {
-        view.repaint();
+    console.log(model.counter.toLocaleString());
+    counterElem.innerText = model.counter.toLocaleString();
+    view.repaint();
     }
 );
 
