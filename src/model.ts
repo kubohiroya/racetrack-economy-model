@@ -2,7 +2,6 @@ import {Country} from "./country";
 
 export class Model {
 
-
     numCities: number;
     country: Country;
     counter: number;
@@ -22,18 +21,6 @@ export class Model {
         this.scale = scale;
     }
 
-    startTimer(): NodeJS.Timer {
-        return setInterval(() => {
-            this.country.procedure();
-            this.update();
-            this.counter++;
-        }, 10);
-    }
-
-    cancelTimer(timer: NodeJS.Timer) {
-        clearInterval(timer);
-    }
-
     createCountry(numCities:number, tmax: number, sigma: number, mu: number){
         return new Country(numCities, tmax, sigma, mu);
     }
@@ -41,7 +28,6 @@ export class Model {
     init(tmax: number, sigma: number, mu: number) {
         this.initialized = true;
         this.country = this.createCountry(this.numCities, tmax, sigma, mu);
-        this.update();
     }
 
     reset(tmax: number, sigma: number, mu: number) {
@@ -54,37 +40,39 @@ export class Model {
     stop() {
         this.started = false;
         if (this.initialized && this.timer) {
-            this.cancelTimer(this.timer);
+            clearInterval(this.timer);
         }
         this.timer = null;
     }
 
     start(tmax: number, sigma: number, mu: number) {
-        if (!this.initialized) {
+        if (! this.initialized) {
             this.init(tmax, sigma, mu);
         }
-        if (!this.started) {
-            this.country.disturb();
+        if (! this.started) {
             this.started = true;
-            this.timer = this.startTimer();
+            this.timer = setInterval(() => {
+                this.country.procedure();
+                this.counter++;
+                this.update();
+            }, 10);
         }
     }
 
-    changeNCities(numCities: number, tmax: number, sigma: number, mu: number) {
+    setNumCities(numCities: number, tmax: number, sigma: number, mu: number) {
         this.numCities = numCities;
         this.country = this.createCountry(this.numCities, tmax, sigma, mu);
-        this.country.disturb();
     }
 
-    changeTmax(tmax: number) {
+    setTmax(tmax: number) {
         this.country.setTmax(tmax);
     }
 
-    changeSigma(sigma: number) {
+    setSigma(sigma: number) {
         this.country.setSigma(sigma);
     }
 
-    changeMu(mu: number) {
+    setMu(mu: number) {
         this.country.setMu(mu);
     }
 
