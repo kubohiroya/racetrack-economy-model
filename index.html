@@ -18,7 +18,20 @@
 		igc-icon {
 			margin-right: 4px;
 		}
-	</style>
+		#buttonPanel igc-button[disabled] {
+			background-color: #ccc;
+		}
+		#buttonPanel igc-button.started {
+			animation: blinking 1s ease-in-out infinite alternate;
+		}
+		@keyframes blinking {
+			0% {
+				background-color: #ddf;
+			}
+			100% {
+				background-color: #fff;
+			}
+		}	</style>
   </head>
   <body>
   <div id="root">
@@ -81,7 +94,9 @@
 		  </div>
 	  </div>
 
-	  <div id="buttonPanel" style="margin-top: 50px; display: flex; justify-content: center;">
+	  <div id="buttonPanel" style="margin-top: 50px; display: flex; justify-content: center;"
+		   class="blink"
+	  >
 	  
 		  <igc-button
 				  id="start"

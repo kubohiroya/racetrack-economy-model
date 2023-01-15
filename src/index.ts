@@ -68,12 +68,18 @@ muElem.innerText = muSlider.value.toString();
 function start() {
     startButton.disabled = true;
     stopButton.disabled = false;
+    startButton.className = "";
+    stopButton.className = "started";
+    resetButton.className = "started";
     model.start(tmaxSlider.value, sigmaSlider.value, muSlider.value);
 }
 
 function stop() {
     startButton.disabled = false;
     stopButton.disabled = true;
+    startButton.className = "";
+    stopButton.className = "";
+    resetButton.className = "";
     model.stop();
 }
 
