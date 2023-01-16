@@ -39,40 +39,50 @@
 		  <canvas
 				  id="canvas"
 				  width="900" height="300"
-				  style="border: solid 1px lightgrey; margin-top:10px ">
+				  style="margin-top:10px ">
 		  </canvas>
 		  <div style="position: absolute; top: 20px; right: 0; width: 70px; height: 30px;
 		  display: flex; justify-content: center; justify-items: center; flex-direction: column; padding-right: 20px">
 			  <igc-button variant="flat" id="scale">x 1</igc-button>
 			  <igc-dropdown id="scaleDropdown">
+				  <igc-dropdown-item>x 21</igc-dropdown-item>
+				  <igc-dropdown-item>x 13</igc-dropdown-item>
+				  <igc-dropdown-item>x 8</igc-dropdown-item>
 				  <igc-dropdown-item>x 5</igc-dropdown-item>
 				  <igc-dropdown-item>x 3</igc-dropdown-item>
 				  <igc-dropdown-item>x 2</igc-dropdown-item>
 				  <igc-dropdown-item selected>x 1</igc-dropdown-item>
-				  <igc-dropdown-item>x 0.5</igc-dropdown-item>
-				  <igc-dropdown-item>x 0.25</igc-dropdown-item>
-				  <igc-dropdown-item>x 0.125</igc-dropdown-item>
 			  </igc-dropdown>
 		  </div>
 	  </div>
 
 	  <div>
 		  <div class="slider-container">
-			  <span class="slider-label">N = <span id="nCities"></span></span>
+			  <span class="slider-label">K = <span id="nCities"></span></span>
 			  <igc-slider
 					  id="nCitiesSlider"
 					  min="0" max="500"
 					  step="1"
 					  primary-ticks="11"
-					  value="50"></igc-slider>
+					  value="12"></igc-slider>
 		  </div>
+
+		  <div class="slider-container">
+			  <span class="slider-label">π = <span id="mu"></span></span>
+			  <igc-slider
+					  id="muSlider"
+					  min="0" max="1.0" step="0.01"
+					  primary-ticks="11"
+					  value="0.4"></igc-slider>
+		  </div>
+
 		  <div class="slider-container">
 			  <span class="slider-label">τ = <span id="tmax"></span></span>
 			  <igc-slider
 					  id="tmaxSlider"
-					  min="1" max="10" step="0.1"
-					  primary-ticks="10"
-					  value="5"></igc-slider>
+					  min="0" max="10" step="0.1"
+					  primary-ticks="11"
+					  value="5.0"></igc-slider>
 		  </div>
 
 		  <div class="slider-container">
@@ -82,15 +92,6 @@
 					  min="1" max="20" step="0.1"
 					  primary-ticks="20"
 					  value="10"></igc-slider>
-		  </div>
-
-		  <div class="slider-container">
-			  <span class="slider-label">Mu = <span id="mu"></span></span>
-			  <igc-slider
-					  id="muSlider"
-					  min="0" max="1.0" step="0.01"
-					  primary-ticks="11"
-					  value="0.4"></igc-slider>
 		  </div>
 	  </div>
 
@@ -123,17 +124,17 @@
 		  </igc-button>
 
 		  <div style="margin-left: 12px; margin-top: 12px; color: #888; width: 100px">
-			  Step: <span id="counter">0</span>
+			  Time: <span id="counter">0</span>
 		  </div>
 
 	  </div>
 
 	  <div>
 		  <ul>
-			  <li>Nは都市の数。</li>
-			  <li>τは輸送費の水準。１が輸送費が低い状態、10が輸送費が高い状態を示す。</li>
+			  <li>Kは都市の数。</li>
+			  <li>πは工業労働者の割合。0に近いほど農民(都市間を移動しない)の割合が高く、1に近いほど工業労働者(都市間を移動する)の割合が高いことを示す。</li>
+			  <li>τは輸送費の水準。0に近いほど輸送費が低い状態、10が輸送費が高い状態を示す。</li>
 			  <li>σは多様性選好の度合い。１は多様性を非常に強く好む状態、20は多様性をあまり好まない状態を示す。</li>
-			  <li>Muは工業労働者の割合。0に近いほど農民(都市間を移動しない)の割合が高く、1に近いほど工業労働者(都市間を移動する)の割合が高いことを示す。</li>
 		  </ul>
 	  </div>
   </div>

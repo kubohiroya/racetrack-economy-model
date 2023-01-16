@@ -13,8 +13,6 @@ import {
 import 'igniteui-webcomponents/themes/light/bootstrap.css';
 import './SliderStyle.css';
 
-console.log('hoge');
-
 defineComponents(IgcSliderComponent);
 defineComponents(IgcButtonComponent);
 defineComponents(IgcIconComponent);
@@ -50,7 +48,7 @@ const resetButton = document.getElementById("reset") as IgcButtonComponent;
 
 const counterElem = document.getElementById("counter") as HTMLDivElement;
 
-const model = new Model(50, 5, 10, 0.4, 1.0);
+const model = new Model(12, 0.4, 0.4, 10, 1.0);
 const view = new View(canvas, model);
 
 model.addUpdateEventListener(() => {
@@ -95,23 +93,23 @@ function reset() {
 
 function onNCitiesChanged() {
     nCitiesElem.innerText = nCitiesSlider.value.toString();
-    model.changeNCities(nCitiesSlider.value, tmaxSlider.value, sigmaSlider.value, muSlider.value);
+    model.setNumCities(nCitiesSlider.value, tmaxSlider.value, sigmaSlider.value, muSlider.value);
     model.reset(tmaxSlider.value, sigmaSlider.value, muSlider.value);
 }
 
 function onTmaxChanged() {
     tmaxElem.innerText = tmaxSlider.value.toPrecision(2);
-    model.changeTmax(tmaxSlider.value);
+    model.setTmax(tmaxSlider.value);
 }
 
 function onSigmaChanged() {
     sigmaElem.innerText = sigmaSlider.value.toPrecision(3);
-    model.changeSigma(sigmaSlider.value);
+    model.setSigma(sigmaSlider.value);
 }
 
 function onMuChanged() {
     muElem.innerText = muSlider.value.toPrecision(2);
-    model.changeMu(muSlider.value);
+    model.setMu(muSlider.value);
 }
 
 startButton.addEventListener('click', start);

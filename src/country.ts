@@ -9,10 +9,10 @@ export class Country {
     avgRealWage: number;
 
     /* maximum value of the distance */
-    tmax: number = 5.0;
+    tmax: number;
 
     /* elasticity of substitution */
-    sigma: number = 10;
+    sigma: number;
 
     /* distance between cities */
     distanceMatrix: Array<Array<number>>;
@@ -24,8 +24,8 @@ export class Country {
     gamma: number = 1.0;
 
     constructor(numCities: number, tmax: number, sigma: number, mu: number) {
-        this.setTmax(tmax);
-        this.setSigma(sigma);
+        this.tmax = tmax;
+        this.sigma = sigma + 0.1;
         this.mu = mu;
         this.avgRealWage = 1.0;
         this.cities = new Array<City>(numCities);

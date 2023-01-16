@@ -14,20 +14,20 @@ export class Model {
     listeners: Array<(model: Model) => void> = new Array<(model: Model) => void>();
     timer: NodeJS.Timer | null = null;
 
-    constructor(numCities: number, tmax: number, sigma: number, mu: number, scale: number) {
+    constructor(numCities: number, mu: number, tmax: number, sigma: number, scale: number) {
         this.numCities = numCities;
-        this.country = this.createCountry(numCities, tmax, sigma, mu);
+        this.country = this.createCountry(numCities, mu, tmax, sigma);
         this.counter = 0;
         this.scale = scale;
     }
 
-    createCountry(numCities:number, tmax: number, sigma: number, mu: number){
+    createCountry(numCities: number, mu: number, tmax: number, sigma: number){
         return new Country(numCities, tmax, sigma, mu);
     }
 
     init(tmax: number, sigma: number, mu: number) {
         this.initialized = true;
-        this.country = this.createCountry(this.numCities, tmax, sigma, mu);
+        this.country = this.createCountry(this.numCities, mu, tmax, sigma);
     }
 
     reset(tmax: number, sigma: number, mu: number) {
@@ -61,7 +61,7 @@ export class Model {
 
     setNumCities(numCities: number, tmax: number, sigma: number, mu: number) {
         this.numCities = numCities;
-        this.country = this.createCountry(this.numCities, tmax, sigma, mu);
+        this.country = this.createCountry(this.numCities, mu, tmax, sigma);
     }
 
     setTmax(tmax: number) {
