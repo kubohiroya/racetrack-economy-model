@@ -1,14 +1,6 @@
-igc-slider, igc-range-slider {
-    padding: 10px 50px 10px 10px;
-    flex-grow: 1;
-}
 
 .slider-container {
     display: flex;
     align-items: baseline;
-}
-
-.slider-label {
-    width: 100px;
-    text-align: end;
+    background-color: #888;
 }

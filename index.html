@@ -3,95 +3,164 @@
   <head>
     <title>The Race Track Economy</title>
     <meta charset="UTF-8" />
-    <link rel="shortcut icon" href="https://static.infragistics.com/xplatform/images/browsers/wc.png" >
+	  <!--
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Kanit&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium Web" />
-    <link rel="stylesheet" href="https://static.infragistics.com/xplatform/css/samples/shared.v8.css" type="text/css" />
+    -->
+
     <style>
 		#root {
 			font-family: Mincho SansSerif;
 		}
-		#buttonPanel > * {
-			margin: 3px;
-		}
-		igc-icon {
+
+		icon {
 			margin-right: 4px;
 		}
-		#buttonPanel igc-button[disabled] {
+
+		.slider-container {
+			padding: 10px 50px 10px 10px;
+			flex-grow: 1;
+		}
+
+		fast-slider-label{
+			color: #333;
+		}
+
+		fast-button.disabled {
 			background-color: #ccc;
 		}
-		#buttonPanel igc-button.started {
+		fast-button {
+			font-size: 120%;
+			border-style: solid;
+			border-width: 1px;
+			border-color: #666;
+			border-radius: 3px;
+			color: #444;
+			background-color: #fff;
+			padding: 5px 10px 5px 10px;
+			margin-left: 5px;
+			display: flex;
+			flex-direction: row;
+		}
+		fast-button.started {
 			animation: blinking 1s ease-in-out infinite alternate;
 		}
 		@keyframes blinking {
 			0% {
-				background-color: #ddf;
+				background-color: #fdd;
 			}
 			100% {
 				background-color: #fff;
 			}
-		}	</style>
+		}
+		.icon{
+			background-repeat: no-repeat;
+			width: 24px;
+			height: 24px;
+			margin-top: 1px;
+			margin-right: 3px;
+		}
+		#startIcon{
+			background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M10,16.5V7.5L16,12M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></svg>');
+		}
+		#stopIcon{
+			background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="currentColor" d="M15,16H13V8H15M11,16H9V8H11M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></svg>');
+		}
+		#resetIcon{
+			background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="currentColor" d="M2 12C2 16.97 6.03 21 11 21C13.39 21 15.68 20.06 17.4 18.4L15.9 16.9C14.63 18.25 12.86 19 11 19C4.76 19 1.64 11.46 6.05 7.05C10.46 2.64 18 5.77 18 12H15L19 16H19.1L23 12H20C20 7.03 15.97 3 11 3C6.03 3 2 7.03 2 12Z" /></svg>');
+		}
+		#magnifyIcon{
+			background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" style="width:24px;height:24px" viewBox="0 0 24 24">  <path fill="currentColor" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" /></svg>');
+		}
+
+	</style>
   </head>
   <body>
   <div id="root">
+
+	  <h1>The Race Track Economy</h1>
+
 	  <div style="display: flex; justify-content: center;">
 		  <canvas
 				  id="canvas"
 				  width="900" height="300"
 				  style="margin-top:10px ">
 		  </canvas>
-		  <div style="position: absolute; top: 20px; right: 0; width: 70px; height: 30px;
-		  display: flex; justify-content: center; justify-items: center; flex-direction: column; padding-right: 20px">
-			  <igc-button variant="flat" id="scale">x 1</igc-button>
-			  <igc-dropdown id="scaleDropdown">
-				  <igc-dropdown-item>x 21</igc-dropdown-item>
-				  <igc-dropdown-item>x 13</igc-dropdown-item>
-				  <igc-dropdown-item>x 8</igc-dropdown-item>
-				  <igc-dropdown-item>x 5</igc-dropdown-item>
-				  <igc-dropdown-item>x 3</igc-dropdown-item>
-				  <igc-dropdown-item>x 2</igc-dropdown-item>
-				  <igc-dropdown-item selected>x 1</igc-dropdown-item>
-			  </igc-dropdown>
+		  <div style="position: absolute; top: 20px; right: 0; width: 80px; height: 30px;
+		  display: flex; justify-content: center; justify-items: center; flex-direction: column; padding-right: 20px; flex-direction: row">
+			  <!--<ion-button variant="flat" id="scale">x 1</ion-button>-->
+			  <div id="magnifyIcon" class="icon" style="margin-top: 4px; margin-right: 7px"></div>
+			  <select id="scale">
+				  <option>x 21</option>
+				  <option>x 13</option>
+				  <option>x 8</option>
+				  <option>x 5</option>
+				  <option>x 3</option>
+				  <option>x 2</option>
+				  <option selected>x 1</option>
+			  </select>
 		  </div>
 	  </div>
 
 	  <div>
 		  <div class="slider-container">
 			  <span class="slider-label">K = <span id="nCities"></span></span>
-			  <igc-slider
+			  <fast-slider
 					  id="nCitiesSlider"
 					  min="0" max="500"
 					  step="1"
-					  primary-ticks="11"
-					  value="12"></igc-slider>
+					  value="50">
+				  <fast-slider-label position="0">0</fast-slider-label>
+				  <fast-slider-label position="100">100</fast-slider-label>
+				  <fast-slider-label position="200">200</fast-slider-label>
+				  <fast-slider-label position="300">300</fast-slider-label>
+				  <fast-slider-label position="400">400</fast-slider-label>
+				  <fast-slider-label position="500">500</fast-slider-label>
+			  </fast-slider>
 		  </div>
 
 		  <div class="slider-container">
-			  <span class="slider-label">π = <span id="mu"></span></span>
-			  <igc-slider
-					  id="muSlider"
+
+			  <span class="slider-label">π = <span id="pi"></span></span>
+			  <fast-slider
+					  id="piSlider"
 					  min="0" max="1.0" step="0.01"
-					  primary-ticks="11"
-					  value="0.4"></igc-slider>
+					  value="3">
+				  <fast-slider-label position="0">0</fast-slider-label>
+				  <fast-slider-label position="0.2">0.2</fast-slider-label>
+				  <fast-slider-label position="0.4">0.4</fast-slider-label>
+				  <fast-slider-label position="0.6">0.6</fast-slider-label>
+				  <fast-slider-label position="0.8">0.8</fast-slider-label>
+				  <fast-slider-label position="1.0">1.0</fast-slider-label>
+			  </fast-slider>
 		  </div>
 
 		  <div class="slider-container">
-			  <span class="slider-label">τ = <span id="tmax"></span></span>
-			  <igc-slider
-					  id="tmaxSlider"
-					  min="0" max="10" step="0.1"
-					  primary-ticks="11"
-					  value="5.0"></igc-slider>
+			  <span class="slider-label">T = <span id="tcost"></span></span>
+			  <fast-slider
+					  id="tcostSlider"
+					  min="1" max="10" step="0.1"
+					  value="">
+				  <fast-slider-label position="1">1</fast-slider-label>
+				  <fast-slider-label position="4">4</fast-slider-label>
+				  <fast-slider-label position="7">7</fast-slider-label>
+				  <fast-slider-label position="10">10</fast-slider-label>
+			  </fast-slider>
 		  </div>
 
 		  <div class="slider-container">
 			  <span class="slider-label">σ = <span id="sigma"></span></span>
-			  <igc-slider
+			  <fast-slider
 					  id="sigmaSlider"
 					  min="1" max="20" step="0.1"
-					  primary-ticks="20"
-					  value="10"></igc-slider>
+					  value="">
+				  <fast-slider-label position="1">1</fast-slider-label>
+				  <fast-slider-label position="5">5</fast-slider-label>
+				  <fast-slider-label position="10">10</fast-slider-label>
+				  <fast-slider-label position="15">15</fast-slider-label>
+				  <fast-slider-label position="20">20</fast-slider-label>
+			  </fast-slider>
 		  </div>
 	  </div>
 
@@ -99,29 +168,26 @@
 		   class="blink"
 	  >
 	  
-		  <igc-button
+		  <fast-button
 				  id="start"
-				  variant="outlined"
 		  >
-			  <igc-icon size="small" name="start" collection="material"></igc-icon>
+			  <div id="startIcon" class="icon"></div>
 			  Start
-		  </igc-button>
+		  </fast-button>
 
-		  <igc-button
+		  <fast-button
 				  id="stop"
-				  variant="outlined"
 		  >
-			  <igc-icon size="small" name="stop" collection="material"></igc-icon>
+			  <div id="stopIcon" class="icon"></div>
 			  Stop
-		  </igc-button>
+		  </fast-button>
 
-		  <igc-button
+		  <fast-button
 				  id="reset"
-				  variant="outlined"
 		  >
-			  <igc-icon size="small" name="reset" collection="material"></igc-icon>
+			  <div id="resetIcon" class="icon"></div>
 			  Reset
-		  </igc-button>
+		  </fast-button>
 
 		  <div style="margin-left: 12px; margin-top: 12px; color: #888; width: 100px">
 			  Time: <span id="counter">0</span>
@@ -131,12 +197,26 @@
 
 	  <div>
 		  <ul>
-			  <li>Kは都市の数。</li>
-			  <li>πは工業労働者の割合。0に近いほど農民(都市間を移動しない)の割合が高く、1に近いほど工業労働者(都市間を移動する)の割合が高いことを示す。</li>
-			  <li>τは輸送費の水準。0に近いほど輸送費が低い状態、10が輸送費が高い状態を示す。</li>
-			  <li>σは多様性選好の度合い。１は多様性を非常に強く好む状態、20は多様性をあまり好まない状態を示す。</li>
+			  <li>K: The number of locations assumed to be laid out symmetrically in a circle, with transportation possible only around the circumference. The distance between any two neighboring locations is set equal to one.</li>
+			  <li>π: The share of manufacturers in expenditure.</li>
+			  <li>T: The level of transportation cost among locations. A value of 1 represents no transportation cost, while a value of 10 represents significant transportation cost.</li>
+			  <li>σ: The elasticity of substitution among manufactured goods. A value of 1 represents a strong love of variety, while a value of 20 represents a limited love of variety.</li>
 		  </ul>
+		  <!--
+		  <ul>
+			  <li>Kは都市の数。円周上に均等な間隔で位置しており、それぞれの都市間の距離は</li>
+			  <li>πは消費者の工業製品に対する支出割合。0に近いほど農業財の消費への支出の割合が高く、1に近いほど工業祭への支出の割合が高くなる。</li>
+			  <li>Tは輸送費の水準。1に近いほど輸送費が低いこと、10が輸送費が高いことを示す。</li>
+			  <li>σは多様性選好の水準。１は多様性を非常に強く好むこと、20は多様性をあまり好まないことを示す。</li>
+		  </ul>
+		  -->
 	  </div>
+
+	  <h3>References</h3>
+	  <ul>
+		  <li>Krugman, P. (1993) On the number and location of cities. <i>European Economic Review</i>, Vol. 37 (2-3) pp.293-298.</li>
+		  <li>Fujita, M., Krugman, P., Venables, A. (2001) "The Spatial Economy: Cities, Regions, and International Trade", <i>MIT Press</i>.</li>
+	  </ul>
   </div>
 
   <script type="module" src="src/index.ts"></script>

@@ -52,7 +52,7 @@ export class City {
     }
 
     calcIncome(country: Country): void {
-        this.income = country.mu * this.MShare * this.nominalWage + (1 - country.mu) * this.AShare;
+        this.income = country.pi * this.MShare * this.nominalWage + (1 - country.pi) * this.AShare;
     }
 
     calcPriceIndex(country: Country): void {
@@ -64,7 +64,7 @@ export class City {
     }
 
     calcRealWage(country: Country): void {
-        this.realWage = this.nominalWage * Math.pow(this.priceIndex, -country.mu);
+        this.realWage = this.nominalWage * Math.pow(this.priceIndex, -country.pi);
     }
 
     calcNominalWage(country: Country): void {

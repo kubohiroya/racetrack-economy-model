@@ -5,7 +5,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "igniteui-webcomponents": "^4.1.0",
+    "@microsoft/fast-components": "^2.30.6",
     "@types/node": "^18.11.18"
   },
   "devDependencies": {

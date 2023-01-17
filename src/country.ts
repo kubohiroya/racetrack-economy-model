@@ -3,13 +3,13 @@ import {City} from './city';
 export class Country {
 
     /*  ratio of workers */
-    mu: number;
+    pi: number;
 
     /* average real wage of the country */
     avgRealWage: number;
 
     /* maximum value of the distance */
-    tmax: number;
+    tcost: number;
 
     /* elasticity of substitution */
     sigma: number;
@@ -23,10 +23,10 @@ export class Country {
     /* speed of adjustment */
     gamma: number = 1.0;
 
-    constructor(numCities: number, tmax: number, sigma: number, mu: number) {
-        this.tmax = tmax;
-        this.sigma = sigma + 0.1;
-        this.mu = mu;
+    constructor(numCities: number, pi: number, tcost: number, sigma: number) {
+        this.pi = pi;
+        this.tcost = tcost;
+        this.sigma = sigma;
         this.avgRealWage = 1.0;
         this.cities = new Array<City>(numCities);
         this.distanceMatrix = new Array<Array<number>>(numCities);
@@ -38,18 +38,29 @@ export class Country {
         this.calcDistanceMatrix();
     }
 
+    reset(){
+        const numCities = this.cities.length;
+        for (let i = 0; i < numCities; i++) {
+            this.distanceMatrix[i] = new Array<number>(numCities).fill(0);
+            this.cities[i] = new City(i, 0.0, 0.0);
+        }
+        this.equalize();
+        this.calcDistanceMatrix();
+        this.disturb();
+    }
+
     /* setters of global params */
 
     setSigma(d: number): void {
-        this.sigma = d + 0.1;
+        this.sigma = d; //  + 0.1
     }
 
-    setTmax(d: number): void {
-        this.tmax = d;
+    setTcost(d: number): void {
+        this.tcost = d;
     }
 
-    setMu(mu: number): void {
-        this.mu = mu;
+    setPi(mu: number): void {
+        this.pi = mu;
     }
 
     /* calc and print distance matrix */
@@ -58,7 +69,7 @@ export class Country {
         for (let i = 0; i < numCities; i++) {
             for (let j = i; j < numCities; j++) {
                 const dist = (i == j) ? 0 : 2.0 * Math.min(j - i, i + numCities - j) / numCities;
-                this.distanceMatrix[j][i] = this.distanceMatrix[i][j] = Math.exp(Math.log(this.tmax) * dist);
+                this.distanceMatrix[j][i] = this.distanceMatrix[i][j] = Math.exp(Math.log(this.tcost) * dist);
             }
         }
     }

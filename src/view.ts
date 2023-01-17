@@ -95,9 +95,9 @@ export class View {
 
         this.model.country.cities.forEach((city, index) => {
             if (city.dMShare < 0) {
-                ctx.fillStyle = '#8888ff'
+                ctx.fillStyle = '#ee8888'
             } else {
-                ctx.fillStyle = '#0000ff';
+                ctx.fillStyle = '#dd0000';
             }
             ctx.fillRect(labelWidth + index * wScale,
                 this.canvas.height - verticalMargin - city.MShare * hScale,
