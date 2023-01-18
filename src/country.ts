@@ -21,12 +21,13 @@ export class Country {
     cities: Array<City>;
 
     /* speed of adjustment */
-    gamma: number = 1.0;
+    gamma: number;
 
-    constructor(numCities: number, pi: number, tcost: number, sigma: number) {
+    constructor(numCities: number, pi: number, tcost: number, sigma: number, gamma: number) {
         this.pi = pi;
         this.tcost = tcost;
         this.sigma = sigma;
+        this.gamma = gamma;
         this.avgRealWage = 1.0;
         this.cities = new Array<City>(numCities);
         this.distanceMatrix = new Array<Array<number>>(numCities);
@@ -52,7 +53,7 @@ export class Country {
     /* setters of global params */
 
     setSigma(d: number): void {
-        this.sigma = d; //  + 0.1
+        this.sigma = d + 0.1;
     }
 
     setTcost(d: number): void {

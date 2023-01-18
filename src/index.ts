@@ -63,7 +63,8 @@ const resetButton = document.getElementById("reset") as HTMLButtonElement;
 
 const counterElem = document.getElementById("counter") as HTMLDivElement;
 
-const model = new Model(50,  1.0, 0.4, 5, 10);
+const gammaValue = 1.0;
+const model = new Model(50,  1.0, 0.4, 5.0, 10, gammaValue);
 const view = new View(canvas, model);
 
 model.addUpdateEventListener(() => {
@@ -103,7 +104,7 @@ function reset() {
 
 function onNCitiesChanged() {
     nCitiesElem.innerText = nCitiesSlider.value;
-    model.setNumCities(nCitiesSlider.valueAsNumber, piSlider.valueAsNumber, tcostSlider.valueAsNumber, sigmaSlider.valueAsNumber);
+    model.setNumCities(nCitiesSlider.valueAsNumber, piSlider.valueAsNumber, tcostSlider.valueAsNumber, sigmaSlider.valueAsNumber, gammaValue);
     model.reset();
 }
 
@@ -115,11 +116,13 @@ function onPiChanged() {
 function onTcostChanged() {
     tcostElem.innerText = tcostSlider.valueAsNumber.toPrecision(2);
     model.setTcost(tcostSlider.valueAsNumber);
+    model.calcDistanceMatrix();
 }
 
 function onSigmaChanged() {
     sigmaElem.innerText = sigmaSlider.valueAsNumber.toPrecision(3);
     model.setSigma(sigmaSlider.valueAsNumber);
+    model.calcDistanceMatrix();
 }
 
 startButton.addEventListener('click', start);

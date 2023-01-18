@@ -13,15 +13,15 @@ export class Model {
     listeners: Array<(model: Model) => void> = new Array<(model: Model) => void>();
     timer: NodeJS.Timer | null = null;
 
-    constructor(numCities: number, scale: number, pi: number, tcost: number, sigma: number) {
+    constructor(numCities: number, scale: number, pi: number, tcost: number, sigma: number, gamma: number) {
         this.numCities = numCities;
-        this.country = this.createCountry(numCities, pi, tcost, sigma);
+        this.country = this.createCountry(numCities, pi, tcost, sigma, gamma);
         this.scale = scale;
         this.counter = 0;
     }
 
-    createCountry(numCities: number, pi: number, tcost: number, sigma: number){
-        return new Country(numCities, pi, tcost, sigma);
+    createCountry(numCities: number, pi: number, tcost: number, sigma: number, gamma: number){
+        return new Country(numCities, pi, tcost, sigma, gamma);
     }
 
     reset() {
@@ -49,9 +49,13 @@ export class Model {
         }
     }
 
-    setNumCities(numCities: number, pi: number, tcost: number, sigma: number) {
+    calcDistanceMatrix(){
+        this.country.calcDistanceMatrix();
+    }
+
+    setNumCities(numCities: number, pi: number, tcost: number, sigma: number, gamma: number) {
         this.numCities = numCities;
-        this.country = this.createCountry(this.numCities, pi, tcost, sigma);
+        this.country = this.createCountry(this.numCities, pi, tcost, sigma, gamma);
     }
 
     setScale(scale: number){
