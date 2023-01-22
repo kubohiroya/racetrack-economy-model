@@ -34,6 +34,7 @@ This allows the observation of agglomeration formation, agglomeration dispersal,
 
 ## Simulator
 
+The simulator is hosted on GitHub Pages: https://kubohiroya.github.io/rtecon/
 
 - The x-axis corresponds to locations. As Krugman's simulation is configured circumferentially,
   the locations on the far left and right should be considered to be connected.
