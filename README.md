@@ -1,6 +1,7 @@
 # The Race Track Economy
 
-![image](https://user-images.githubusercontent.com/1578247/213909166-097d4a4c-9158-438e-b55d-07297bec528f.png)
+
+https://user-images.githubusercontent.com/1578247/214999618-4f7118dd-e70d-4267-a509-76647d1258ad.mov
 
 A recreation of the Krugman simulation.
 
