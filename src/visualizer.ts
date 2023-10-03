@@ -36,10 +36,8 @@ export function drawPolygonOnCanvas({ canvas, diameter, vertices, vertexCircleRa
     ctx.arc(left + x, top + y, vertexCircleRadius, 0, 2 * Math.PI);
     ctx.fillStyle = `rgb(255, 0, 0, ${vertexCircleValueSource[i]})`;
     ctx.fill();
-    ctx.stroke();
   }
 
   ctx.closePath();
-  ctx.stroke();
 }
 
