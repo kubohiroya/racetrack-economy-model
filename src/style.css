@@ -9,16 +9,9 @@
 }
 
 #scaleSelector{
-    position: absolute;
-    top: 20px;
-    right: 80px;
-    width: 80px;
-    height: 30px;
     display: flex;
-    justify-content: center;
-    justify-items: center;
-    flex-direction: column;
-    padding-right: 20px;
+    justify-content: end;
+    justify-items: right;
     flex-direction: row;
 }
 
