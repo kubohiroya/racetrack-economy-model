@@ -1,13 +1,15 @@
 # The Race Track Economy
 
-![image](https://user-images.githubusercontent.com/1578247/213909166-097d4a4c-9158-438e-b55d-07297bec528f.png)
+https://kubohiroya.github.io/rtecon/
+
+https://user-images.githubusercontent.com/1578247/214999618-4f7118dd-e70d-4267-a509-76647d1258ad.mov
 
 A recreation of the Krugman simulation.
 
 ## The Model 
 Paul Krugman, the 2008 winner of the Nobel Prize in Economics, 
 conducted a simulation using a spatial economics model called 
-the "Racetrack Economy" model (Krugman). 
+the "Racetrack Economy" model. 
 This model hypothesizes several locations (in Krugman's case, 12 cities) arranged 
 at equal intervals in a circular fashion, like the numbers on a clock face. 
 The economy includes farmers, who live in the locations and do not move, 
@@ -52,5 +54,5 @@ The simulator is hosted on GitHub Pages: https://kubohiroya.github.io/rtecon/
 * Krugman, P. (1993) On the number and location of cities. <i>European Economic Review</i>, Vol. 37 (2-3)
 pp.293-298.
 * Fujita, M., Krugman, P., Venables, A. (1999) "The Spatial Economy: Cities, Regions, and International
-Trade", MIT Press._
+Trade", MIT Press.
 
