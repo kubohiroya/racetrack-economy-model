@@ -6,8 +6,8 @@ type PolygonCanvasOptions = {
   vertexCircleValueSource: number[]
 };
 export function drawPolygonOnCanvas({ canvas, diameter, vertices, vertexCircleRadius, vertexCircleValueSource }: PolygonCanvasOptions): void {
-  const top = 10
-  const left = 10
+  const top = 20
+  const left = 20
 
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
@@ -36,6 +36,14 @@ export function drawPolygonOnCanvas({ canvas, diameter, vertices, vertexCircleRa
     ctx.arc(left + x, top + y, vertexCircleRadius, 0, 2 * Math.PI);
     ctx.fillStyle = `rgb(255, 0, 0, ${vertexCircleValueSource[i]})`;
     ctx.fill();
+
+    const tx = center.x + (radius+15) * Math.cos(i * angleIncrement) - 7;
+    const ty = center.y + (radius+15) * Math.sin(i * angleIncrement);
+
+    ctx.fillStyle = `rgb(5, 5, 5, .5)`;
+    if((vertices < 100 && i % 5 == 0) || (100 <= vertices && i % 50 == 0)){
+      ctx.fillText(`${i}`, left + tx, top + ty + 3)
+    }
   }
 
   ctx.closePath();

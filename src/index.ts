@@ -78,7 +78,7 @@ model.addUpdateEventListener(() => {
     const max = model.country.cities.map(city=>city.MShare).reduce((max: number, current: number)=> (current > max) ? current : max, 0);
 
     drawPolygonOnCanvas({
-        canvas: visualizer, diameter: 280,
+        canvas: visualizer, diameter: 260,
         vertices: model.numCities,
         vertexCircleRadius: 5 ,
         vertexCircleValueSource: model.country.cities.map(city=>city.MShare/max)
