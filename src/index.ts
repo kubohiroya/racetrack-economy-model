@@ -1,5 +1,7 @@
 import {Model} from "./model";
 import {View} from "./view";
+import {drawPolygonOnCanvas} from "./visualizer";
+
 // export * from './slider';
 
 import {
@@ -30,6 +32,9 @@ const nCitiesSlider = document.getElementById("nCitiesSlider") as Slider;
 const piSlider = document.getElementById("piSlider") as Slider;
 const tcostSlider = document.getElementById("tcostSlider") as Slider;
 const sigmaSlider = document.getElementById("sigmaSlider") as Slider;
+
+const visualizer = document.getElementById("visualizer") as HTMLCanvasElement;
+
 /*
 interface RGBColor {
     r: number;
@@ -70,6 +75,14 @@ const view = new View(canvas, model);
 model.addUpdateEventListener(() => {
     counterElem.innerText = model.counter.toLocaleString();
     view.repaint();
+    const max = model.country.cities.map(city=>city.MShare).reduce((max: number, current: number)=> (current > max) ? current : max, 0);
+
+    drawPolygonOnCanvas({
+        canvas: visualizer, diameter: 280,
+        vertices: model.numCities,
+        vertexCircleRadius: 5 ,
+        vertexCircleValueSource: model.country.cities.map(city=>city.MShare/max)
+    });
     }
 );
 
