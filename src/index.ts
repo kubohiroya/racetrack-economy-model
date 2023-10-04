@@ -4,21 +4,25 @@ import { drawPolygonOnCanvas } from "./visualizer";
 
 import {
   fastButton,
+  fastRadio,
+  fastRadioGroup,
   fastDialog,
   fastSlider,
   fastSliderLabel,
-  provideFASTDesignSystem,
+  provideFASTDesignSystem, RadioGroup,
 } from "@microsoft/fast-components";
 
 import { Dialog, Slider } from "@microsoft/fast-foundation";
 
 provideFASTDesignSystem().register(
+  fastButton(),
+  fastRadio(),
+  fastRadioGroup(),
+  fastDialog(),
   fastSlider({
     thumb: `<div style="background-color: #fff; border: solid; border-color: #777; border-width: 1px; border-radius: 3px; width: 16px; height: 16px; "></div>`,
   }),
   fastSliderLabel(),
-  fastDialog({}),
-  fastButton(),
 );
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -33,6 +37,7 @@ const nCitiesSlider = document.getElementById("nCitiesSlider") as Slider;
 const piSlider = document.getElementById("piSlider") as Slider;
 const tcostSlider = document.getElementById("tcostSlider") as Slider;
 const sigmaSlider = document.getElementById("sigmaSlider") as Slider;
+const caseSelector = document.getElementById("caseSelector") as RadioGroup;
 
 const visualizer = document.getElementById("visualizer") as HTMLCanvasElement;
 
@@ -70,7 +75,7 @@ const resetButton = document.getElementById("reset") as HTMLButtonElement;
 const counterElem = document.getElementById("counter") as HTMLDivElement;
 
 const gammaValue = 1.0;
-const model = new Model(50, 1.0, 0.4, 5.0, 10, gammaValue);
+const model = new Model(12, 1.0, 0.2, 2.0, 4, gammaValue);
 const view = new View(canvas, model);
 
 model.addUpdateEventListener(() => {
@@ -85,7 +90,7 @@ model.addUpdateEventListener(() => {
 
   drawPolygonOnCanvas({
     canvas: visualizer,
-    diameter: 300,
+    diameter: 340,
     vertices: model.numCities,
     vertexCircleRadius: 5,
     vertexCircleValueSource: model.country.cities.map(
@@ -138,6 +143,7 @@ function onNCitiesChanged() {
 function onPiChanged() {
   piElem.innerText = piSlider.valueAsNumber.toPrecision(2);
   model.setPi(piSlider.valueAsNumber);
+  model.calcDistanceMatrix();
 }
 
 function onTcostChanged() {
@@ -152,6 +158,45 @@ function onSigmaChanged() {
   model.calcDistanceMatrix();
 }
 
+function onCaseChanged(){
+  switch(caseSelector.value){
+    case "0":
+      //π=0.2, τ=2, σ=4
+      nCitiesSlider.value = "12"
+      piSlider.value = "0.2"
+      tcostSlider.value = "2"
+      sigmaSlider.value = "4"
+      model.calcDistanceMatrix();
+      return;
+    case "1":
+      //σ=2, τ=0.2, π=0.2
+      nCitiesSlider.value = "12"
+      piSlider.value = "0.2"
+      tcostSlider.value = "2"
+      sigmaSlider.value = "2"
+      model.calcDistanceMatrix();
+      return;
+    case "2":
+      //σ=4, τ=0.2, π=0.4
+      nCitiesSlider.value = "12"
+      piSlider.value = "0.4"
+      tcostSlider.value = "2"
+      sigmaSlider.value = "4"
+      model.calcDistanceMatrix();
+      return;
+    case "3":
+      //σ=4, τ=0.1, π=0.2
+      nCitiesSlider.value = "12"
+      piSlider.value = "0.2"
+      tcostSlider.value = "1"
+      sigmaSlider.value = "4"
+      model.calcDistanceMatrix();
+      return;
+    default:
+    // do nothing
+  }
+}
+
 startButton.addEventListener("click", start);
 stopButton.addEventListener("click", stop);
 resetButton.addEventListener("click", reset);
@@ -159,6 +204,7 @@ nCitiesSlider.addEventListener("change", onNCitiesChanged);
 piSlider.addEventListener("change", onPiChanged);
 tcostSlider.addEventListener("change", onTcostChanged);
 sigmaSlider.addEventListener("change", onSigmaChanged);
+caseSelector.addEventListener("change", onCaseChanged);
 
 const dropdown = document.getElementById("scale") as HTMLSelectElement;
 dropdown.addEventListener("change", (ev) => {
