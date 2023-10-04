@@ -1,33 +1,34 @@
-import {Model} from "./model";
-import {View} from "./view";
-import {drawPolygonOnCanvas} from "./visualizer";
-
-// export * from './slider';
+import { Model } from "./model";
+import { View } from "./view";
+import { drawPolygonOnCanvas } from "./visualizer";
 
 import {
-    fastSlider, fastSliderLabel, provideFASTDesignSystem,
+  fastButton,
+  fastDialog,
+  fastSlider,
+  fastSliderLabel,
+  provideFASTDesignSystem,
 } from "@microsoft/fast-components";
 
-import {
-    Slider,
-} from "@microsoft/fast-foundation";
+import { Dialog, Slider } from "@microsoft/fast-foundation";
 
-import { DesignToken } from "@microsoft/fast-foundation";
-
-
-provideFASTDesignSystem()
-    .register(
-        fastSlider({
-            thumb: `<div style="background-color: #fff; border: solid; border-color: #777; border-width: 1px; border-radius: 3px; width: 16px; height: 16px; "></div>`
-        }),
-        fastSliderLabel()
-    );
-//provideFASTDesignSystem().register(fastButton(), fastSlider(), fastSliderLabel(), fastSelect(), fastOption());
-//registerIconFromText("start", startIcon, "material");
-//registerIconFromText("stop", stopIcon, "material");
-//registerIconFromText("reset", resetIcon, "material");
+provideFASTDesignSystem().register(
+  fastSlider({
+    thumb: `<div style="background-color: #fff; border: solid; border-color: #777; border-width: 1px; border-radius: 3px; width: 16px; height: 16px; "></div>`,
+  }),
+  fastSliderLabel(),
+  fastDialog({}),
+  fastButton(),
+);
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+const infoDialogOpenButton = document.getElementById(
+  "infoDialogOpenButton",
+) as HTMLCanvasElement;
+const infoDialogCloseButton = document.getElementById(
+  "infoDialogCloseButton",
+) as HTMLCanvasElement;
+const infoDialog = document.getElementById("infoDialog") as Dialog;
 const nCitiesSlider = document.getElementById("nCitiesSlider") as Slider;
 const piSlider = document.getElementById("piSlider") as Slider;
 const tcostSlider = document.getElementById("tcostSlider") as Slider;
@@ -69,22 +70,29 @@ const resetButton = document.getElementById("reset") as HTMLButtonElement;
 const counterElem = document.getElementById("counter") as HTMLDivElement;
 
 const gammaValue = 1.0;
-const model = new Model(50,  1.0, 0.4, 5.0, 10, gammaValue);
+const model = new Model(50, 1.0, 0.4, 5.0, 10, gammaValue);
 const view = new View(canvas, model);
 
 model.addUpdateEventListener(() => {
-    counterElem.innerText = model.counter.toLocaleString();
-    view.repaint();
-    const max = model.country.cities.map(city=>city.MShare).reduce((max: number, current: number)=> (current > max) ? current : max, 0);
+  counterElem.innerText = model.counter.toLocaleString();
+  view.repaint();
+  const max = model.country.cities
+    .map((city) => city.MShare)
+    .reduce(
+      (max: number, current: number) => (current > max ? current : max),
+      0,
+    );
 
-    drawPolygonOnCanvas({
-        canvas: visualizer, diameter: 260,
-        vertices: model.numCities,
-        vertexCircleRadius: 5 ,
-        vertexCircleValueSource: model.country.cities.map(city=>city.MShare/max)
-    });
-    }
-);
+  drawPolygonOnCanvas({
+    canvas: visualizer,
+    diameter: 300,
+    vertices: model.numCities,
+    vertexCircleRadius: 5,
+    vertexCircleValueSource: model.country.cities.map(
+      (city) => city.MShare / max,
+    ),
+  });
+});
 
 startButton.className = "";
 stopButton.className = "disabled";
@@ -98,60 +106,76 @@ sigmaElem.innerText = sigmaSlider.value;
 piElem.innerText = piSlider.value;
 
 function start() {
-    startButton.className = "disabled";
-    stopButton.className = "started";
-    resetButton.className = "started";
-    model.start();
+  startButton.className = "disabled";
+  stopButton.className = "started";
+  resetButton.className = "started";
+  model.start();
 }
 
 function stop() {
-    startButton.className = "";
-    stopButton.className = "disabled";
-    resetButton.className = "";
-    model.stop();
+  startButton.className = "";
+  stopButton.className = "disabled";
+  resetButton.className = "";
+  model.stop();
 }
 
 function reset() {
-    model.reset();
+  model.reset();
 }
 
 function onNCitiesChanged() {
-    nCitiesElem.innerText = nCitiesSlider.value;
-    model.setNumCities(nCitiesSlider.valueAsNumber, piSlider.valueAsNumber, tcostSlider.valueAsNumber, sigmaSlider.valueAsNumber, gammaValue);
-    model.reset();
+  nCitiesElem.innerText = nCitiesSlider.value;
+  model.setNumCities(
+    nCitiesSlider.valueAsNumber,
+    piSlider.valueAsNumber,
+    tcostSlider.valueAsNumber,
+    sigmaSlider.valueAsNumber,
+    gammaValue,
+  );
+  model.reset();
 }
 
 function onPiChanged() {
-    piElem.innerText = piSlider.valueAsNumber.toPrecision(2);
-    model.setPi(piSlider.valueAsNumber);
+  piElem.innerText = piSlider.valueAsNumber.toPrecision(2);
+  model.setPi(piSlider.valueAsNumber);
 }
 
 function onTcostChanged() {
-    tcostElem.innerText = tcostSlider.valueAsNumber.toPrecision(2);
-    model.setTcost(tcostSlider.valueAsNumber);
-    model.calcDistanceMatrix();
+  tcostElem.innerText = tcostSlider.valueAsNumber.toPrecision(2);
+  model.setTcost(tcostSlider.valueAsNumber);
+  model.calcDistanceMatrix();
 }
 
 function onSigmaChanged() {
-    sigmaElem.innerText = sigmaSlider.valueAsNumber.toPrecision(3);
-    model.setSigma(sigmaSlider.valueAsNumber);
-    model.calcDistanceMatrix();
+  sigmaElem.innerText = sigmaSlider.valueAsNumber.toPrecision(3);
+  model.setSigma(sigmaSlider.valueAsNumber);
+  model.calcDistanceMatrix();
 }
 
-startButton.addEventListener('click', start);
-stopButton.addEventListener('click', stop);
-resetButton.addEventListener('click', reset);
-nCitiesSlider.addEventListener('change', onNCitiesChanged);
-piSlider.addEventListener('change', onPiChanged);
-tcostSlider.addEventListener('change', onTcostChanged);
-sigmaSlider.addEventListener('change', onSigmaChanged);
+startButton.addEventListener("click", start);
+stopButton.addEventListener("click", stop);
+resetButton.addEventListener("click", reset);
+nCitiesSlider.addEventListener("change", onNCitiesChanged);
+piSlider.addEventListener("change", onPiChanged);
+tcostSlider.addEventListener("change", onTcostChanged);
+sigmaSlider.addEventListener("change", onSigmaChanged);
 
-const dropdown = document.getElementById('scale') as HTMLSelectElement;
-dropdown.addEventListener('change', (ev)=>{
-    const value = (ev.target as HTMLOptionElement).value;
-    const scale = parseFloat(value.split(" ")[1]);
-    model.setScale(scale);
+const dropdown = document.getElementById("scale") as HTMLSelectElement;
+dropdown.addEventListener("change", (ev) => {
+  const value = (ev.target as HTMLOptionElement).value;
+  const scale = parseFloat(value.split(" ")[1]);
+  model.setScale(scale);
 });
 
+function openInfoDialog() {
+  infoDialog.show();
+}
+
+function closeInfoDialog() {
+  infoDialog.hide();
+}
+
+infoDialogOpenButton.addEventListener("click", openInfoDialog);
+infoDialogCloseButton.addEventListener("click", closeInfoDialog);
 
 reset();

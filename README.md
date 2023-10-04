@@ -1,4 +1,4 @@
-# The Race Track Economy
+# The Racetrack Economy
 
 https://kubohiroya.github.io/rtecon/
 
@@ -14,9 +14,13 @@ This model hypothesizes several locations (in Krugman's case, 12 cities) arrange
 at equal intervals in a circular fashion, like the numbers on a clock face. 
 The economy includes farmers, who live in the locations and do not move, 
 and factory workers, who move between the locations in search of higher wages and 
-lower prices. Initially, the populations of the locations are only slightly different
+lower prices. 
+
+Initially, the populations of the locations are only slightly different
 (a uniformly equal location size causes equilibrium, which prevents the simulation 
-from working). Using these basic conditions, Krugman modified transportation 
+from working). 
+
+Using these basic conditions, Krugman modified transportation 
 cost (T) and the degree of love of variety for industrial products (σ) in order to
 analyze changes in the numbers and locations of agglomerations.
 
@@ -31,7 +35,7 @@ analyze changes in the numbers and locations of agglomerations.
 - σ: The elasticity of substitution among manufactured goods. A value of 1 represents a strong love of
                 variety, while a value of 20 represents a limited love of variety.
 
-Variables "π", "T" and "σ" can be changed while the simulation is in progress.
+Variables "Κ", "π", "T" and "σ" can be changed while the simulation is in progress.
 This allows the observation of agglomeration formation, agglomeration dispersal, and changes in the numbers and locations of agglomerations according to various parameters.
 
 ## Simulator

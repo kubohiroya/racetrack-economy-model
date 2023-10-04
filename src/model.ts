@@ -1,87 +1,107 @@
-import {Country} from "./country";
+import { Country } from "./country";
 
 export class Model {
+  numCities: number;
+  country: Country;
+  counter: number;
 
-    numCities: number;
-    country: Country;
-    counter: number;
+  scale: number;
 
-    scale: number;
+  started: boolean = false;
 
-    started: boolean = false;
+  listeners: Array<(model: Model) => void> = new Array<
+    (model: Model) => void
+  >();
+  timer: NodeJS.Timeout | null = null;
 
-    listeners: Array<(model: Model) => void> = new Array<(model: Model) => void>();
-    timer: NodeJS.Timer | null = null;
+  constructor(
+    numCities: number,
+    scale: number,
+    pi: number,
+    tcost: number,
+    sigma: number,
+    gamma: number,
+  ) {
+    this.numCities = numCities;
+    this.country = this.createCountry(numCities, pi, tcost, sigma, gamma);
+    this.scale = scale;
+    this.counter = 0;
+  }
 
-    constructor(numCities: number, scale: number, pi: number, tcost: number, sigma: number, gamma: number) {
-        this.numCities = numCities;
-        this.country = this.createCountry(numCities, pi, tcost, sigma, gamma);
-        this.scale = scale;
-        this.counter = 0;
+  createCountry(
+    numCities: number,
+    pi: number,
+    tcost: number,
+    sigma: number,
+    gamma: number,
+  ) {
+    return new Country(numCities, pi, tcost, sigma, gamma);
+  }
+
+  reset() {
+    this.counter = 0;
+    this.country.reset();
+    this.update();
+  }
+
+  stop() {
+    this.started = false;
+    if (this.timer != null) {
+      clearInterval(this.timer);
     }
+    this.timer = null;
+  }
 
-    createCountry(numCities: number, pi: number, tcost: number, sigma: number, gamma: number){
-        return new Country(numCities, pi, tcost, sigma, gamma);
-    }
-
-    reset() {
-        this.counter = 0;
-        this.country.reset();
+  start() {
+    if (!this.started) {
+      this.started = true;
+      this.timer = setInterval(() => {
+        this.country.procedure();
+        this.counter++;
         this.update();
+      }, 10);
     }
+  }
 
-    stop() {
-        this.started = false;
-        if (this.timer) {
-            clearInterval(this.timer);
-        }
-        this.timer = null;
-    }
+  calcDistanceMatrix() {
+    this.country.calcDistanceMatrix();
+  }
 
-    start() {
-        if (! this.started) {
-            this.started = true;
-            this.timer = setInterval(() => {
-                this.country.procedure();
-                this.counter++;
-                this.update();
-            }, 10);
-        }
-    }
+  setNumCities(
+    numCities: number,
+    pi: number,
+    tcost: number,
+    sigma: number,
+    gamma: number,
+  ) {
+    this.numCities = numCities;
+    this.country = this.createCountry(this.numCities, pi, tcost, sigma, gamma);
+  }
 
-    calcDistanceMatrix(){
-        this.country.calcDistanceMatrix();
-    }
+  setScale(scale: number) {
+    this.scale = scale;
+    this.update();
+  }
 
-    setNumCities(numCities: number, pi: number, tcost: number, sigma: number, gamma: number) {
-        this.numCities = numCities;
-        this.country = this.createCountry(this.numCities, pi, tcost, sigma, gamma);
-    }
+  setPi(mu: number) {
+    this.country.setPi(mu);
+  }
 
-    setScale(scale: number){
-        this.scale = scale;
-        this.update();
-    }
+  setTcost(tcost: number) {
+    this.country.setTcost(tcost);
+  }
 
-    setPi(mu: number) {
-        this.country.setPi(mu);
-    }
+  setSigma(sigma: number) {
+    this.country.setSigma(sigma);
+  }
 
-    setTcost(tcost: number) {
-        this.country.setTcost(tcost);
-    }
+  addUpdateEventListener(listener: (model: Model) => void) {
+    this.listeners.push(listener);
+  }
 
-    setSigma(sigma: number) {
-        this.country.setSigma(sigma);
-    }
-
-    addUpdateEventListener(listener: (model: Model) => void) {
-        this.listeners.push(listener);
-    }
-
-    update() {
-        this.listeners.forEach(listener => {
-            listener(this);
-        });
-    }
+  update() {
+    this.listeners.forEach((listener) => {
+      listener(this);
+    });
+  }
 }

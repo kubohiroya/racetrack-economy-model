@@ -1,172 +1,181 @@
-import {City} from './city';
+import { City } from "./city";
 
 export class Country {
+  /*  ratio of workers */
+  pi: number;
 
-    /*  ratio of workers */
-    pi: number;
+  /* average real wage of the country */
+  avgRealWage: number;
 
-    /* average real wage of the country */
-    avgRealWage: number;
+  /* maximum value of the distance */
+  tcost: number;
 
-    /* maximum value of the distance */
-    tcost: number;
+  /* elasticity of substitution */
+  sigma: number;
 
-    /* elasticity of substitution */
-    sigma: number;
+  /* distance between cities */
+  distanceMatrix: Array<Array<number>>;
 
-    /* distance between cities */
-    distanceMatrix: Array<Array<number>>;
+  /* a country has her cities in this vector */
+  cities: Array<City>;
 
-    /* a country has her cities in this vector */
-    cities: Array<City>;
+  /* speed of adjustment */
+  gamma: number;
 
-    /* speed of adjustment */
-    gamma: number;
-
-    constructor(numCities: number, pi: number, tcost: number, sigma: number, gamma: number) {
-        this.pi = pi;
-        this.tcost = tcost;
-        this.sigma = sigma;
-        this.gamma = gamma;
-        this.avgRealWage = 1.0;
-        this.cities = new Array<City>(numCities);
-        this.distanceMatrix = new Array<Array<number>>(numCities);
-        for (let i = 0; i < numCities; i++) {
-            this.distanceMatrix[i] = new Array<number>(numCities).fill(0);
-            this.cities[i] = new City(i, 0.0, 0.0);
-        }
-        this.equalize();
-        this.calcDistanceMatrix();
+  constructor(
+    numCities: number,
+    pi: number,
+    tcost: number,
+    sigma: number,
+    gamma: number,
+  ) {
+    this.pi = pi;
+    this.tcost = tcost;
+    this.sigma = sigma;
+    this.gamma = gamma;
+    this.avgRealWage = 1.0;
+    this.cities = new Array<City>(numCities);
+    this.distanceMatrix = new Array<Array<number>>(numCities);
+    for (let i = 0; i < numCities; i++) {
+      this.distanceMatrix[i] = new Array<number>(numCities).fill(0);
+      this.cities[i] = new City(i, 0.0, 0.0);
     }
+    this.equalize();
+    this.calcDistanceMatrix();
+  }
 
-    reset(){
-        const numCities = this.cities.length;
-        for (let i = 0; i < numCities; i++) {
-            this.distanceMatrix[i] = new Array<number>(numCities).fill(0);
-            this.cities[i] = new City(i, 0.0, 0.0);
-        }
-        this.equalize();
-        this.calcDistanceMatrix();
-        this.disturb();
+  reset() {
+    const numCities = this.cities.length;
+    for (let i = 0; i < numCities; i++) {
+      this.distanceMatrix[i] = new Array<number>(numCities).fill(0);
+      this.cities[i] = new City(i, 0.0, 0.0);
     }
+    this.equalize();
+    this.calcDistanceMatrix();
+    this.disturb();
+  }
 
-    /* setters of global params */
+  /* setters of global params */
 
-    setSigma(d: number): void {
-        this.sigma = d + 0.1;
+  setSigma(d: number): void {
+    this.sigma = d + 0.1;
+  }
+
+  setTcost(d: number): void {
+    this.tcost = d;
+  }
+
+  setPi(mu: number): void {
+    this.pi = mu;
+  }
+
+  /* calc and print distance matrix */
+  calcDistanceMatrix(): void {
+    const numCities = this.cities.length;
+    for (let i = 0; i < numCities; i++) {
+      for (let j = i; j < numCities; j++) {
+        const dist =
+          i == j ? 0 : (2.0 * Math.min(j - i, i + numCities - j)) / numCities;
+        this.distanceMatrix[j][i] = this.distanceMatrix[i][j] = Math.exp(
+          Math.log(this.tcost) * dist,
+        );
+      }
     }
+  }
 
-    setTcost(d: number): void {
-        this.tcost = d;
-    }
+  /* set manufacturing shares equal/disturb/rescale */
+  equalize(): void {
+    const numCities = this.cities.length;
+    this.cities.forEach((city) => {
+      city.setMShare(1.0 / numCities);
+      city.setAShare(1.0 / numCities);
+    });
+  }
 
-    setPi(mu: number): void {
-        this.pi = mu;
+  disturb(): void {
+    const numCities = this.cities.length;
+    const dd = (1.0 / numCities) * 0.05;
+    for (let i = 0; i < numCities; i++) {
+      const index = Math.floor(Math.random() * numCities);
+      this.cities[index].changeMShare(dd);
     }
+    this.rescale();
+  }
 
-    /* calc and print distance matrix */
-    calcDistanceMatrix(): void {
-        const numCities = this.cities.length;
-        for (let i = 0; i < numCities; i++) {
-            for (let j = i; j < numCities; j++) {
-                const dist = (i == j) ? 0 : 2.0 * Math.min(j - i, i + numCities - j) / numCities;
-                this.distanceMatrix[j][i] = this.distanceMatrix[i][j] = Math.exp(Math.log(this.tcost) * dist);
-            }
-        }
-    }
+  rescale(): void {
+    let m = 0,
+      a = 0;
+    this.cities.forEach((city) => {
+      m += city.MShare;
+      a += city.AShare;
+    });
+    this.cities.forEach((city) => {
+      city.setMShare(city.MShare / m);
+      city.setAShare(city.AShare / a);
+    });
+  }
 
-    /* set manufacturing shares equal/disturb/rescale */
-    equalize(): void {
-        const numCities = this.cities.length;
-        this.cities.forEach((city) => {
-            city.setMShare(1.0 / numCities);
-            city.setAShare(1.0 / numCities);
-        });
-    }
+  /* simulation body */
+  push(): void {
+    this.cities.forEach((city) => {
+      city.push();
+    });
+  }
 
-    disturb(): void {
-        const numCities = this.cities.length;
-        const dd = 1.0 / numCities * 0.05;
-        for (let i = 0; i < numCities; i++) {
-            const index = Math.floor(Math.random() * numCities);
-            this.cities[index].changeMShare(dd);
-        }
-        this.rescale();
-    }
+  calcIncome(): void {
+    this.cities.forEach((city) => {
+      city.calcIncome(this);
+    });
+  }
 
-    rescale(): void {
-        let m = 0, a = 0;
-        this.cities.forEach((city) => {
-            m += city.MShare;
-            a += city.AShare;
-        });
-        this.cities.forEach((city) => {
-            city.setMShare(city.MShare / m);
-            city.setAShare(city.AShare / a);
-        });
-    }
+  calcPriceIndex(): void {
+    this.cities.forEach((city) => {
+      city.calcPriceIndex(this);
+    });
+  }
 
-    /* simulation body */
-    push(): void {
-        this.cities.forEach((city) => {
-            city.push();
-        });
-    }
+  calcNominalWage(): void {
+    this.cities.forEach((city) => {
+      city.calcNominalWage(this);
+    });
+  }
 
-    calcIncome(): void {
-        this.cities.forEach((city) => {
-            city.calcIncome(this);
-        });
-    }
+  calcRealWage(): void {
+    this.cities.forEach((city) => {
+      city.calcRealWage(this);
+    });
+  }
 
-    calcPriceIndex(): void {
-        this.cities.forEach((city) => {
-            city.calcPriceIndex(this);
-        });
-    }
+  calcAvgRealWage(): void {
+    let avgRealWage = 0;
+    this.cities.forEach((city) => {
+      avgRealWage += city.realWage * city.MShare;
+    });
+    this.avgRealWage = avgRealWage;
+  }
 
-    calcNominalWage(): void {
-        this.cities.forEach((city) => {
-            city.calcNominalWage(this);
-        });
-    }
+  calcDynamics(): void {
+    this.cities.forEach((city) => {
+      city.calcDynamics(this);
+    });
+  }
 
-    calcRealWage(): void {
-        this.cities.forEach((city) => {
-            city.calcRealWage(this);
-        });
-    }
+  applyDynamics(): void {
+    this.cities.forEach((city) => {
+      city.applyDynamics(this);
+    });
+    this.rescale();
+  }
 
-    calcAvgRealWage(): void {
-        let avgRealWage = 0;
-        this.cities.forEach((city) => {
-            avgRealWage += (city.realWage * city.MShare);
-        });
-        this.avgRealWage = avgRealWage;
-    }
-
-    calcDynamics(): void {
-        this.cities.forEach((city) => {
-            city.calcDynamics(this);
-        });
-    }
-
-    applyDynamics(): void {
-        this.cities.forEach((city) => {
-            city.applyDynamics(this);
-        });
-        this.rescale();
-    }
-
-    procedure(): void {
-        /* simulation procedure */
-        this.push();
-        this.calcIncome();
-        this.calcPriceIndex();
-        this.calcNominalWage();
-        this.calcRealWage();
-        this.calcAvgRealWage();
-        this.calcDynamics();
-        this.applyDynamics();
-    }
+  procedure(): void {
+    /* simulation procedure */
+    this.push();
+    this.calcIncome();
+    this.calcPriceIndex();
+    this.calcNominalWage();
+    this.calcRealWage();
+    this.calcAvgRealWage();
+    this.calcDynamics();
+    this.applyDynamics();
+  }
 }
