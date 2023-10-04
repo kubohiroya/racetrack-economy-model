@@ -30,6 +30,10 @@
     margin: 0;
 }
 
+.caption{
+    margin-bottom: 5px;
+}
+
 .iconButton {
     display: flex;
 }
@@ -60,6 +64,13 @@
     gap: 40px;
 }
 
+#caseSelector{
+    margin-left: 30px;
+    margin-right: 30px;
+}
+.preset{
+    color: black;
+}
 #scaleSelector {
     display: flex;
     justify-content: end;
@@ -72,11 +83,8 @@
     margin-right: 7px;
 }
 
-#canvas {
-    margin-top: 10px;
-}
-
 .slider-container {
+    margin-left: 20px;
     padding: 10px 50px 10px 10px;
     display: flex;
     flex-grow: 1;
@@ -113,7 +121,7 @@ fast-button.started {
 }
 
 #buttonPanel {
-    margin-top: 50px;
+    margin-top: 10px;
     display: flex;
     justify-content: center;
 }
@@ -162,8 +170,8 @@ fast-button.started {
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="currentColor" d="M0,21V10L7.5,5L15,10V21H10V14H5V21H0M24,2V21H17V8.93L16,8.27V6H14V6.93L10,4.27V2H24M21,14H19V16H21V14M21,10H19V12H21V10M21,6H19V8H21V6Z" /></svg>');
 }
 
-#accountSwitchIcon {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="currentColor" d="M16 9C22 9 22 13 22 13V15H16V13C16 13 16 11.31 14.85 9.8C14.68 9.57 14.47 9.35 14.25 9.14C14.77 9.06 15.34 9 16 9M2 13C2 13 2 9 8 9S14 13 14 13V15H2V13M9 17V19H15V17L18 20L15 23V21H9V23L6 20L9 17M8 1C6.34 1 5 2.34 5 4S6.34 7 8 7 11 5.66 11 4 9.66 1 8 1M16 1C14.34 1 13 2.34 13 4S14.34 7 16 7 19 5.66 19 4 17.66 1 16 1Z" /></svg>');
+#factoryIcon {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" style="width:24px;height:24px" viewBox="0 0 24 24"><g id="SVGRepo_iconCarrier"><path d="M4,18v2h4v-2H4 M4,14v2h10v-2H4 M10,18v2h4v-2H10 M16,14v2h4v-2H16 M16,18v2h4v-2H16 M2,22V8l5,4V8l5,4V8l5,4l1-10h3l1,10 v10H2z"></path> <rect fill="none" width="24" height="24"></rect></g></svg>');
 }
 
 #truckIcon {

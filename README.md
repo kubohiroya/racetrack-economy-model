@@ -1,6 +1,6 @@
 # The Racetrack Economy
 
-https://kubohiroya.github.io/rtecon/
+https://kubohiroya.github.io/racetrack-economy-model
 
 https://user-images.githubusercontent.com/1578247/214999618-4f7118dd-e70d-4267-a509-76647d1258ad.mov
 
@@ -21,7 +21,7 @@ Initially, the populations of the locations are only slightly different
 from working). 
 
 Using these basic conditions, Krugman modified transportation 
-cost (T) and the degree of love of variety for industrial products (σ) in order to
+cost (τ) and the degree of love of variety for industrial products (σ) in order to
 analyze changes in the numbers and locations of agglomerations.
 
 ## Variables
@@ -30,7 +30,7 @@ analyze changes in the numbers and locations of agglomerations.
                 possible only around the circumference. The distance between any two neighboring locations is set equal
                 to one.
 - π: The share of manufacturing goods in expenditure.
-- T: The level of transportation cost among locations. A value of 1 represents no transportation cost,
+- τ: The level of transportation cost among locations. A value of 1 represents no transportation cost,
                 while a value of 10 represents significant transportation cost.
 - σ: The elasticity of substitution among manufactured goods. A value of 1 represents a strong love of
                 variety, while a value of 20 represents a limited love of variety.
@@ -40,7 +40,7 @@ This allows the observation of agglomeration formation, agglomeration dispersal,
 
 ## Simulator
 
-The simulator is hosted on GitHub Pages: https://kubohiroya.github.io/rtecon/
+The simulator is hosted on GitHub Pages: https://kubohiroya.github.io/racetrack-economy-model
 
 - The x-axis corresponds to locations. As Krugman's simulation is configured circumferentially,
   the locations on the far left and right should be considered to be connected.

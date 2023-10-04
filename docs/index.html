@@ -4,14 +4,23 @@
     <title>The Racetrack Economy</title>
     <meta charset="UTF-8"/>
     
-  <script type="module" crossorigin src="./assets/index-8b187e30.js"></script>
-  <link rel="stylesheet" href="./assets/index-6d648016.css">
+  <script type="module" crossorigin src="./assets/index-d26467f8.js"></script>
+  <link rel="stylesheet" href="./assets/index-4fa4d2eb.css">
 </head>
 <body>
 <div id="root">
     <h1 id="title">The Racetrack Economy Model
         <div id="infoDialogOpenButton">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.24000000000000005"></g><g id="SVGRepo_iconCarrier"> <circle cx="12" cy="12" r="10" stroke="#1C274C" stroke-width="1.5"></circle> <path d="M12 17V11" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> <circle cx="1" cy="1" r="1" transform="matrix(1 0 0 -1 11 9)" fill="#1C274C"></circle> </g></svg>
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC"
+                   stroke-width="0.24000000000000005"></g>
+                <g id="SVGRepo_iconCarrier">
+                    <circle cx="12" cy="12" r="10" stroke="#1C274C" stroke-width="1.5"></circle>
+                    <path d="M12 17V11" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path>
+                    <circle cx="1" cy="1" r="1" transform="matrix(1 0 0 -1 11 9)" fill="#1C274C"></circle>
+                </g>
+            </svg>
         </div>
     </h1>
 
@@ -20,20 +29,26 @@
         <div class="dialog">
             <h2 class="dialogTitle">The Racetrack Economy Model</h2>
             <div class="dialogContent">
-                <p>Paul Krugman, the 2008 winner of the Nobel Prize in Economics, conducted a simulation using a spatial economics model called the "Racetrack Economy" model.
-                    This model hypothesizes several locations (in Krugman's case, 12 cities) arranged at equal intervals in a circular fashion, like the numbers on a clock face.
-                    The economy includes farmers, who live in the locations and do not move, and factory workers, who move between the locations in search of higher wages and lower prices.
+                <p>Paul Krugman, the 2008 winner of the Nobel Prize in Economics, conducted a simulation using a spatial
+                    economics model called the "Racetrack Economy" model.
+                    This model hypothesizes several locations (in Krugman's case, 12 cities) arranged at equal intervals
+                    in a circular fashion, like the numbers on a clock face.
+                    The economy includes farmers, who live in the locations and do not move, and factory workers, who
+                    move between the locations in search of higher wages and lower prices.
                 </p>
                 <p>
-                Initially, the populations of the locations are only slightly different (a uniformly equal location size causes equilibrium, which prevents the simulation from working).
+                    Initially, the populations of the locations are only slightly different (a uniformly equal location
+                    size causes equilibrium, which prevents the simulation from working).
                 </p>
                 <p>
-                    Using these basic conditions, Krugman modified transportation cost (T) and the degree of love of variety for industrial products (σ) in order to analyze changes in the numbers and
+                    Using these basic conditions, Krugman modified transportation cost (T) and the degree of love of
+                    variety for industrial products (σ) in order to analyze changes in the numbers and
                     locations of agglomerations.
                 </p>
                 <p>
-                    Variables "Κ", "π", "T" and "σ" can be changed while the simulation is in progress.
-                    This allows the observation of agglomeration formation, agglomeration dispersal, and changes in the numbers and locations of agglomerations according to various parameters.
+                    Variables "Κ", "π", "τ" and "σ" can be changed while the simulation is in progress.
+                    This allows the observation of agglomeration formation, agglomeration dispersal, and changes in the
+                    numbers and locations of agglomerations according to various parameters.
                 </p>
             </div>
             <fast-button id="infoDialogCloseButton" appearance="primary">
@@ -44,16 +59,51 @@
 
 
     <div class="version">
-		<a href="https://github.com/kubohiroya/rtecon" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
-	</div>
+        <a href="https://github.com/kubohiroya/rtecon" class="github-corner" aria-label="View source on GitHub">
+            <svg width="80" height="80" viewBox="0 0 250 250"
+                 style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+                <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+                <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+                      fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+                <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+                      fill="currentColor" class="octo-body"></path>
+            </svg>
+        </a>
+        <style>.github-corner:hover .octo-arm {
+            animation: octocat-wave 560ms ease-in-out
+        }
 
-	<div id="canvasDiv">
+        @keyframes octocat-wave {
+            0%, 100% {
+                transform: rotate(0)
+            }
+            20%, 60% {
+                transform: rotate(-25deg)
+            }
+            40%, 80% {
+                transform: rotate(10deg)
+            }
+        }
+
+        @media (max-width: 500px) {
+            .github-corner:hover .octo-arm {
+                animation: none
+            }
+
+            .github-corner .octo-arm {
+                animation: octocat-wave 560ms ease-in-out
+            }
+        }</style>
+    </div>
+
+    <div id="canvasDiv">
         <canvas id="visualizer"
-                width="340" height="340"
+                width="400" height="400"
         ></canvas>
 
         <div>
 
+            <h3 class="caption">share of manufacturing</h3>
             <div id="scaleSelector">
                 <div id="magnifyIcon" class="icon"></div>
                 <select id="scale">
@@ -66,7 +116,6 @@
                     <option selected>x 1</option>
                 </select>
             </div>
-
             <canvas
                     id="canvas"
                     width="700" height="300"
@@ -77,83 +126,107 @@
         </div>
     </div>
 
-    <div>
-        <div class="slider-container">
-            <div class="slider-label">
-                <div id="cityIcon" class="icon"></div>
-                <span class="slider-label">K = </span><span id="nCities"></span>
-            </div>
-
-            <fast-slider
-                    id="nCitiesSlider"
-                    min="0" max="500"
-                    step="1"
-                    value="50">
-                <fast-slider-label position="0">0</fast-slider-label>
-                <fast-slider-label position="100">100</fast-slider-label>
-                <fast-slider-label position="200">200</fast-slider-label>
-                <fast-slider-label position="300">300</fast-slider-label>
-                <fast-slider-label position="400">400</fast-slider-label>
-                <fast-slider-label position="500">500</fast-slider-label>
-            </fast-slider>
+    <div style="display: flex">
+        <div style="flex:1">
+            <fast-radio-group id="caseSelector" value="0" name="case">
+                <fast-radio value="0">
+                    <p class="preset">Base case: (K=12, π=0.2, τ=2, σ=4). All workers usually end up in two concentrations.</p>
+                </fast-radio>
+                <fast-radio value="1">
+                    <p class="preset">Case i: Less differentiated products (K=12, π=0.2, τ=2, σ=2). In this case (in which
+                        firms have more market power, and in which the equilibrium degree of scale economies is also larger),
+                        all runs produced only a single city.</p>
+                </fast-radio>
+                <fast-radio value="2">
+                    <p class="preset">Case ii: A larger manufacturing share (K=12, π=0.4, τ=2, σ=4). In this case, in which one
+                        would expect the backward and forward linkages driving agglomeration to be stronger, we also
+                        consistently get only a single city.</p>
+                </fast-radio>
+                <fast-radio value="3">
+                    <p class="preset">Case iii: Lower transport costs (K=12, π=0.2, τ=1, σ=4). In this case we would expect
+                        there to be less incentive to set up multiple urban centers, and again all ten runs produce only a
+                        single city.</p>
+                </fast-radio>
+            </fast-radio-group>
         </div>
 
-        <div class="slider-container">
-            <div class="slider-label">
-                <div id="accountSwitchIcon" class="icon"></div>
-                <span class="slider-label">π = </span><span id="pi"></span>
-            </div>
-            <fast-slider
-                    id="piSlider"
-                    min="0" max="1.0" step="0.01"
-                    value="3">
-                <fast-slider-label position="0">0</fast-slider-label>
-                <fast-slider-label position="0.2">0.2</fast-slider-label>
-                <fast-slider-label position="0.4">0.4</fast-slider-label>
-                <fast-slider-label position="0.6">0.6</fast-slider-label>
-                <fast-slider-label position="0.8">0.8</fast-slider-label>
-                <fast-slider-label position="1.0">1.0</fast-slider-label>
-            </fast-slider>
-        </div>
+        <div style="flex:1">
+            <div class="slider-container">
+                <div class="slider-label">
+                    <div id="cityIcon" class="icon"></div>
+                    <span class="slider-label">K = </span><span id="nCities"></span>
+                </div>
 
-        <div class="slider-container">
-            <div class="slider-label">
-                <div id="truckIcon" class="icon"></div>
-                <span class="slider-label">T = </span><span id="tcost"></span>
+                <fast-slider
+                        id="nCitiesSlider"
+                        min="0" max="500"
+                        step="1"
+                        value="12">
+                    <fast-slider-label position="0">0</fast-slider-label>
+                    <fast-slider-label position="100">100</fast-slider-label>
+                    <fast-slider-label position="200">200</fast-slider-label>
+                    <fast-slider-label position="300">300</fast-slider-label>
+                    <fast-slider-label position="400">400</fast-slider-label>
+                    <fast-slider-label position="500">500</fast-slider-label>
+                </fast-slider>
             </div>
-            <fast-slider
-                    id="tcostSlider"
-                    min="1" max="10" step="0.1"
-                    value="">
-                <fast-slider-label position="1">1</fast-slider-label>
-                <fast-slider-label position="4">4</fast-slider-label>
-                <fast-slider-label position="7">7</fast-slider-label>
-                <fast-slider-label position="10">10</fast-slider-label>
-            </fast-slider>
-        </div>
 
-        <div class="slider-container">
-            <div class="slider-label">
-                <div id="headHeartIcon" class="icon"></div>
-                <span class="slider-label">σ = </span><span id="sigma"></span>
+            <div class="slider-container">
+                <div class="slider-label">
+                    <div id="factoryIcon" class="icon"></div>
+                    <span class="slider-label">π = </span><span id="pi"></span>
+                </div>
+                <fast-slider
+                        id="piSlider"
+                        min="0" max="1.0" step="0.01"
+                        value="0.2">
+                    <fast-slider-label position="0">0</fast-slider-label>
+                    <fast-slider-label position="0.2">0.2</fast-slider-label>
+                    <fast-slider-label position="0.4">0.4</fast-slider-label>
+                    <fast-slider-label position="0.6">0.6</fast-slider-label>
+                    <fast-slider-label position="0.8">0.8</fast-slider-label>
+                    <fast-slider-label position="1.0">1.0</fast-slider-label>
+                </fast-slider>
             </div>
-            <fast-slider
-                    id="sigmaSlider"
-                    min="1" max="20" step="0.1"
-                    value="">
-                <fast-slider-label position="1">1</fast-slider-label>
-                <fast-slider-label position="5">5</fast-slider-label>
-                <fast-slider-label position="10">10</fast-slider-label>
-                <fast-slider-label position="15">15</fast-slider-label>
-                <fast-slider-label position="20">20</fast-slider-label>
-            </fast-slider>
+
+            <div class="slider-container">
+                <div class="slider-label">
+                    <div id="truckIcon" class="icon"></div>
+                    <span class="slider-label">τ = </span><span id="tcost"></span>
+                </div>
+                <fast-slider
+                        id="tcostSlider"
+                        min="1" max="10" step="0.1"
+                        value="2">
+                    <fast-slider-label position="1">1</fast-slider-label>
+                    <fast-slider-label position="4">4</fast-slider-label>
+                    <fast-slider-label position="7">7</fast-slider-label>
+                    <fast-slider-label position="10">10</fast-slider-label>
+                </fast-slider>
+            </div>
+
+            <div class="slider-container">
+                <div class="slider-label">
+                    <div id="headHeartIcon" class="icon"></div>
+                    <span class="slider-label">σ = </span><span id="sigma"></span>
+                </div>
+                <fast-slider
+                        id="sigmaSlider"
+                        min="1" max="20" step="0.1"
+                        value="4">
+                    <fast-slider-label position="1">1</fast-slider-label>
+                    <fast-slider-label position="5">5</fast-slider-label>
+                    <fast-slider-label position="10">10</fast-slider-label>
+                    <fast-slider-label position="15">15</fast-slider-label>
+                    <fast-slider-label position="20">20</fast-slider-label>
+                </fast-slider>
+            </div>
         </div>
     </div>
 
     <div id="buttonPanel"
          class="blink"
     >
-
         <fast-button
                 id="start"
         >
@@ -184,32 +257,33 @@
         <div id="counterDiv">
             Time: <span id="counter">0</span>
         </div>
-
     </div>
 
-    <div>
-        <ul>
-            <li>K: The number of locations assumed to be laid out symmetrically in a circle, with transportation
-                possible only around the circumference. The distance between any two neighboring locations is set equal
-                to one.
-            </li>
-            <li>π: The share of manufacturing goods in expenditure.</li>
-            <li>T: The level of transportation cost among locations. A value of 1 represents no transportation cost,
-                while a value of 10 represents significant transportation cost.
-            </li>
-            <li>σ: The elasticity of substitution among manufactured goods. A value of 1 represents a strong love of
-                variety, while a value of 20 represents a limited love of variety.
-            </li>
-        </ul>
-        <!--
-        <ul>
-            <li>Kは都市の数。円周上に均等な間隔で位置しており、それぞれの都市間の距離は</li>
-            <li>πは消費者の工業製品に対する支出割合。0に近いほど農業財の消費への支出の割合が高く、1に近いほど工業祭への支出の割合が高くなる。</li>
-            <li>Tは輸送費の水準。1に近いほど輸送費が低いこと、10が輸送費が高いことを示す。</li>
-            <li>σは多様性選好の水準。１は多様性を非常に強く好むこと、20は多様性をあまり好まないことを示す。</li>
-        </ul>
-        -->
-    </div>
+    <ul>
+        <li>K: The number of locations assumed to be laid out symmetrically in a circle, with transportation
+            possible only around the circumference. The distance between any two neighboring locations is set equal
+            to one.
+        </li>
+        <li>π: The share of manufacturing goods in expenditure.</li>
+        <li>τ: The level of transportation cost among locations. A value of 1 represents no transportation cost,
+            while a value of 10 represents significant transportation cost.
+        </li>
+        <li>σ: The elasticity of substitution among manufactured goods. A value of 1 represents a strong love of
+            variety, while a value of 20 represents a limited love of variety.
+        </li>
+    </ul>
+
+
+    <!--
+    -->
+    <!--
+    <ul>
+        <li>Kは都市の数。円周上に均等な間隔で位置しており、それぞれの都市間の距離は</li>
+        <li>πは消費者の工業製品に対する支出割合。0に近いほど農業財の消費への支出の割合が高く、1に近いほど工業祭への支出の割合が高くなる。</li>
+        <li>Tは輸送費の水準。1に近いほど輸送費が低いこと、10が輸送費が高いことを示す。</li>
+        <li>σは多様性選好の水準。１は多様性を非常に強く好むこと、20は多様性をあまり好まないことを示す。</li>
+    </ul>
+    -->
 
     <h3>References</h3>
     <ul>
