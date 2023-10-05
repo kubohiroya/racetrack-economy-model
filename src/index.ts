@@ -1,6 +1,6 @@
 import { Model } from "./model";
 import { View } from "./view";
-import { drawPolygonOnCanvas } from "./visualizer";
+import {computeSegmentIndex, updateView} from "./visualizer";
 
 import {
   fastButton,
@@ -26,7 +26,7 @@ provideFASTDesignSystem().register(
   fastSliderLabel(),
 );
 
-const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+const barChartCanvas = document.getElementById("barChartCanvas") as HTMLCanvasElement;
 const infoDialogOpenButton = document.getElementById(
   "infoDialogOpenButton",
 ) as HTMLCanvasElement;
@@ -38,9 +38,10 @@ const nCitiesSlider = document.getElementById("nCitiesSlider") as Slider;
 const piSlider = document.getElementById("piSlider") as Slider;
 const tcostSlider = document.getElementById("tcostSlider") as Slider;
 const sigmaSlider = document.getElementById("sigmaSlider") as Slider;
+const speedSlider = document.getElementById("speedSlider") as Slider;
 const caseSelector = document.getElementById("caseSelector") as RadioGroup;
 
-const visualizer = document.getElementById("visualizer") as HTMLCanvasElement;
+const visualizerCanvas = document.getElementById("visualizerCanvas") as HTMLCanvasElement;
 
 /*
 interface RGBColor {
@@ -76,36 +77,47 @@ const resetButton = document.getElementById("reset") as HTMLButtonElement;
 const counterElem = document.getElementById("counter") as HTMLDivElement;
 
 const gammaValue = 1.0;
-const model = new Model(12, 1.0, 0.2, 2.0, 4, gammaValue);
-const view = new View(canvas, model);
+const model = new Model(12, 1.0, 0.2, 2.0, 4, 0.5, gammaValue);
+const barChartView = new View(barChartCanvas, model);
 
-model.addUpdateEventListener(() => {
-  counterElem.innerText = model.counter.toLocaleString();
-  view.repaint();
+const left = 40
+const top = 40
+const diameter = 320
+const vertexCircleRadiusBase= 15
 
+function updateVisualizerView(){
   const mappers = [
-    (city:City)=>city.MShare,
-    (city:City)=>city.priceIndex,
-    (city:City)=>city.nominalWage,
-    (city:City)=>city.realWage,
+    {mapper: (city:City)=>city.MShare, ratioToMax:true},
+    {mapper: (city:City)=>city.priceIndex, ratioToMax:false},
+    {mapper: (city:City)=>city.nominalWage, ratioToMax:false},
+    {mapper: (city:City)=>city.realWage, ratioToMax:false},
   ]
 
-  const max = mappers.map((mapper)=>model.country.cities
-    .map(mapper)
+  const max = mappers.map((mapper) => model.country.cities
+    .map(mapper.mapper)
     .reduce(
       (max: number, current: number) => (current > max ? current : max),
       0,
     ))
 
-  drawPolygonOnCanvas({
-    canvas: visualizer,
-    diameter: 320,
+  updateView({
+    canvas: visualizerCanvas,
+    left,
+    top,
+    diameter,
     vertices: model.numCities,
-    vertexCircleRadiusSrc: 15,
+    vertexCircleRadiusBase,
     src: model.country.cities.map(
-      (city) => mappers.map((mapper,index) => mapper(city) / max[index])
+      (city) => mappers.map((mapper,index) => mapper.ratioToMax? mapper.mapper(city) / max[index]: mapper.mapper(city))
     ),
+    model,
   });
+}
+
+model.addUpdateEventListener(() => {
+  counterElem.innerText = model.counter.toLocaleString();
+  barChartView.repaint();
+  updateVisualizerView();
 });
 
 startButton.className = "";
@@ -167,6 +179,12 @@ function onSigmaChanged() {
   model.calcDistanceMatrix();
 }
 
+function onSpeedChanged() {
+  model.stop();
+  model.setSpeed(speedSlider.valueAsNumber);
+  model.start();
+}
+
 function onCaseChanged(){
   switch(caseSelector.value){
     case "0":
@@ -206,6 +224,37 @@ function onCaseChanged(){
   }
 }
 
+let prevSegment = -1;
+function onMouseMove(event: MouseEvent){
+  const rect = visualizerCanvas.getBoundingClientRect();
+
+  const scaleX = visualizerCanvas.width / rect.width;
+  const scaleY = visualizerCanvas.height / rect.height;
+
+  const canvasX = (event.clientX - rect.left) * scaleX;
+  const canvasY = (event.clientY - rect.top) * scaleY;
+
+  const x = canvasX - left - diameter / 2
+  const y = canvasY - top - diameter / 2
+
+
+  const distance = Math.sqrt(x * x + y * y);
+  if(distance < diameter/2 - 30 || diameter/2 + 30 < distance) {
+    model.setSelectedCityIndex(-1);
+    prevSegment = -1;
+    updateVisualizerView();
+    return;
+  }
+
+  const segment = computeSegmentIndex(x, y, model.numCities)
+
+  if(prevSegment != segment){
+    model.setSelectedCityIndex(segment);
+    updateVisualizerView();
+    prevSegment = segment
+  }
+}
+
 startButton.addEventListener("click", start);
 stopButton.addEventListener("click", stop);
 resetButton.addEventListener("click", reset);
@@ -213,7 +262,13 @@ nCitiesSlider.addEventListener("change", onNCitiesChanged);
 piSlider.addEventListener("change", onPiChanged);
 tcostSlider.addEventListener("change", onTcostChanged);
 sigmaSlider.addEventListener("change", onSigmaChanged);
+speedSlider.addEventListener("change", onSpeedChanged);
 caseSelector.addEventListener("change", onCaseChanged);
+
+visualizerCanvas.addEventListener("mousemove", onMouseMove)
+visualizerCanvas.addEventListener("mouseenter", onMouseMove)
+visualizerCanvas.addEventListener("mouseleave", onMouseMove)
+visualizerCanvas.addEventListener("mouseover", onMouseMove)
 
 const dropdown = document.getElementById("scale") as HTMLSelectElement;
 dropdown.addEventListener("change", (ev) => {

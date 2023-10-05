@@ -6,8 +6,10 @@ export class Model {
   counter: number;
 
   scale: number;
-
+  speed: number;
   started: boolean = false;
+
+  selectedCityIndex: number;
 
   listeners: Array<(model: Model) => void> = new Array<
     (model: Model) => void
@@ -20,11 +22,14 @@ export class Model {
     pi: number,
     tcost: number,
     sigma: number,
+    speed: number,
     gamma: number,
   ) {
     this.numCities = numCities;
     this.country = this.createCountry(numCities, pi, tcost, sigma, gamma);
     this.scale = scale;
+    this.speed= speed;
+    this.selectedCityIndex = -1;
     this.counter = 0;
   }
 
@@ -40,6 +45,7 @@ export class Model {
 
   reset() {
     this.counter = 0;
+    this.selectedCityIndex = -1;
     this.country.reset();
     this.update();
   }
@@ -55,13 +61,27 @@ export class Model {
   start() {
     if (!this.started) {
       this.started = true;
+      const interval = this.expScale(this.speed);
       this.timer = setInterval(() => {
         this.country.procedure();
         this.counter++;
         this.update();
-      }, 10);
+      }, interval);
     }
   }
+
+  expScale(value: number): number {
+    const minLog = Math.log(10);
+    const maxLog = Math.log(3000);
+
+    const scale = minLog + (1-value) * (maxLog - minLog);
+
+    // 指数関数を取得
+    const expValue = Math.exp(scale);
+
+    return expValue;
+  }
+
 
   calcDistanceMatrix() {
     this.country.calcDistanceMatrix();
@@ -83,6 +103,10 @@ export class Model {
     this.update();
   }
 
+  setSpeed(speed: number) {
+    this.speed = speed;
+  }
+
   setPi(mu: number) {
     this.country.setPi(mu);
   }
@@ -93,6 +117,10 @@ export class Model {
 
   setSigma(sigma: number) {
     this.country.setSigma(sigma);
+  }
+
+  setSelectedCityIndex(index: number){
+    this.selectedCityIndex = index;
   }
 
   addUpdateEventListener(listener: (model: Model) => void) {

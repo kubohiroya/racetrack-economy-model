@@ -4,7 +4,7 @@
     <title>The Racetrack Economy</title>
     <meta charset="UTF-8"/>
     
-  <script type="module" crossorigin src="./assets/index-4cc2d60f.js"></script>
+  <script type="module" crossorigin src="./assets/index-cfb295c3.js"></script>
   <link rel="stylesheet" href="./assets/index-4fa4d2eb.css">
 </head>
 <body>
@@ -97,7 +97,7 @@
     </div>
 
     <div id="canvasDiv">
-        <canvas id="visualizer"
+        <canvas id="visualizerCanvas"
                 width="400" height="400"
         ></canvas>
 
@@ -117,7 +117,7 @@
                 </select>
             </div>
             <canvas
-                    id="canvas"
+                    id="barChartCanvas"
                     width="700" height="300"
             >
             </canvas>
@@ -224,39 +224,52 @@
         </div>
     </div>
 
-    <div id="buttonPanel"
-         class="blink"
-    >
-        <fast-button
-                id="start"
+    <div style="display:flex">
+        <div id="buttonPanel"
+             style="flex: 1"
+             class="blink"
         >
-            <div class="iconButton">
-                <div id="startIcon" class="icon"></div>
-                <div>Start</div>
-            </div>
-        </fast-button>
+            <fast-button
+                    id="start"
+            >
+                <div class="iconButton">
+                    <div id="startIcon" class="icon"></div>
+                    <div>Start</div>
+                </div>
+            </fast-button>
 
-        <fast-button
-                id="stop"
-        >
-            <div class="iconButton">
-                <div id="stopIcon" class="icon"></div>
-                <div>Stop</div>
-            </div>
-        </fast-button>
+            <fast-button
+                    id="stop"
+            >
+                <div class="iconButton">
+                    <div id="stopIcon" class="icon"></div>
+                    <div>Stop</div>
+                </div>
+            </fast-button>
 
-        <fast-button
-                id="reset"
-        >
-            <div class="iconButton">
-                <div id="resetIcon" class="icon"></div>
-                <div>Reset</div>
-            </div>
-        </fast-button>
+            <fast-button
+                    id="reset"
+            >
+                <div class="iconButton">
+                    <div id="resetIcon" class="icon"></div>
+                    <div>Reset</div>
+                </div>
+            </fast-button>
 
-        <div id="counterDiv">
-            Time: <span id="counter">0</span>
+            <div id="counterDiv">
+                Time: <span id="counter">0</span>
+            </div>
         </div>
+        <div style="flex:1; margin-top: 20px; margin-right: 50px">
+            <fast-slider
+                    id="speedSlider"
+                    min="0" max="1.0" step="0.05"
+                    value="0.5">
+                <fast-slider-label position="0">🐢 slow</fast-slider-label>
+                <fast-slider-label position="1">🐇 fast</fast-slider-label>
+            </fast-slider>
+        </div>
+
     </div>
 
     <ul>
