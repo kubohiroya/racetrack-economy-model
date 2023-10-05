@@ -13,6 +13,7 @@ import {
 } from "@microsoft/fast-components";
 
 import { Dialog, Slider } from "@microsoft/fast-foundation";
+import {City} from '@/city'
 
 provideFASTDesignSystem().register(
   fastButton(),
@@ -81,20 +82,28 @@ const view = new View(canvas, model);
 model.addUpdateEventListener(() => {
   counterElem.innerText = model.counter.toLocaleString();
   view.repaint();
-  const max = model.country.cities
-    .map((city) => city.MShare)
+
+  const mappers = [
+    (city:City)=>city.MShare,
+    (city:City)=>city.priceIndex,
+    (city:City)=>city.nominalWage,
+    (city:City)=>city.realWage,
+  ]
+
+  const max = mappers.map((mapper)=>model.country.cities
+    .map(mapper)
     .reduce(
       (max: number, current: number) => (current > max ? current : max),
       0,
-    );
+    ))
 
   drawPolygonOnCanvas({
     canvas: visualizer,
-    diameter: 340,
+    diameter: 320,
     vertices: model.numCities,
-    vertexCircleRadius: 5,
-    vertexCircleValueSource: model.country.cities.map(
-      (city) => city.MShare / max,
+    vertexCircleRadiusSrc: 15,
+    src: model.country.cities.map(
+      (city) => mappers.map((mapper,index) => mapper(city) / max[index])
     ),
   });
 });
