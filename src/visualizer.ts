@@ -46,15 +46,41 @@ export function updateView({
   }
 
   if(model.selectedCityIndex >= 0){
-    const offsetX = -90;
+    const offsetX = -70;
     const offsetY = -60;
     drawVertexCircleSet(ctx, {x: center.x, y: center.y + 30}, 0, vertexCircleRadiusBase, 0, src, model.selectedCityIndex, false);
+
     const city = model.country.cities[model.selectedCityIndex];
+
     ctx.fillStyle = `black`;
     ctx.fillText("share of manufacturing = "+city.MShare.toFixed(4), center.x + offsetX, center.y + offsetY);
-    ctx.fillText("           price index = "+city.priceIndex.toFixed(4), center.x + offsetX, center.y + offsetY + 15 );
-    ctx.fillText("             real wage = "+city.realWage.toFixed(4), center.x + offsetX, center.y + offsetY + 45);
-    ctx.fillText("          nominal wage = "+city.nominalWage.toFixed(4), center.x + offsetX, center.y + offsetY +30 );
+    ctx.fillText("price index = "+city.priceIndex.toFixed(4), center.x + offsetX, center.y + offsetY + 15 );
+    ctx.fillText("nominal wage = "+city.nominalWage.toFixed(4), center.x + offsetX, center.y + offsetY +30 );
+    ctx.fillText("real wage = "+city.realWage.toFixed(4), center.x + offsetX, center.y + offsetY + 45);
+
+    ctx.beginPath();
+    ctx.fillStyle = `rgb(255, 0, 0, ${src[model.selectedCityIndex][0]})`;
+    ctx.arc(center.x + offsetX - 12, center.y + offsetY - 5, 5, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.closePath()
+    ctx.beginPath();
+    ctx.strokeStyle = `rgb(255, 0, 0, 0.5)`;
+    ctx.arc(center.x + offsetX - 12, center.y + offsetY + 10, 8, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.fill();
+    ctx.closePath()
+    ctx.beginPath();
+    ctx.fillStyle = '';
+    ctx.strokeStyle = `rgb(255, 0, 0, 0.5)`;
+    ctx.arc(center.x + offsetX - 12, center.y + offsetY + 25, 5, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.closePath()
+    ctx.beginPath();
+    ctx.strokeStyle = `rgb(5, 5, 5, 0.3)`;
+    ctx.arc(center.x + offsetX - 12, center.y + offsetY + 40, 5, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.closePath()
+
   }
 }
 
@@ -89,7 +115,7 @@ export function drawVertexCircleSet(ctx: CanvasRenderingContext2D, center: {x: n
 
   const x = center.x + radius * Math.cos(angle);
   const y = center.y + radius * Math.sin(angle);
-  drawVertexCircle(ctx, x, y, vertexCircleRadius, src[i], selected);
+  drawVertexCircle(ctx, x, y, vertexCircleRadius, src[i][0], selected); // MShare
 
   const radius2 = (radius - vertexCircleRadius * src[i][2] + vertexCircleRadius) // nominalWage
   const x2 = center.x + radius2 * Math.cos(angle);
@@ -109,7 +135,7 @@ function drawCityLabel (ctx: CanvasRenderingContext2D, tx:number, ty: number, ve
     ctx.fillText(`${i}`, tx, ty + 3);
   }
 }
-function drawVertexCircle(ctx: CanvasRenderingContext2D, cx: number, cy: number, vertexCircleRadius: number, src: number[], selected?: boolean) {
+function drawVertexCircle(ctx: CanvasRenderingContext2D, cx: number, cy: number, vertexCircleRadius: number, src: number, selected?: boolean) {
   ctx.strokeStyle = ``;
   if(selected){
     ctx.beginPath();
@@ -119,7 +145,7 @@ function drawVertexCircle(ctx: CanvasRenderingContext2D, cx: number, cy: number,
     ctx.closePath();
   }
   ctx.beginPath();
-  ctx.fillStyle = `rgb(255, 0, 0, ${src[0]})`;
+  ctx.fillStyle = `rgb(255, 0, 0, ${src})`;
   ctx.arc(cx, cy, vertexCircleRadius, 0, 2 * Math.PI);
   ctx.fill();
   ctx.closePath();
