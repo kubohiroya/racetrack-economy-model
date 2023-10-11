@@ -1,4 +1,18 @@
 import { Country } from "./country";
+import {MultiValueMap} from '@/multiValueMap'
+
+export enum VisualizerType {
+  radius,
+  color,
+  offset1,
+  offset2,
+}
+export enum SourceType {
+  mshare,
+  priceIndex,
+  nominalWage,
+  realWage,
+}
 
 export class Model {
   numCities: number;
@@ -16,6 +30,8 @@ export class Model {
   >();
   timer: NodeJS.Timeout | null = null;
 
+  bindings: Map<SourceType, VisualizerType|undefined> = new Map()
+
   constructor(
     numCities: number,
     scale: number,
@@ -31,6 +47,7 @@ export class Model {
     this.speed= speed;
     this.selectedCityIndex = -1;
     this.counter = 0;
+    this.bindings.set(SourceType.mshare, VisualizerType.radius);
   }
 
   createCountry(
@@ -81,7 +98,6 @@ export class Model {
 
     return expValue;
   }
-
 
   calcDistanceMatrix() {
     this.country.calcDistanceMatrix();

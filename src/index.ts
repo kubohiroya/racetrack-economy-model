@@ -1,19 +1,19 @@
-import { Model } from "./model";
-import { View } from "./view";
+import {Model, SourceType, VisualizerType} from "./model";
+import {View} from "./view";
 import {computeSegmentIndex, updateView} from "./visualizer";
 
 import {
   fastButton,
+  fastDialog,
   fastRadio,
   fastRadioGroup,
-  fastDialog,
   fastSlider,
   fastSliderLabel,
-  provideFASTDesignSystem, RadioGroup,
+  provideFASTDesignSystem,
+  RadioGroup,
 } from "@microsoft/fast-components";
 
-import { Dialog, Slider } from "@microsoft/fast-foundation";
-import {City} from '@/city'
+import {Dialog, Slider} from "@microsoft/fast-foundation";
 
 provideFASTDesignSystem().register(
   fastButton(),
@@ -76,6 +76,12 @@ const resetButton = document.getElementById("reset") as HTMLButtonElement;
 
 const counterElem = document.getElementById("counter") as HTMLDivElement;
 
+const mshareVisualizer = document.getElementById("mshareVisualizer") as HTMLSelectElement;
+const priceIndexVisualizer = document.getElementById("priceIndexVisualizer") as HTMLSelectElement;
+const nominalWageVisualizer = document.getElementById("nominalWageVisualizer") as HTMLSelectElement;
+const realWageVisualizer = document.getElementById("realWageVisualizer") as HTMLSelectElement;
+const scaleSelector = document.getElementById("scale") as HTMLSelectElement;
+
 const gammaValue = 1.0;
 const model = new Model(12, 1.0, 0.2, 2.0, 4, 0.5, gammaValue);
 const barChartView = new View(barChartCanvas, model);
@@ -86,19 +92,6 @@ const diameter = 320
 const vertexCircleRadiusBase= 15
 
 function updateVisualizerView(){
-  const mappers = [
-    {mapper: (city:City)=>city.MShare, ratioToMax:true},
-    {mapper: (city:City)=>city.priceIndex, ratioToMax:false},
-    {mapper: (city:City)=>city.nominalWage, ratioToMax:false},
-    {mapper: (city:City)=>city.realWage, ratioToMax:false},
-  ]
-
-  const max = mappers.map((mapper) => model.country.cities
-    .map(mapper.mapper)
-    .reduce(
-      (max: number, current: number) => (current > max ? current : max),
-      0,
-    ))
 
   updateView({
     canvas: visualizerCanvas,
@@ -107,9 +100,6 @@ function updateVisualizerView(){
     diameter,
     vertices: model.numCities,
     vertexCircleRadiusBase,
-    src: model.country.cities.map(
-      (city) => mappers.map((mapper,index) => mapper.ratioToMax? mapper.mapper(city) / max[index]: mapper.mapper(city))
-    ),
     model,
   });
 }
@@ -270,8 +260,40 @@ visualizerCanvas.addEventListener("mouseenter", onMouseMove)
 visualizerCanvas.addEventListener("mouseleave", onMouseMove)
 visualizerCanvas.addEventListener("mouseover", onMouseMove)
 
-const dropdown = document.getElementById("scale") as HTMLSelectElement;
-dropdown.addEventListener("change", (ev) => {
+
+function getVisualizerTypeOfSelector(ev: Event): VisualizerType|undefined{
+  switch((ev.target as HTMLOptionElement).value){
+    case "radius":
+      return VisualizerType.radius;
+    case "color":
+      return VisualizerType.color;
+    case "offset1":
+      return VisualizerType.offset1;
+    case "offset2":
+      return VisualizerType.offset2;
+    default:
+      return undefined;
+  }
+}
+mshareVisualizer.addEventListener("change", (ev) => {
+  const value = getVisualizerTypeOfSelector(ev)
+  model.bindings.set(SourceType.mshare, value);
+  updateVisualizerView();
+});
+priceIndexVisualizer.addEventListener("change", (ev) => {
+  model.bindings.set(SourceType.priceIndex, getVisualizerTypeOfSelector(ev));
+  updateVisualizerView();
+});
+nominalWageVisualizer.addEventListener("change", (ev) => {
+  model.bindings.set(SourceType.nominalWage, getVisualizerTypeOfSelector(ev));
+  updateVisualizerView();
+});
+realWageVisualizer.addEventListener("change", (ev) => {
+  model.bindings.set(SourceType.realWage, getVisualizerTypeOfSelector(ev));
+  updateVisualizerView();
+});
+
+scaleSelector.addEventListener("change", (ev) => {
   const value = (ev.target as HTMLOptionElement).value;
   const scale = parseFloat(value.split(" ")[1]);
   model.setScale(scale);
