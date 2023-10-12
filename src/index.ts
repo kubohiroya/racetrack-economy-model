@@ -89,7 +89,7 @@ const barChartView = new View(barChartCanvas, model);
 const left = 40
 const top = 40
 const diameter = 320
-const vertexCircleRadiusBase= 15
+const vertexCircleRadiusBase= 14
 const vertexCircleColorBase= 0.1
 
 mshareVisualizer.value = 'radius';
