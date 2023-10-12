@@ -1,11 +1,10 @@
 import { Country } from "./country";
-import {MultiValueMap} from '@/multiValueMap'
 
 export enum VisualizerType {
   radius,
   color,
-  offset1,
-  offset2,
+  grayOuterCircle,
+  redOuterCircle,
 }
 export enum SourceType {
   mshare,
@@ -48,6 +47,9 @@ export class Model {
     this.selectedCityIndex = -1;
     this.counter = 0;
     this.bindings.set(SourceType.mshare, VisualizerType.radius);
+    this.bindings.set(SourceType.priceIndex, VisualizerType.color);
+    this.bindings.set(SourceType.nominalWage, VisualizerType.grayOuterCircle);
+    this.bindings.set(SourceType.realWage, VisualizerType.redOuterCircle);
   }
 
   createCountry(
@@ -91,6 +93,8 @@ export class Model {
     const minLog = Math.log(10);
     const maxLog = Math.log(3000);
 
+    const p = 10000;
+    const powValue = Math.pow(value, p);
     const scale = minLog + (1-value) * (maxLog - minLog);
 
     // 指数関数を取得

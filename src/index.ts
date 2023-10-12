@@ -90,6 +90,12 @@ const left = 40
 const top = 40
 const diameter = 320
 const vertexCircleRadiusBase= 15
+const vertexCircleColorBase= 0.1
+
+mshareVisualizer.value = 'radius';
+priceIndexVisualizer.value = 'color';
+nominalWageVisualizer.value = 'grayOuterCircle';
+realWageVisualizer.value = 'redOuterCircle';
 
 function updateVisualizerView(){
 
@@ -100,6 +106,7 @@ function updateVisualizerView(){
     diameter,
     vertices: model.numCities,
     vertexCircleRadiusBase,
+    vertexCircleColorBase,
     model,
   });
 }
@@ -267,10 +274,10 @@ function getVisualizerTypeOfSelector(ev: Event): VisualizerType|undefined{
       return VisualizerType.radius;
     case "color":
       return VisualizerType.color;
-    case "offset1":
-      return VisualizerType.offset1;
-    case "offset2":
-      return VisualizerType.offset2;
+    case "grayOuterCircle":
+      return VisualizerType.grayOuterCircle;
+    case "redOuterCircle":
+      return VisualizerType.redOuterCircle;
     default:
       return undefined;
   }
