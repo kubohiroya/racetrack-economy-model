@@ -14,6 +14,7 @@ import {
 } from "@microsoft/fast-components";
 
 import {Dialog, Slider} from "@microsoft/fast-foundation";
+import {DynamicTable} from "./dynamicTable"
 
 provideFASTDesignSystem().register(
   fastButton(),
@@ -42,6 +43,9 @@ const speedSlider = document.getElementById("speedSlider") as Slider;
 const caseSelector = document.getElementById("caseSelector") as RadioGroup;
 
 const visualizerCanvas = document.getElementById("visualizerCanvas") as HTMLCanvasElement;
+
+const distanceMatrixHeaderElem = document.getElementById("distanceMatrixHeader") as HTMLElement;
+const distanceMatrixBodyElem = document.getElementById("distanceMatrixBody") as HTMLElement;
 
 /*
 interface RGBColor {
@@ -82,8 +86,11 @@ const nominalWageVisualizer = document.getElementById("nominalWageVisualizer") a
 const realWageVisualizer = document.getElementById("realWageVisualizer") as HTMLSelectElement;
 const scaleSelector = document.getElementById("scale") as HTMLSelectElement;
 
+const transportCostElem = document.getElementById("transportCost") as HTMLElement;
+
 const gammaValue = 1.0;
-const model = new Model(12, 1.0, 0.2, 2.0, 4, 0.5, gammaValue);
+const numCities = 12;
+const model = new Model(1.0, 0.5, numCities, 0.2, 2.0, 4, gammaValue);
 const barChartView = new View(barChartCanvas, model);
 
 const left = 40
@@ -144,6 +151,8 @@ function stop() {
 
 function reset() {
   model.reset();
+  updateTableSize(model.numCities);
+  updateDistanceMatrix();
 }
 
 function onNCitiesChanged() {
@@ -156,6 +165,8 @@ function onNCitiesChanged() {
     gammaValue,
   );
   model.reset();
+  updateTableSize(model.numCities);
+  updateDistanceMatrix();
 }
 
 function onPiChanged() {
@@ -166,8 +177,9 @@ function onPiChanged() {
 
 function onTcostChanged() {
   tcostElem.innerText = tcostSlider.valueAsNumber.toPrecision(2);
-  model.setTcost(tcostSlider.valueAsNumber);
+  model.setTransportCost(tcostSlider.valueAsNumber);
   model.calcDistanceMatrix();
+  updateDistanceMatrix();
 }
 
 function onSigmaChanged() {
@@ -314,7 +326,41 @@ function closeInfoDialog() {
   infoDialog.hide();
 }
 
+const distanceTable = new DynamicTable("distanceTable");
+const transportCostTable = new DynamicTable("tCostTable");
+
+function updateTableSize(numCities: number){
+  distanceTable.adjustTableSize(numCities, numCities, 25, 25);
+  transportCostTable.adjustTableSize(numCities, numCities, 25, 25);
+}
+
+function updateDistanceMatrix(){
+  const tCostMatrix = model.country.tConstMatrix;
+  distanceTable.setTableContent(generateDistanceMatrix(model.numCities), (value:number)=>value.toString());
+  transportCostTable.setTableContent(tCostMatrix, (value:number)=>value.toFixed(2));
+}
+
+function generateDistanceMatrix(n: number): number[][] {
+  const matrix: number[][] = [];
+
+  for (let i = 0; i < n; i++) {
+    const row: number[] = [];
+    for (let j = 0; j < n; j++) {
+      if (i === j) {
+        row.push(0);
+      } else {
+        // 時計回りの距離と反時計回りの距離を計算し、短い方を選ぶ
+        const clockwiseDistance = Math.abs(j - i);
+        const counterClockwiseDistance = n - clockwiseDistance;
+        row.push(Math.min(clockwiseDistance, counterClockwiseDistance));
+      }
+    }
+    matrix.push(row);
+  }
+  return matrix;
+}
 infoDialogOpenButton.addEventListener("click", openInfoDialog);
 infoDialogCloseButton.addEventListener("click", closeInfoDialog);
+
 
 reset();

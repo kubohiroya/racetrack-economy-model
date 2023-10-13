@@ -4,7 +4,7 @@
     <title>The Racetrack Economy</title>
     <meta charset="UTF-8"/>
     
-  <script type="module" crossorigin src="./assets/index-b9be86f0.js"></script>
+  <script type="module" crossorigin src="./assets/index-0fe4a741.js"></script>
   <link rel="stylesheet" href="./assets/index-4fa4d2eb.css">
 </head>
 <body>
@@ -88,7 +88,6 @@
         </select>
     </div>
 
-
     <div class="version">
         <a href="https://github.com/kubohiroya/racetrack-economy-model" class="github-corner" aria-label="View source on GitHub">
             <svg width="80" height="80" viewBox="0 0 250 250"
@@ -134,7 +133,7 @@
 
         <div>
 
-            <h3 class="caption">share of manufacturing</h3>
+            <h3 class="caption">Share of manufacturing</h3>
             <div id="scaleSelector">
                 <div id="magnifyIcon" class="icon"></div>
                 <select id="scale">
@@ -309,13 +308,26 @@
             to one.
         </li>
         <li>π: The share of manufacturing goods in expenditure.</li>
-        <li>τ: The level of transportation cost among locations. A value of 1 represents no transportation cost,
-            while a value of 10 represents significant transportation cost.
+        <li><a id="">τ: The level of transportation cost among locations. A value of 1 represents no transportation cost,
+            while a value of 10 represents significant transportation cost.</a>
         </li>
         <li>σ: The elasticity of substitution among manufactured goods. A value of 1 represents a strong love of
             variety, while a value of 20 represents a limited love of variety.
         </li>
     </ul>
+
+    <div style="display: flex; gap: 10px">
+        <div class="dialog">
+            <h3>Distances between each pair of locations</h3>
+            <table id="distanceTable">
+            </table>
+        </div>
+        <div class="dialog">
+            <h3>Transportation costs between each pair of locations</h3>
+            <table id="tCostTable">
+            </table>
+        </div>
+    </div>
 
     <h3>References</h3>
     <ul>

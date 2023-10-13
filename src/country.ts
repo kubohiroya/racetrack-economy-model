@@ -7,14 +7,14 @@ export class Country {
   /* average real wage of the country */
   avgRealWage: number;
 
-  /* maximum value of the distance */
+  /* maximum transfer cost between ach pair of cities */
   tcost: number;
 
   /* elasticity of substitution */
   sigma: number;
 
-  /* distance between cities */
-  distanceMatrix: Array<Array<number>>;
+  /* transfer cost between each pair of cities */
+  tConstMatrix: Array<Array<number>>;
 
   /* a country has her cities in this vector */
   cities: Array<City>;
@@ -35,23 +35,23 @@ export class Country {
     this.gamma = gamma;
     this.avgRealWage = 1.0;
     this.cities = new Array<City>(numCities);
-    this.distanceMatrix = new Array<Array<number>>(numCities);
+    this.tConstMatrix = new Array<Array<number>>(numCities);
     for (let i = 0; i < numCities; i++) {
-      this.distanceMatrix[i] = new Array<number>(numCities).fill(0);
+      this.tConstMatrix[i] = new Array<number>(numCities).fill(0);
       this.cities[i] = new City(i, 0.0, 0.0);
     }
     this.equalize();
-    this.calcDistanceMatrix();
+    this.calcTransportConstMatrix();
   }
 
   reset() {
     const numCities = this.cities.length;
     for (let i = 0; i < numCities; i++) {
-      this.distanceMatrix[i] = new Array<number>(numCities).fill(0);
+      this.tConstMatrix[i] = new Array<number>(numCities).fill(0);
       this.cities[i] = new City(i, 0.0, 0.0);
     }
     this.equalize();
-    this.calcDistanceMatrix();
+    this.calcTransportConstMatrix();
     this.disturb();
   }
 
@@ -61,7 +61,7 @@ export class Country {
     this.sigma = d + 0.1;
   }
 
-  setTcost(d: number): void {
+  setTransportCost(d: number): void {
     this.tcost = d;
   }
 
@@ -69,14 +69,13 @@ export class Country {
     this.pi = mu;
   }
 
-  /* calc and print distance matrix */
-  calcDistanceMatrix(): void {
+  calcTransportConstMatrix(): void {
     const numCities = this.cities.length;
     for (let i = 0; i < numCities; i++) {
       for (let j = i; j < numCities; j++) {
         const dist =
           i == j ? 0 : (2.0 * Math.min(j - i, i + numCities - j)) / numCities;
-        this.distanceMatrix[j][i] = this.distanceMatrix[i][j] = Math.exp(
+        this.tConstMatrix[j][i] = this.tConstMatrix[i][j] = Math.exp(
           Math.log(this.tcost) * dist,
         );
       }

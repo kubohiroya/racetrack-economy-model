@@ -29,21 +29,21 @@ export class Model {
   >();
   timer: NodeJS.Timeout | null = null;
 
-  bindings: Map<SourceType, VisualizerType|undefined> = new Map()
+  bindings: Map<SourceType, VisualizerType | undefined> = new Map();
 
   constructor(
-    numCities: number,
     scale: number,
+    speed: number,
+    numCities: number,
     pi: number,
     tcost: number,
     sigma: number,
-    speed: number,
     gamma: number,
   ) {
+    this.scale = scale;
+    this.speed = speed;
     this.numCities = numCities;
     this.country = this.createCountry(numCities, pi, tcost, sigma, gamma);
-    this.scale = scale;
-    this.speed= speed;
     this.selectedCityIndex = -1;
     this.counter = 0;
     this.bindings.set(SourceType.mshare, VisualizerType.radius);
@@ -95,16 +95,14 @@ export class Model {
 
     const p = 10000;
     const powValue = Math.pow(value, p);
-    const scale = minLog + (1-value) * (maxLog - minLog);
+    const scale = minLog + (1 - value) * (maxLog - minLog);
 
     // 指数関数を取得
-    const expValue = Math.exp(scale);
-
-    return expValue;
+    return Math.exp(scale);
   }
 
   calcDistanceMatrix() {
-    this.country.calcDistanceMatrix();
+    this.country.calcTransportConstMatrix();
   }
 
   setNumCities(
@@ -131,15 +129,15 @@ export class Model {
     this.country.setPi(mu);
   }
 
-  setTcost(tcost: number) {
-    this.country.setTcost(tcost);
+  setTransportCost(transportCost: number) {
+    this.country.setTransportCost(transportCost);
   }
 
   setSigma(sigma: number) {
     this.country.setSigma(sigma);
   }
 
-  setSelectedCityIndex(index: number){
+  setSelectedCityIndex(index: number) {
     this.selectedCityIndex = index;
   }
 

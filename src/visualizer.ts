@@ -150,32 +150,28 @@ function drawCityState(
   center: { x: number; y: number },
 ) {
   if (model.selectedCityIndex >= 0) {
-    const offsetX = -70;
+    const offsetX = -80;
     const offsetY = -60;
 
     const city = model.country.cities[model.selectedCityIndex];
-
     ctx.fillStyle = `black`;
-    ctx.fillText(
-      "share of manufacturing = " + city.MShare.toFixed(4),
-      center.x + offsetX,
-      center.y + offsetY,
-    );
-    ctx.fillText(
-      "price index = " + city.priceIndex.toFixed(4),
-      center.x + offsetX,
-      center.y + offsetY + 15,
-    );
-    ctx.fillText(
-      "nominal wage = " + city.nominalWage.toFixed(4),
-      center.x + offsetX,
-      center.y + offsetY + 30,
-    );
-    ctx.fillText(
-      "real wage = " + city.realWage.toFixed(4),
-      center.x + offsetX,
-      center.y + offsetY + 45,
-    );
+
+    let y = 0;
+    [
+      "City #" + city.id,
+      " Share of manufacturing = " + city.MShare.toFixed(4),
+      " Share of agriculture = " + city.AShare.toFixed(4),
+      " Price index = " + city.priceIndex.toFixed(4),
+      " Income = " + city.income.toFixed(4),
+      " Nominal wage = " + city.nominalWage.toFixed(4),
+      " Real wage = " + city.realWage.toFixed(4)
+    ].forEach((text, index)=>{
+      ctx.fillText(
+        text,
+        center.x + offsetX,
+        center.y + offsetY + index * 15,
+      )
+    })
 
   }
 }

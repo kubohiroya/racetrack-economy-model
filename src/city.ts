@@ -62,7 +62,7 @@ export class City {
       priceIndex +=
         city.MShare *
         Math.pow(
-          city.nominalWage0 * country.distanceMatrix[this.id][city.id],
+          city.nominalWage0 * country.tConstMatrix[this.id][city.id],
           1 - country.sigma,
         );
     });
@@ -78,7 +78,7 @@ export class City {
     country.cities.forEach((city) => {
       nominalWage +=
         city.income0 *
-        Math.pow(country.distanceMatrix[this.id][city.id], 1 - country.sigma) *
+        Math.pow(country.tConstMatrix[this.id][city.id], 1 - country.sigma) *
         Math.pow(city.priceIndex0, country.sigma - 1);
     });
     this.nominalWage = Math.pow(nominalWage, 1 / country.sigma);
