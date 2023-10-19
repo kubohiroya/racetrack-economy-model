@@ -159,5 +159,5 @@ registerApp(
   },
 );
 
-startGraphApp(false);
-//startRaceTrackApp(false);
+//startGraphApp(false);
+startRaceTrackApp(false);
