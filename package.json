@@ -6,10 +6,14 @@
   },
   "dependencies": {
     "@microsoft/fast-components": "^2.30.6",
-    "@types/node": "^18.11.18",
-    "prettier": "^3.0.3"
+    "@skilitics/two-fingers": "https://github.com/skilitics/two-fingers.git"
   },
   "devDependencies": {
-    "vite": "^4.4.1"
+    "@types/node": "^18.11.18",
+    "@webgpu/types": "^0.1.38",
+    "prettier": "^3.0.3",
+    "vite": "^4.4.1",
+    "vite-plugin-top-level-await": "^1.3.1",
+    "vite-plugin-wasm": "^3.2.2"
   }
 }

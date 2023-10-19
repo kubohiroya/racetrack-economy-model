@@ -14,7 +14,8 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "node"
+      "node",
+      "@webgpu/types"
     ],
     "paths": {
       "@/*": [
@@ -26,8 +27,8 @@
       "dom",
       "dom.iterable",
       "scripthost",
-      "webworker"
-    ],
+      "webworker",
+    ]
   },
   "include": [
     "src/**/*.ts",
@@ -35,7 +36,8 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx",
-    "node_modules/@types/node/globals.d.ts"
+    "node_modules/@types/node/globals.d.ts",
+    "node_modules/@webgpu/types/dist/index.d.ts"
   ],
   "exclude": [
     "node_modules"
