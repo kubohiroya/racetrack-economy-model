@@ -2,7 +2,7 @@ import { Country } from "./country";
 import { MatrixFactories } from "./matrixFactories";
 import { VisualizerType } from "./visualizerType";
 import { SourceType } from "./sourceType";
-import {Region} from '@/model/region'
+import { Region } from "@/model/region";
 
 export class Model {
   country: Country;
@@ -67,7 +67,7 @@ export class Model {
     this.timeCounter = 0;
     this.selectedRegionIndex = -1;
     this.country.reset();
-    this.updateTime();
+    this.notifyUpdateTime();
   }
 
   stop() {
@@ -93,14 +93,14 @@ export class Model {
       this.timer = setInterval(() => {
         this.country.procedure();
         this.timeCounter++;
-        this.updateTime();
+        this.notifyUpdateTime();
       }, interval);
     }
   }
 
   setScale(scale: number) {
     this.barChartScale = scale;
-    this.updateTime();
+    this.notifyUpdateTime();
   }
 
   setSpeed(speed: number) {
@@ -154,7 +154,7 @@ export class Model {
     this.focusRegionEventListener.push(listener);
   }
 
-  notifyFocusRegion(){
+  notifyFocusRegion() {
     this.focusRegionEventListener.forEach((listener) => {
       listener();
     });
@@ -164,7 +164,7 @@ export class Model {
     this.selectRegionEventListener.push(listener);
   }
 
-  notifySelectRegion(){
+  notifySelectRegion() {
     this.selectRegionEventListener.forEach((listener) => {
       listener();
     });
@@ -174,14 +174,10 @@ export class Model {
     this.focusedRouteEventListener.push(listener);
   }
 
-  notifyFocusRoute(){
+  notifyFocusRoute() {
     this.focusedRouteEventListener.forEach((listener) => {
       listener();
     });
-  }
-
-  addTimeEventListener(listener: (model: Model) => void) {
-    this.timeEventListeners.push(listener);
   }
 
   setTransportCostEventListener(listener: (model: Model) => void) {
@@ -198,7 +194,11 @@ export class Model {
     });
   }
 
-  updateTime() {
+  addTimeEventListener(listener: (model: Model) => void) {
+    this.timeEventListeners.push(listener);
+  }
+
+  notifyUpdateTime() {
     this.timerCounterUpdater && this.timerCounterUpdater();
     this.timeEventListeners.forEach((listener) => {
       listener(this);

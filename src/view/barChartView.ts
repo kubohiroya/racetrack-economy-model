@@ -1,4 +1,4 @@
-import { Model } from "../model/model";
+import { Model } from "@/model/model";
 
 const labelWidth = 25;
 const verticalMargin = 10;
@@ -35,14 +35,14 @@ export class BarChartView {
       const index = getIndex(event);
       if (this.model?.focusedRegionIndex != index) {
         this.model.focusedRegionIndex = index;
-        this.model.notifyFocusRegion()
+        this.model.notifyFocusRegion();
         this.draw();
       }
     });
-    this.canvas.addEventListener("mouseout", (event) => {
+    this.canvas.addEventListener("mouseout", () => {
       if (!this.model) return;
       this.model.focusedRegionIndex = -1;
-      this.model.notifyFocusRegion()
+      this.model.notifyFocusRegion();
       this.draw();
     });
   }
@@ -107,8 +107,6 @@ export class BarChartView {
     numRegions: number,
     yBase: number,
   ) {
-    const tickLength1 = 8;
-    const tickLength2 = 6;
 
     ctx.fillStyle = "#888";
     ctx.textAlign = "left";

@@ -2,7 +2,6 @@ const BLOCK_SIZE = 16;
 
 export class FloydWarshall {
   computeShortestPaths(adjacencyMatrix: number[][]): number[][][] {
-    const INF = Infinity;
     const n = adjacencyMatrix.length;
     const distanceMatrix: number[][] = new Array(n);
     const predecessor: number[][] = new Array(n);

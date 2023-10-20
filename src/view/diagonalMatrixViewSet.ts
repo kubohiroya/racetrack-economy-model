@@ -1,5 +1,5 @@
 import { DiagonalMatrixView } from "./diagonalMatrixView";
-import { Model } from "../model/model";
+import { Model } from "@/model/model";
 
 const max = 21;
 

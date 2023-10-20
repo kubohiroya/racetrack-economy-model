@@ -1,4 +1,4 @@
-import { Model } from "../model/model";
+import { Model } from "@/model/model";
 
 export class BarChartScaleSelector {
   scaleSelector: HTMLSelectElement;
@@ -6,15 +6,17 @@ export class BarChartScaleSelector {
 
   constructor() {
     this.scaleSelector = document.getElementById("scale") as HTMLSelectElement;
-  }
-
-  setModel(model: Model) {
     this.scaleSelector.addEventListener("change", (ev) => this.changeScale(ev));
   }
 
+  setModel(model: Model) {
+    this.model = model;
+  }
+
   changeScale(ev: Event) {
+    if (!this.model) throw new Error();
     const value = (ev.target as HTMLOptionElement).value;
     const scale = parseFloat(value.split(" ")[1]);
-    this.model!.setScale(scale);
+    this.model.setScale(scale);
   }
 }

@@ -10,9 +10,7 @@ export function generateTrafficRoutes(
   desiredRouteCount: number,
   candidateRegionCount: number,
 ): { cities: RegionView[]; routes: Route[] } {
-  // 既存の都市数と交通経路数
   const existingRegionCount = existingCities.length;
-  const existingRouteCount = existingRoutes.length;
 
   // 既存の都市と交通経路の一部を保持し、不要な部分を削除
   const cities: RegionView[] = existingCities.slice(0, desiredRegionCount);
@@ -29,15 +27,18 @@ export function generateTrafficRoutes(
 
   // 不足している交通経路を追加して補完
   let attempts = 0; // 試行回数をカウント
-  while (routes.length < desiredRouteCount && attempts < desiredRegionCount * candidateRegionCount) {
+  while (
+    routes.length < desiredRouteCount &&
+    attempts < desiredRegionCount * candidateRegionCount
+  ) {
     const startIndex = Math.floor(Math.random() * desiredRegionCount);
     let endIndex = Math.floor(Math.random() * desiredRegionCount);
 
     // 同じ都市を結ぶ経路や既存の経路と重複する経路を避ける
     const isDuplicate = routes.some(
-      route =>
+      (route) =>
         (route.start === startIndex && route.end === endIndex) ||
-        (route.start === endIndex && route.end === startIndex)
+        (route.start === endIndex && route.end === startIndex),
     );
 
     // 新しい経路を追加
@@ -61,25 +62,3 @@ export function generateTrafficRoutes(
   return { cities, routes };
 }
 
-function createAdjacencyMatrix(numCities: number, edges: Route[]): boolean[][] {
-  // 都市間の接続情報を初期化し、すべての要素を false で埋める
-  const connections: boolean[][] = Array.from({ length: numCities }, () =>
-    Array.from({ length: numCities }, () => false),
-  );
-
-  // エッジ情報から接続情報を設定
-  for (const edge of edges) {
-    const { start, end } = edge;
-    connections[start][end] = true;
-    connections[end][start] = true; // 無向グラフの場合、逆向きも接続として設定
-  }
-
-  return connections;
-}
-
-// ユークリッド距離を計算する関数
-function euclideanDistance(p1: RegionView, p2: RegionView): number {
-  const dx = p1.x - p2.x;
-  const dy = p1.y - p2.y;
-  return Math.sqrt(dx * dx + dy * dy);
-}

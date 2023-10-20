@@ -65,8 +65,7 @@ export class RaceTrackCountryView {
         (angle + 2 * Math.PI + segmentSize / 2) % (2 * Math.PI);
 
       // 角度をn分割し、どのセグメントに該当するかを計算
-      const index = Math.floor(normalizedAngle / segmentSize);
-      return index;
+      return Math.floor(normalizedAngle / segmentSize);
     };
 
     const segment = computeSegmentIndex(
@@ -348,7 +347,6 @@ export class RaceTrackCountryView {
           ? "↓"
           : "";
 
-      let y = 0;
       [
         "Region #" + region.id,
         " Share of manufacturing = " + region.manufacturingShare.toFixed(4),

@@ -13,7 +13,7 @@ import {
 import "./appSelector";
 import { RaceTrackCountryView } from "./raceTrack/raceTrackCountryView";
 import { RaceTrackMatrixFactories } from "./raceTrack/raceTrackMatrixFactories";
-import {registerApp, startGraphApp, startRaceTrackApp} from "./appSelector";
+import { registerApp, startRaceTrackApp } from "./appSelector";
 import { GraphMatrixFactories } from "./graph/graphMatrixFactories";
 import { GraphCountryView } from "./graph/graphCountryView";
 import { View } from "./view/view";

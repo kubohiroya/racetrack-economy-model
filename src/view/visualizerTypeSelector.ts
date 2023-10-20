@@ -1,6 +1,6 @@
-import { Model } from "../model/model";
-import { VisualizerType } from "../model/visualizerType";
-import { SourceType } from "../model/sourceType";
+import { Model } from "@/model/model";
+import { VisualizerType } from "@/model/visualizerType";
+import { SourceType } from "@/model/sourceType";
 
 const getValueOfSelector = (ev: Event): string => {
   return (ev.target as HTMLOptionElement).value;
@@ -128,7 +128,7 @@ export class VisualizerTypeSelector {
       this.realWageVisualizer.value == value ? "line-through" : "";
     this.avgRealWageLabel.style.textDecoration =
       this.avgRealWageVisualizer.value == value ? "line-through" : "";
-    this.model!.updateTime();
+    this.model!.notifyUpdateTime();
   }
 
   changePriceIndexVisualizer(value: string) {
@@ -142,7 +142,7 @@ export class VisualizerTypeSelector {
       this.realWageVisualizer.value == value ? "line-through" : "";
     this.avgRealWageLabel.style.textDecoration =
       this.avgRealWageVisualizer.value == value ? "line-through" : "";
-    this.model!.updateTime();
+    this.model!.notifyUpdateTime();
   }
 
   changeNominalWageVisualizer(value: string) {
@@ -157,7 +157,7 @@ export class VisualizerTypeSelector {
       this.realWageVisualizer.value == value ? "line-through" : "";
     this.avgRealWageLabel.style.textDecoration =
       this.avgRealWageVisualizer.value == value ? "line-through" : "";
-    this.model!.updateTime();
+    this.model!.notifyUpdateTime();
   }
 
   changeRealWageVisualizer(value: string) {
@@ -171,7 +171,7 @@ export class VisualizerTypeSelector {
         : "";
     this.avgRealWageLabel.style.textDecoration =
       this.avgRealWageVisualizer.value == value ? "line-through" : "";
-    this.model!.updateTime();
+    this.model!.notifyUpdateTime();
   }
 
   changeAvgRealWageVisualizer(value: string) {
@@ -184,7 +184,7 @@ export class VisualizerTypeSelector {
       this.realWageVisualizer.value == value
         ? "line-through"
         : "";
-    this.model!.updateTime();
+    this.model!.notifyUpdateTime();
   }
 
   setModel(model: Model) {

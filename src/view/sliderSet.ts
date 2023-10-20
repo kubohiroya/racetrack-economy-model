@@ -1,5 +1,5 @@
 import { Slider } from "@microsoft/fast-foundation";
-import { Model } from "../model/model";
+import { Model } from "@/model/model";
 
 export class SliderSet {
   numRegionsSlider: Slider;

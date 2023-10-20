@@ -1,19 +1,12 @@
 import { Country } from "@/model/country";
 import { RegionViews } from "@/graph/regionViews";
-import { RegionView } from "@/graph/regionView";
 import { ShortestPathCalculator } from "@/apsp/shortestPathCalculator";
 import { ShortestPathAlgorithm } from "@/apsp/shortestPathAlgorithm";
 import { MatrixFactories } from "@/model/matrixFactories";
-import {Route} from '@/graph/route'
-import {generateTrafficRoutes} from '@/graph/generateTrafficRoutes'
+import { Route } from "@/graph/route";
+import { generateTrafficRoutes } from "@/graph/generateTrafficRoutes";
 
 const calculator = new ShortestPathCalculator();
-
-// const cities: RegionView[] = [];
-//const
-//const desiredCityCount = 5;
-//const desiredRouteCount = 8;
-//const candidateCityCount = 3;
 
 export class GraphMatrixFactories implements MatrixFactories {
   country: Country;

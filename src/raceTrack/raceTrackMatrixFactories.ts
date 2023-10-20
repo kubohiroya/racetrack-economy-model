@@ -1,4 +1,4 @@
-import { Country } from "../model/country";
+import { Country } from "@/model/country";
 import { MatrixFactories } from "@/model/matrixFactories";
 
 export class RaceTrackMatrixFactories implements MatrixFactories {

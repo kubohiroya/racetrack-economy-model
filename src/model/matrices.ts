@@ -5,11 +5,6 @@ export class Matrices {
   transportCostMatrix: number[][];
 
   constructor(numRegions: number /*, matrices?: Matrices*/) {
-    /*
-    this.adjacencyMatrix = this.create2DArray(numRegions, matrices?.adjacencyMatrix);
-    this.distanceMatrix = this.create2DArray(numRegions, matrices?.distanceMatrix);
-    this.transportCostMatrix = this.create2DArray(numRegions, matrices?.transportCostMatrix);
-     */
     this.adjacencyMatrix = this.create2DArray(numRegions);
     this.predecessorMatrix = this.create2DArray(numRegions);
     this.distanceMatrix = this.create2DArray(numRegions);

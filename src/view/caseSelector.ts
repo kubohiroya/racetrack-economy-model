@@ -1,5 +1,5 @@
 import { RadioGroup } from "@microsoft/fast-components";
-import { Model } from "../model/model";
+import { Model } from "@/model/model";
 import { SliderSet } from "./sliderSet";
 
 export class CaseSelector {
@@ -22,7 +22,7 @@ export class CaseSelector {
         this.sliderSet.piSlider.value = "0.2";
         this.sliderSet.transportCostSlider.value = "2";
         this.sliderSet.sigmaSlider.value = "4";
-        this.model.updateTime();
+        this.model.notifyUpdateTime();
         return;
       case "1":
         //σ=2, τ=0.2, π=0.2
@@ -30,7 +30,7 @@ export class CaseSelector {
         this.sliderSet.piSlider.value = "0.2";
         this.sliderSet.transportCostSlider.value = "2";
         this.sliderSet.sigmaSlider.value = "2";
-        this.model.updateTime();
+        this.model.notifyUpdateTime();
         return;
       case "2":
         //σ=4, τ=0.2, π=0.4
@@ -38,7 +38,7 @@ export class CaseSelector {
         this.sliderSet.piSlider.value = "0.4";
         this.sliderSet.transportCostSlider.value = "2";
         this.sliderSet.sigmaSlider.value = "4";
-        this.model.updateTime();
+        this.model.notifyUpdateTime();
         return;
       case "3":
         //σ=4, τ=0.1, π=0.2
@@ -46,7 +46,7 @@ export class CaseSelector {
         this.sliderSet.piSlider.value = "0.2";
         this.sliderSet.transportCostSlider.value = "1";
         this.sliderSet.sigmaSlider.value = "4";
-        this.model.updateTime();
+        this.model.notifyUpdateTime();
         return;
       default:
       // do nothing

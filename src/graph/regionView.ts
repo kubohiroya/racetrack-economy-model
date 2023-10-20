@@ -12,14 +12,13 @@ export class RegionView {
     this.id = id;
     this.x = x;
     this.y = y;
-    this.radius= 0;
+    this.radius = 0;
     this.vx = 0;
     this.vy = 0;
   }
 
   draw(ctx: CanvasRenderingContext2D, radius: number, mode: NodeViewMode) {
     ctx.beginPath();
-    //ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.fillStyle = "white";
     ctx.fill();
     ctx.stroke();

@@ -75,7 +75,7 @@ export class GraphCountryView {
     );
     this.canvas.addEventListener(
       "mouseout",
-      (ev: MouseEvent) => {
+      () => {
         if (!this.model) return;
         this.model.focusedRegionIndex = -1;
         this.model.notifyFocusRegion();
@@ -139,7 +139,7 @@ export class GraphCountryView {
       ctx.setTransform(matrix);
     }
 
-    const unregister = twoFingers(
+    twoFingers(
       this.canvas,
       {
         onGestureStart: (g: Gesture) => {
@@ -166,7 +166,7 @@ export class GraphCountryView {
             // requestAnimationFrame(this.draw.bind(this));
           }
         },
-        onGestureEnd: (g: Gesture) => {
+        onGestureEnd: () => {
           if (this.origin) {
           }
         },
@@ -179,8 +179,7 @@ export class GraphCountryView {
     // requestAnimationFrame(this.draw.bind(this));
     this.addNodeButton.addEventListener("click", () => this.addNode());
     this.removeNodeButton.addEventListener("click", () => {
-      const selectedRegionId = 0; // TODO: FIXME
-      this.removeNode(selectedRegionId);
+      this.removeNode();
     });
     this.addEdgeButton.addEventListener("click", () => this.addEdge());
     this.removeEdgeButton.addEventListener("click", () => this.removeEdge());
@@ -188,7 +187,6 @@ export class GraphCountryView {
 
   setModel(model: Model) {
     this.model = model;
-    const numRegions = this.model.country.regions.length;
   }
 
   addNode() {
@@ -198,7 +196,7 @@ export class GraphCountryView {
     this.model.country.updateRegions(this.model.country.regions.length + 1);
   }
 
-  removeNode(id: number) {
+  removeNode() {
     if (!this.model) {
       throw new Error();
     }
@@ -230,11 +228,10 @@ export class GraphCountryView {
       const node = this.model.country.regions[id];
       this.isDragging = true;
 
-      if (this.model.selectedNodes.some(n=>node.id == n.id)) {
+      if (this.model.selectedNodes.some((n) => node.id == n.id)) {
         this.model.selectedNodes = this.model.selectedNodes.filter(
-            (_node: Region | null) => _node?.id != node.id,
-          );
-
+          (_node: Region | null) => _node?.id != node.id,
+        );
       } else {
         this.model.selectedNodes.push(node);
       }
@@ -292,7 +289,8 @@ export class GraphCountryView {
     ev.preventDefault();
 
     if (this.model.selectedNodes.length > 0) {
-      this.model.country.matrices.adjacencyMatrix = this.model.matrixFactories.createAdjacencyMatrix();
+      this.model.country.matrices.adjacencyMatrix =
+        this.model.matrixFactories.createAdjacencyMatrix();
       this.model.notifyUpdateCountry();
     }
 
@@ -360,7 +358,9 @@ export class GraphCountryView {
       if (!view) continue;
       if (
         !this.model.selectedNodes ||
-        !this.model.selectedNodes.some(regionView=>region.id == regionView.id)
+        !this.model.selectedNodes.some(
+          (regionView) => region.id == regionView.id,
+        )
       ) {
         view.x += view.vx;
         view.y += view.vy;
@@ -449,7 +449,7 @@ export class GraphCountryView {
       view.draw(this.ctx, radius, NodeViewMode.none);
     }
 
-    for(let region of this.model.selectedNodes) {
+    for (let region of this.model.selectedNodes) {
       const node = this.model.country.regions[region.id];
       const radius = (1 + node.manufacturingShare) * 10;
       const view = this.regionViews.regionViews[region.id];
@@ -458,10 +458,11 @@ export class GraphCountryView {
 
     if (this.model.focusedRegionIndex != -1) {
       const node = this.model.country.regions[this.model.focusedRegionIndex];
-      if(node){
+      if (node) {
         const radius = (1 + node.manufacturingShare) * 10;
-        const view = this.regionViews.regionViews[this.model.focusedRegionIndex];
-        if(view){
+        const view =
+          this.regionViews.regionViews[this.model.focusedRegionIndex];
+        if (view) {
           view.draw(this.ctx, radius, NodeViewMode.focused);
         }
       }
