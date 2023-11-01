@@ -1,15 +1,53 @@
 import { Model } from "@/model/model";
+import { SelectType } from "@/model/selectType";
 
 export class DiagonalMatrixView {
+  private id: string;
   private tableElement: HTMLTableElement;
   private model: Model | undefined;
 
-  constructor(private id: string) {
+  constructor(id: string) {
+    this.id = id;
     this.tableElement = document.getElementById(this.id) as HTMLTableElement;
   }
 
   setModel(model: Model) {
     this.model = model;
+  }
+
+  decorateTable(
+    type: string,
+    rowIndex: number,
+    columnIndex: number,
+    set: boolean,
+  ) {
+    if (set) {
+      this.tableElement.classList.add(type);
+    } else {
+      this.tableElement.classList.remove(type);
+    }
+
+    const row = this.tableElement.rows[rowIndex];
+    if (row && row.cells) {
+      for (let i = 0; i < row.cells.length; i++) {
+        if (set) {
+          row.cells[i].classList.add(type);
+        } else {
+          row.cells[i].classList.remove(type);
+        }
+      }
+    }
+
+    for (let i = 0; i < this.tableElement.rows.length; i++) {
+      const row = this.tableElement.rows[i];
+      if (row.cells[columnIndex]) {
+        if (set) {
+          row.cells[columnIndex].classList.add(type);
+        } else {
+          row.cells[columnIndex].classList.remove(type);
+        }
+      }
+    }
   }
 
   adjustTableSize(
@@ -19,92 +57,194 @@ export class DiagonalMatrixView {
     columnsMax: number,
   ): void {
     if (!this.model) return;
-    const actualRows = Math.min(rows + 1, rowsMax + 1); // +1 はヘッダのため
-    const actualColumns = Math.min(columns + 1, columnsMax + 1); // +1 はヘッダのため
-    // 行の調整
+    const actualRows = Math.min(rows, rowsMax);
+    const actualColumns = Math.min(columns, columnsMax);
+
+    //行の削除
+    while (actualRows < this.tableElement.rows.length - 1) {
+      this.tableElement.deleteRow(-1);
+    }
+
+    //列の削除
+    if (
+      0 < this.tableElement.rows.length &&
+      actualColumns + 1 < this.tableElement.rows[0].cells.length
+    ) {
+      for (
+        let rowIndex = 0;
+        (0 < this.tableElement.rows.length &&
+          this.tableElement.rows[rowIndex] &&
+          rowIndex < this.tableElement.rows[rowIndex].cells.length - 1) ||
+        rowIndex < actualRows;
+        rowIndex++
+      ) {
+        for (
+          let columnIndex = actualColumns;
+          this.tableElement.rows[rowIndex] &&
+          columnIndex < this.tableElement.rows[rowIndex].cells.length;
+          columnIndex++
+        ) {
+          this.tableElement.rows[rowIndex].deleteCell(-1);
+        }
+      }
+    }
+
+    // 行の追加
     for (
-      let rowIndex = this.tableElement.rows.length - 1;
-      this.tableElement.rows.length < actualRows;
+      let rowIndex = this.tableElement.rows.length;
+      rowIndex < actualRows + 1;
       rowIndex++
     ) {
-      const newRow = this.tableElement.insertRow();
-      const newCell = newRow.insertCell();
-      newCell.tagName === "td"
-        ? newRow.cells[0].replaceWith(newRow.insertCell(0))
-        : null;
-
-      newCell.addEventListener("mouseover", () => {
-        this.model?.setFocusedRegionIndex(rowIndex);
-        this.model?.notifyFocusRegion();
-      });
-      newCell.addEventListener("mouseout", () => {
-        this.model?.setFocusedRegionIndex(-1);
-        this.model?.notifyFocusRegion();
-      });
-    }
-    while (this.tableElement.rows.length > actualRows) {
-      this.tableElement.deleteRow(this.tableElement.rows.length - 1);
+      const newRow = document.createElement("tr");
+      this.tableElement.appendChild(newRow);
     }
 
-    // 列の調整
-    for (let i = 0; i < this.tableElement.rows.length; i++) {
+    function debounceMouseEventHandler(
+      func: (event: MouseEvent) => void,
+      timeout = 100,
+    ) {
+      // A slot to save timer id for current debounced function
+      let timer: NodeJS.Timeout | null = null;
+      // Return a function that conditionally calls the original function
+      return (event: MouseEvent) => {
+        // Immediately cancel the timer when called
+        if (timer) {
+          clearTimeout(timer);
+        }
+        // Start another timer that will call the original function
+        timer = setTimeout(() => {
+          func(event);
+        }, timeout);
+      };
+    }
+
+    for (let rowIndex = 0; rowIndex < actualRows + 1; rowIndex++) {
       for (
-        let columnIndex = this.tableElement.rows[i].cells.length - 1;
-        this.tableElement.rows[i].cells.length < actualColumns;
+        let columnIndex = this.tableElement.rows[rowIndex].cells.length;
+        columnIndex < actualColumns + 1;
         columnIndex++
       ) {
-        const newCell = this.tableElement.rows[i].insertCell();
-        if (
-          i === 0 ||
-          this.tableElement.rows[i].cells.length === columnsMax + 1
-        ) {
-          const cell = this.tableElement.rows[i].insertCell(-1);
-          newCell.replaceWith(cell);
-          cell.addEventListener("mouseover", () => {
-            this.model?.setFocusedRegionIndex(columnIndex);
-            this.model?.notifyFocusRegion();
+        const newCell = document.createElement(
+          rowIndex == 0 || columnIndex == 0 ? "th" : "td",
+        );
+        newCell.textContent =
+          rowIndex == 0
+            ? columnIndex == 0
+              ? ""
+              : `${columnIndex - 1}`
+            : columnIndex == 0
+            ? `${rowIndex - 1}`
+            : "";
+        this.tableElement.rows[rowIndex].appendChild(newCell);
+        if (rowIndex == 0) {
+          newCell.addEventListener("mousedown", () => {
+            this.model?.notifyRegionSelect(
+              this.id,
+              this.model?.selectedRegionIds,
+              SelectType.SELECTED,
+              false,
+            );
+            this.model?.notifyRegionSelect(
+              this.id,
+              [columnIndex - 1],
+              SelectType.SELECTED,
+              true,
+            );
           });
-          cell.addEventListener("mouseout", () => {
-            this.model?.setFocusedRegionIndex(-1);
-            this.model?.notifyFocusRegion();
-          });
-        } else {
           newCell.addEventListener("mouseover", () => {
-            this.model?.setFocusedRouteIndex([columnIndex, i - 1], this.id);
-            this.model?.notifyFocusRegion();
+            this.model?.notifyRegionSelect(
+              this.id,
+              [columnIndex - 1],
+              SelectType.FOCUSED,
+              true,
+            );
           });
           newCell.addEventListener("mouseout", () => {
-            this.model?.setFocusedRouteIndex(null, null);
-            this.model?.notifyFocusRegion();
+            this.model?.notifyRegionSelect(
+              this.id,
+              [columnIndex - 1],
+              SelectType.FOCUSED,
+              false,
+            );
+          });
+        } else if (columnIndex == 0) {
+          newCell.addEventListener("mousedown", () => {
+            this.model?.notifyRegionSelect(
+              this.id,
+              this.model?.selectedRegionIds,
+              SelectType.SELECTED,
+              false,
+            );
+            this.model?.notifyRegionSelect(
+              this.id,
+              [rowIndex - 1],
+              SelectType.SELECTED,
+              true,
+            );
+          });
+          newCell.addEventListener("mouseover", () => {
+            this.model?.notifyRegionSelect(
+              this.id,
+              [rowIndex - 1],
+              SelectType.FOCUSED,
+              true,
+            );
+          });
+
+          newCell.addEventListener("mouseout", () => {
+            this.model?.notifyRegionSelect(
+              this.id,
+              [rowIndex - 1],
+              SelectType.FOCUSED,
+              false,
+            );
+          });
+        } else {
+          newCell.addEventListener("mousedown", () => {
+            this.model?.notifyRegionSelect(
+              this.id,
+              this.model?.selectedRegionIds,
+              SelectType.SELECTED,
+              false,
+            );
+            this.model?.notifyRegionSelect(
+              this.id,
+              [rowIndex - 1, columnIndex - 1],
+              SelectType.SELECTED,
+              true,
+            );
+          });
+          newCell.addEventListener("mouseover", () => {
+            this.model?.notifyRegionSelect(
+              this.id,
+              [rowIndex - 1, columnIndex - 1],
+              SelectType.FOCUSED,
+              true,
+            );
+          });
+          newCell.addEventListener("mouseout", () => {
+            this.model?.notifyRegionSelect(
+              this.id,
+              [rowIndex - 1, columnIndex - 1],
+              SelectType.FOCUSED,
+              false,
+            );
           });
         }
       }
-      while (this.tableElement.rows[i].cells.length > actualColumns) {
-        this.tableElement.rows[i].deleteCell(
-          this.tableElement.rows[i].cells.length - 1,
-        );
-      }
     }
 
-    // 先頭列と先頭行に番号を追加
-    for (let i = 1; i < this.tableElement.rows.length; i++) {
-      const cell = this.tableElement.rows[i].cells[0];
-      cell.textContent = (i - 1).toString();
-    }
-    for (let j = 1; j < this.tableElement.rows[0].cells.length; j++) {
-      const cell = this.tableElement.rows[0].cells[j];
-      cell.textContent = (j - 1).toString();
-    }
-
-    // "..." を追加
-    if (rows > rowsMax - 1) {
-      for (let j = 0; j < this.tableElement.rows[rowsMax].cells.length; j++) {
-        this.tableElement.rows[rowsMax].cells[j].textContent = "...";
+    if (columns >= columnsMax) {
+      for (let i = 1; i < this.tableElement.rows.length; i++) {
+        const cells = this.tableElement.rows[i].cells;
+        const n = cells.length;
+        cells[n - 1].textContent = "...";
       }
     }
-    if (columns > columnsMax - 1) {
-      for (let i = 0; i < this.tableElement.rows.length; i++) {
-        this.tableElement.rows[i].cells[columnsMax].textContent = "...";
+    if (rows >= rowsMax) {
+      const n = this.tableElement.rows.length;
+      for (let j = 0; j < this.tableElement.rows[n - 1].cells.length; j++) {
+        this.tableElement.rows[n - 1].cells[j].textContent = "...";
       }
     }
   }
@@ -115,7 +255,6 @@ export class DiagonalMatrixView {
     columnsMax: number,
     toCellString: (value: number) => string,
   ): void {
-    // 最大値を見つける
     let maxVal = 0;
     for (let i = 0; i < data.length; i++) {
       for (let j = 0; j < data[i].length; j++) {
@@ -143,7 +282,9 @@ export class DiagonalMatrixView {
         const alphaValue =
           value != Number.POSITIVE_INFINITY ? value / maxVal : "0";
         const cell = this.tableElement.rows[i + 1].cells[j + 1];
-        cell.textContent = toCellString(data[i][j]); // +1 はヘッダのため
+        const cellString = toCellString(data[i][j]);
+        cell.textContent = cellString;
+        cell.setAttribute("title", cellString);
         cell.style.backgroundColor = `rgba(255, 0, 0, ${alphaValue})`;
       }
     }

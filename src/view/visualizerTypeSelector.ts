@@ -128,7 +128,7 @@ export class VisualizerTypeSelector {
       this.realWageVisualizer.value == value ? "line-through" : "";
     this.avgRealWageLabel.style.textDecoration =
       this.avgRealWageVisualizer.value == value ? "line-through" : "";
-    this.model!.notifyUpdateTime();
+    //this.model!.notifyUpdateTime();
   }
 
   changePriceIndexVisualizer(value: string) {
@@ -142,7 +142,7 @@ export class VisualizerTypeSelector {
       this.realWageVisualizer.value == value ? "line-through" : "";
     this.avgRealWageLabel.style.textDecoration =
       this.avgRealWageVisualizer.value == value ? "line-through" : "";
-    this.model!.notifyUpdateTime();
+    //this.model!.notifyUpdateTime();
   }
 
   changeNominalWageVisualizer(value: string) {
@@ -157,7 +157,7 @@ export class VisualizerTypeSelector {
       this.realWageVisualizer.value == value ? "line-through" : "";
     this.avgRealWageLabel.style.textDecoration =
       this.avgRealWageVisualizer.value == value ? "line-through" : "";
-    this.model!.notifyUpdateTime();
+    //this.model!.notifyUpdateTime();
   }
 
   changeRealWageVisualizer(value: string) {
@@ -171,7 +171,7 @@ export class VisualizerTypeSelector {
         : "";
     this.avgRealWageLabel.style.textDecoration =
       this.avgRealWageVisualizer.value == value ? "line-through" : "";
-    this.model!.notifyUpdateTime();
+    //this.model!.notifyUpdateTime();
   }
 
   changeAvgRealWageVisualizer(value: string) {
@@ -184,7 +184,7 @@ export class VisualizerTypeSelector {
       this.realWageVisualizer.value == value
         ? "line-through"
         : "";
-    this.model!.notifyUpdateTime();
+    //this.model!.notifyUpdateTime();
   }
 
   setModel(model: Model) {

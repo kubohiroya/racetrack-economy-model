@@ -1,114 +1,82 @@
 import { Country } from "./country";
-import { MatrixFactories } from "./matrixFactories";
 import { VisualizerType } from "./visualizerType";
 import { SourceType } from "./sourceType";
-import { Region } from "@/model/region";
+import { Timer } from "@/model/timer";
+import { SelectType } from "@/model/selectType";
 
-export class Model {
+export abstract class Model {
+  timer: Timer | null;
   country: Country;
-  timeCounter: number;
-  timer: NodeJS.Timeout | null;
+
+  barChartType: string | null = null;
   barChartScale: number;
-  timeSpeed: number;
-  simulationStarted: boolean;
   bindings: Map<SourceType, VisualizerType | undefined>;
 
-  matrixFactories: MatrixFactories;
+  focusEventSource: string | null;
+  focusedRegionIds: number[] = [];
+  selectedRegionIds: number[] = [];
 
-  focusedRegionIndex: number;
-  selectedRegionIndex: number;
-  focusedRouteIndex: number[] | null;
-  focusedRouteSource: string | null;
+  numRegionsChangedListeners: (() => void)[];
+  transportCostChangeListeners: ((model: Model) => void)[];
 
-  selectedNodes: Array<Region> = [];
-  //focusedNode: Region | null = null;
+  selectRegionEventListeners: ((
+    tableId: string,
+    regionIds: number[],
+    type: SelectType,
+    set: boolean,
+  ) => void)[];
 
-  countryEventListeners: Array<(model: Model) => void>;
-  timeEventListeners: Array<(model: Model) => void>;
+  startEventListeners: (() => void)[];
+  stopEventListeners: (() => void)[];
+  resetEventListeners: (() => void)[];
 
-  focusRegionEventListener: (() => void)[];
-  selectRegionEventListener: (() => void)[];
-  focusedRouteEventListener: (() => void)[];
-
-  transportCostUpdateEventListener: ((model: Model) => void) | undefined;
-  timerCounterUpdater: (() => void) | undefined;
-
-  constructor(
-    matrixFactories: MatrixFactories,
-    country: Country,
-    scale: number,
-    speed: number,
-  ) {
+  constructor(country: Country, barChartScale: number) {
+    this.timer = Timer.getSimulationTimer();
     this.country = country;
-    this.matrixFactories = matrixFactories;
-
-    this.barChartScale = scale;
-    this.timeSpeed = speed;
-
-    this.timeCounter = 0;
-    this.timer = null;
-    this.simulationStarted = false;
-
+    this.barChartScale = barChartScale;
     this.bindings = new Map<SourceType, VisualizerType | undefined>();
 
-    this.focusedRegionIndex = -1;
-    this.selectedRegionIndex = -1;
-    this.focusedRouteIndex = null;
-    this.focusedRouteSource = null;
+    this.focusedRegionIds = [];
+    this.focusEventSource = null;
 
-    this.focusRegionEventListener = [];
-    this.selectRegionEventListener = [];
-    this.focusedRouteEventListener = [];
-    this.countryEventListeners = new Array<(model: Model) => void>();
-    this.timeEventListeners = new Array<(model: Model) => void>();
+    this.selectRegionEventListeners = [];
+
+    this.startEventListeners = [];
+    this.stopEventListeners = [];
+    this.resetEventListeners = [];
+
+    this.numRegionsChangedListeners = [];
+    this.transportCostChangeListeners = [];
+
+    this.barChartType = "Share of Manufacturing";
   }
 
   reset() {
-    this.timeCounter = 0;
-    this.selectedRegionIndex = -1;
+    this.selectedRegionIds = [];
+    this.country.disturb();
     this.country.reset();
-    this.notifyUpdateTime();
-  }
-
-  stop() {
-    this.simulationStarted = false;
-    if (this.timer != null) {
-      clearInterval(this.timer);
-    }
-    this.timer = null;
+    this.timer?.reset();
+    this.notifyReset();
   }
 
   start() {
-    const expScale = (value: number): number => {
-      const minLog = Math.log(10);
-      const maxLog = Math.log(3000);
-      const scale = minLog + (1 - value) * (maxLog - minLog);
-      // 指数関数を取得
-      return Math.exp(scale);
-    };
-
-    if (!this.simulationStarted) {
-      this.simulationStarted = true;
-      const interval = expScale(this.timeSpeed);
-      this.timer = setInterval(() => {
-        this.country.procedure();
-        this.timeCounter++;
-        this.notifyUpdateTime();
-      }, interval);
-    }
+    this.timer?.start();
+    Timer.getLayoutTimer().stop();
+    this.notifyStart();
   }
 
-  setScale(scale: number) {
+  stop() {
+    this.timer?.stop();
+    this.notifyStop();
+  }
+
+  setBarChartScale(scale: number) {
     this.barChartScale = scale;
-    this.notifyUpdateTime();
-  }
-
-  setSpeed(speed: number) {
-    this.timeSpeed = speed;
   }
 
   setNumRegions(numRegions: number) {
-    this.country.updateRegions(numRegions);
+    this.country.setNumRegions(numRegions);
+    this.notifyNumRegionsChanged();
   }
 
   setPi(mu: number) {
@@ -117,95 +85,138 @@ export class Model {
 
   setTransportCost(transportCost: number) {
     this.country.setTransportCost(transportCost);
-    (async () => {
-      this.country.matrices.transportCostMatrix =
-        await this.matrixFactories.createTransportCostMatrix();
-      this.transportCostUpdateEventListener &&
-        this.transportCostUpdateEventListener(this);
-    })();
+    this.notifyTransportCostChange();
   }
 
   setSigma(sigma: number) {
     this.country.setSigma(sigma);
   }
 
-  setFocusedRegionIndex(index: number) {
-    this.focusedRegionIndex = index;
+  setFocusedRegionId(source: string | null, regionIds: number[]) {
+    this.focusEventSource = source;
+    this.focusedRegionIds = regionIds;
   }
 
-  setFocusedRouteIndex(route: number[] | null, source: string | null) {
-    this.focusedRouteIndex = route;
-    this.focusedRouteSource = source;
+  setFocusedRouteIds(source: string | null, route: number[]) {
+    this.focusEventSource = source;
+    this.focusedRegionIds = route;
   }
 
-  isFocusedRouteIndex(index0: number, index1: number) {
-    if (this.focusedRouteIndex === null) {
+  isFocusedRegionIds(id0: number, id1: number) {
+    if (this.focusedRegionIds.length == 0) {
       return false;
     }
     return (
-      Math.min(this.focusedRouteIndex[0], this.focusedRouteIndex[1]) ===
-        Math.min(index0, index1) &&
-      Math.max(this.focusedRouteIndex[0], this.focusedRouteIndex[1]) ===
-        Math.max(index0, index1)
+      Math.min(this.focusedRegionIds[0], this.focusedRegionIds[1]) ==
+        Math.min(id0, id1) &&
+      Math.max(this.focusedRegionIds[0], this.focusedRegionIds[1]) ==
+        Math.max(id0, id1)
     );
   }
 
-  addNotifyFocusRegionEventListener(listener: () => void) {
-    this.focusRegionEventListener.push(listener);
+  addStartListener(listener: () => void) {
+    this.startEventListeners.push(listener);
   }
 
-  notifyFocusRegion() {
-    this.focusRegionEventListener.forEach((listener) => {
+  notifyStart() {
+    this.startEventListeners.forEach((listener) => {
       listener();
     });
   }
 
-  addSelectRegionEventListener(listener: () => void) {
-    this.selectRegionEventListener.push(listener);
+  addStopListener(listener: () => void) {
+    this.stopEventListeners.push(listener);
   }
 
-  notifySelectRegion() {
-    this.selectRegionEventListener.forEach((listener) => {
+  notifyStop() {
+    this.stopEventListeners.forEach((listener) => {
       listener();
     });
   }
 
-  addFocusRouteEventListener(listener: () => void) {
-    this.focusedRouteEventListener.push(listener);
+  addResetListener(listener: () => void) {
+    this.resetEventListeners.push(listener);
   }
 
-  notifyFocusRoute() {
-    this.focusedRouteEventListener.forEach((listener) => {
+  notifyReset() {
+    this.resetEventListeners.forEach((listener) => {
       listener();
     });
   }
 
-  setTransportCostEventListener(listener: (model: Model) => void) {
-    this.transportCostUpdateEventListener = listener;
+  addRegionSelectListener(
+    listener: (
+      tableId: string,
+      regionIds: number[],
+      type: SelectType,
+      set: boolean,
+    ) => void,
+  ) {
+    this.selectRegionEventListeners.push(listener);
   }
 
-  addCountryEventListener(listener: (model: Model) => void) {
-    this.countryEventListeners.push(listener);
+  notifyRegionSelect(
+    tableId: string,
+    regionIds: number[],
+    type: SelectType,
+    set: boolean,
+  ) {
+    this.selectRegionEventListeners.forEach((listener) => {
+      listener(tableId, regionIds, type, set);
+    });
   }
 
-  notifyUpdateCountry() {
-    this.countryEventListeners.forEach((listener) => {
+  addTransportCostChangeListener(listener: () => void) {
+    this.transportCostChangeListeners.push(listener);
+  }
+
+  notifyTransportCostChange() {
+    this.transportCostChangeListeners.forEach((listener) => {
       listener(this);
     });
   }
 
-  addTimeEventListener(listener: (model: Model) => void) {
-    this.timeEventListeners.push(listener);
+  addNumRegionsChangedListener(listener: () => void) {
+    this.numRegionsChangedListeners.push(listener);
   }
 
-  notifyUpdateTime() {
-    this.timerCounterUpdater && this.timerCounterUpdater();
-    this.timeEventListeners.forEach((listener) => {
-      listener(this);
+  notifyNumRegionsChanged() {
+    this.numRegionsChangedListeners.forEach((listener) => {
+      listener();
     });
   }
 
-  setTimerCounterUpdater(timerCounterUpdater: () => void) {
-    this.timerCounterUpdater = timerCounterUpdater;
+  updateAdjacencyMatrix(): void {
+    this.country.matrices.adjacencyMatrix = this.createAdjacencyMatrix(
+      this.country.numRegions,
+    );
   }
+
+  async updateDistanceMatrixAndTransportCostMatrix() {
+    [
+      this.country.matrices.distanceMatrix,
+      this.country.matrices.predecessorMatrix,
+    ] = await this.createDistanceMatrix();
+    this.country.matrices.transportCostMatrix =
+      this.createTransportCostMatrix();
+  }
+
+  async adjustRegions(numRegions: number): Promise<void> {
+    if (this.country.regions.length < numRegions) {
+      this.appendRegions(numRegions - this.country.regions.length);
+    }
+    if (this.country.regions.length > numRegions) {
+      this.extractRegions([...Array(numRegions).keys()]);
+    }
+  }
+
+  abstract createAdjacencyMatrix(numRegions: number): number[][];
+
+  abstract createDistanceMatrix(): Promise<number[][][]>;
+
+  abstract createTransportCostMatrix(): number[][];
+
+  abstract appendRegions(desiredNumRegions: number): void;
+
+  abstract extractRegions(selectedRegionIds: number[]): void;
 }

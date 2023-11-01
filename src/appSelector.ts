@@ -8,9 +8,7 @@ const infoDialogCloseButton = document.getElementById(
   "infoDialogCloseButton",
 ) as HTMLCanvasElement;
 
-const raceTrackCountry = document.getElementById(
-  "raceTrackCountry",
-) as HTMLCanvasElement;
+const raceTrack = document.getElementById("raceTrack") as HTMLCanvasElement;
 const graphCountry = document.getElementById("graphCountry") as HTMLDivElement;
 
 const raceTrackDialog = document.getElementById(
@@ -22,7 +20,7 @@ const infoDialog = document.getElementById("infoDialog") as Dialog;
 export function startRaceTrackApp(openDialog: boolean) {
   raceTrackTitle.className = "enabled";
   graphTitle.className = "disabled";
-  raceTrackCountry.style.display = "block";
+  raceTrack.style.display = "block";
   graphCountry.style.display = "none";
   raceTrackDialog.style.display = "block";
   graphDialog.style.display = "none";
@@ -34,7 +32,7 @@ export function startRaceTrackApp(openDialog: boolean) {
 export function startGraphApp(openDialog: boolean) {
   raceTrackTitle.className = "disabled";
   graphTitle.className = "enabled";
-  raceTrackCountry.style.display = "none";
+  raceTrack.style.display = "none";
   graphCountry.style.display = "block";
   raceTrackDialog.style.display = "none";
   graphDialog.style.display = "block";

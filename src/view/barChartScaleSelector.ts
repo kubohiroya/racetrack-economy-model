@@ -17,6 +17,6 @@ export class BarChartScaleSelector {
     if (!this.model) throw new Error();
     const value = (ev.target as HTMLOptionElement).value;
     const scale = parseFloat(value.split(" ")[1]);
-    this.model.setScale(scale);
+    this.model.setBarChartScale(scale);
   }
 }

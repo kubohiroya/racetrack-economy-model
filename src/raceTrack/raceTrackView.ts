@@ -5,22 +5,21 @@ import { SourceType } from "@/model/sourceType";
 import { extractKeysByValue } from "@/view/visualizerTypeSelector";
 import { ValueType } from "@/model/valueType";
 import { createMapper } from "@/createMapper";
+import { drawRegionDetail } from "@/view/drawRegionDetail";
+import { SelectType } from "@/model/selectType";
 
-const left = 40;
-const top = 40;
-const diameter = 320;
-
-export class RaceTrackCountryView {
+export class RaceTrackView {
   canvas: HTMLCanvasElement;
   model: Model | undefined;
-  prevSegment = -1;
+  diameter: number = 0;
+
   mappers:
     | { mapper: (region: Region) => number; type: ValueType }[]
     | undefined;
 
   constructor() {
     this.canvas = document.getElementById(
-      "raceTrackCountryCanvas",
+      "raceTrackCanvas",
     ) as HTMLCanvasElement;
     this.canvas.addEventListener("mousemove", (ev) => this.onMouseMove(ev));
     this.canvas.addEventListener("mouseenter", (ev) => this.onMouseMove(ev));
@@ -43,48 +42,66 @@ export class RaceTrackCountryView {
     const canvasX = (event.clientX - rect.left) * scaleX;
     const canvasY = (event.clientY - rect.top) * scaleY;
 
-    const x = canvasX - left - diameter / 2;
-    const y = canvasY - top - diameter / 2;
+    const center = new DOMPoint(
+      (this.canvas.width - this.diameter) / 2 + this.diameter / 2,
+      (this.canvas.height - this.diameter) / 2 + this.diameter / 2,
+    );
+
+    const x = canvasX - center.x;
+    const y = canvasY - center.y;
 
     const distance = Math.sqrt(x * x + y * y);
-    if (distance < diameter / 2 - 30 || diameter / 2 + 30 < distance) {
-      this.model!.setFocusedRegionIndex(-1);
-      this.prevSegment = -1;
-      this.model.notifyFocusRegion();
+    if (
+      distance < this.diameter / 2 - 30 ||
+      this.diameter / 2 + 30 < distance
+    ) {
+      // this.model!.setFocusedRegionId(null, null);
+      this.model.notifyRegionSelect(
+        "raceTrackView",
+        this.model.focusedRegionIds,
+        SelectType.FOCUSED,
+        false,
+      );
       return;
     }
 
     const computeSegmentIndex = (x: number, y: number, n: number): number => {
-      // (x, y)から原点(0, 0)までのベクトルの向きを計算
       const angle = Math.atan2(y, x);
 
-      // 角度を[0, 2π)の範囲に正規化
       const segmentSize = (2 * Math.PI) / n;
 
       const normalizedAngle =
         (angle + 2 * Math.PI + segmentSize / 2) % (2 * Math.PI);
 
-      // 角度をn分割し、どのセグメントに該当するかを計算
       return Math.floor(normalizedAngle / segmentSize);
     };
 
     const segment = computeSegmentIndex(
       x,
       y,
-      this.model!.country.regions.length,
+      this.model.country.regions.length,
     );
 
-    if (this.prevSegment != segment) {
-      this.model!.setFocusedRegionIndex(segment);
-      this.model.notifyFocusRegion();
-      this.prevSegment = segment;
-    }
+    // this.model.setFocusedRegionId(null, segment);
+    this.model.notifyRegionSelect(
+      "raceTrackView",
+      this.model.focusedRegionIds,
+      SelectType.FOCUSED,
+      false,
+    );
+    this.model.notifyRegionSelect(
+      "raceTrackView",
+      [segment],
+      SelectType.FOCUSED,
+      true,
+    );
   }
 
   draw(): void {
     if (!this.model || !this.mappers) {
       throw new Error();
     }
+
     const vertexCircleRadiusBase = 14;
     const vertexCircleColorBase = 0.5;
     const vertices = this.model.country.regions.length;
@@ -93,6 +110,14 @@ export class RaceTrackCountryView {
     if (!ctx) return;
 
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    const diameter = Math.min(this.canvas.width, this.canvas.height) - 80;
+    this.diameter = diameter;
+    const radius = diameter / 2;
+    const center = new DOMPoint(
+      (this.canvas.width - diameter) / 2 + radius,
+      (this.canvas.height - diameter) / 2 + radius,
+    );
 
     const max = this.mappers.map((mapper) =>
       this.model!.country.regions.map(mapper.mapper).reduce(
@@ -133,12 +158,9 @@ export class RaceTrackCountryView {
       ),
     );
 
-    const radius = diameter / 2;
-    const center = { x: radius + left, y: radius + top };
     const angleIncrement = (2 * Math.PI) / vertices;
 
     this.drawBaseCircle(ctx, center, radius);
-
     this.drawVertexCitiesAndLabels(
       vertices,
       angleIncrement,
@@ -199,7 +221,7 @@ export class RaceTrackCountryView {
     );
     ctx.setLineDash([]);
 
-    this.drawRegionState(this.model, ctx, center);
+    drawRegionDetail(this.model, ctx, center);
   }
 
   private drawCircle(
@@ -314,7 +336,7 @@ export class RaceTrackCountryView {
         vertexCircleRadiusBase,
         vertexCircleColorBase,
         src[i],
-        i === model.focusedRegionIndex,
+        model.focusedRegionIds.includes(i),
       );
 
       const marginToText = 30;
@@ -328,59 +350,30 @@ export class RaceTrackCountryView {
     }
   }
 
-  private drawRegionState(
-    model: Model,
-    ctx: CanvasRenderingContext2D,
-    center: { x: number; y: number },
-  ) {
-    if (model.focusedRegionIndex >= 0) {
-      const offsetX = -80;
-      const offsetY = -60;
-
-      const region = model.country.regions[model.focusedRegionIndex];
-      ctx.fillStyle = `black`;
-
-      const highlow: string =
-        region.realWage > model.country.avgRealWage
-          ? "↑"
-          : region.realWage < model.country.avgRealWage
-          ? "↓"
-          : "";
-
-      [
-        "Region #" + region.id,
-        " Share of manufacturing = " + region.manufacturingShare.toFixed(4),
-        " Share of agriculture = " + region.agricultureShare.toFixed(4),
-        " Price index = " + region.priceIndex.toFixed(4),
-        " Income = " + region.income.toFixed(4),
-        " Nominal wage = " + region.nominalWage.toFixed(4),
-        " Real wage = " + region.realWage.toFixed(4) + " " + highlow,
-        " Average real wage = " + model.country.avgRealWage.toFixed(4),
-      ].forEach((text, index) => {
-        ctx.fillText(text, center.x + offsetX, center.y + offsetY + index * 15);
-      });
-    }
-  }
-
   private drawBaseCircle(
     ctx: CanvasRenderingContext2D,
     center: { x: number; y: number },
     radius: number,
   ) {
     if (!this.model) return;
-    const focusedRouteIndex = this.model.focusedRouteIndex;
+
+    const focusedRegionIds = this.model.focusedRegionIds;
 
     const angle = (2.0 * Math.PI) / this.model.country.regions.length;
 
-    if (focusedRouteIndex != null) {
+    if (
+      focusedRegionIds != null &&
+      focusedRegionIds.length == 2 &&
+      0 <= focusedRegionIds[0] &&
+      0 <= focusedRegionIds[1]
+    ) {
       const index =
-        focusedRouteIndex[0] < focusedRouteIndex[1]
-          ? [focusedRouteIndex[0], focusedRouteIndex[1]]
-          : [focusedRouteIndex[1], focusedRouteIndex[0]];
-
+        focusedRegionIds[0] < focusedRegionIds[1]
+          ? [focusedRegionIds[0], focusedRegionIds[1]]
+          : [focusedRegionIds[1], focusedRegionIds[0]];
       if (
-        this.model.focusedRouteSource != "adjacencyMatrix" ||
-        (this.model.focusedRouteSource == "adjacencyMatrix" &&
+        this.model.focusEventSource != "adjacencyMatrix" ||
+        (this.model.focusEventSource == "adjacencyMatrix" &&
           index[1] - index[0] == 1) ||
         index[1] - index[0] == this.model.country.regions.length - 1
       ) {

@@ -1,5 +1,6 @@
 import { DiagonalMatrixView } from "./diagonalMatrixView";
 import { Model } from "@/model/model";
+import { SelectType } from "@/model/selectType";
 
 const max = 21;
 
@@ -20,8 +21,7 @@ export class DiagonalMatrixViewSet {
     this.adjacencyMatrix.setModel(model);
     this.distanceMatrix.setModel(model);
     this.transportCostMatrix.setModel(model);
-    this.updateTableSize(model.country.regions.length);
-    this.updateTableContent();
+    this.update();
   }
 
   updateTableSize(numRegions: number) {
@@ -32,41 +32,43 @@ export class DiagonalMatrixViewSet {
 
   async updateTableContent() {
     if (!this.model) return;
-    const adjacencyMatrix = this.model.country.matrices.adjacencyMatrix;
-    this.adjacencyMatrix.setTableContent(
-      adjacencyMatrix,
-      max,
-      max,
-      (value: number) =>
-        value == Number.POSITIVE_INFINITY ? "Inf" : value.toFixed(1),
-    );
-
-    const distanceMatrix = this.model.country.matrices.distanceMatrix;
-    if (!this.model) return;
-    this.distanceMatrix.setTableContent(
-      distanceMatrix,
-      max,
-      max,
-      (value: number) =>
+    [
+      {
+        table: this.adjacencyMatrix,
+        matrix: this.model.country.matrices.adjacencyMatrix,
+      },
+      {
+        table: this.distanceMatrix,
+        matrix: this.model.country.matrices.distanceMatrix,
+      },
+      {
+        table: this.transportCostMatrix,
+        matrix: this.model.country.matrices.transportCostMatrix,
+      },
+    ].forEach((entry) => {
+      const { table, matrix } = entry;
+      table.setTableContent(matrix, max, max, (value: number) =>
         value == Number.POSITIVE_INFINITY ? "Inf" : value?.toFixed(1),
-    );
+      );
+    });
+  }
 
-    const transportCostMatrix = this.model.country.matrices.transportCostMatrix;
-    this.transportCostMatrix.setTableContent(
-      transportCostMatrix,
-      max,
-      max,
-      (value: number) =>
-        value == Number.POSITIVE_INFINITY
-          ? "Inf"
-          : Number.isNaN(value)
-          ? ""
-          : value?.toFixed(2),
-    );
+  decorateTable(
+    sourceId: string,
+    rowIndex: number,
+    columnIndex: number,
+    type: SelectType,
+    set: boolean,
+  ): void {
+    this.adjacencyMatrix.decorateTable(type, rowIndex, columnIndex, set);
+    this.distanceMatrix.decorateTable(type, rowIndex, columnIndex, set);
+    this.transportCostMatrix.decorateTable(type, rowIndex, columnIndex, set);
   }
 
   async update() {
-    this.updateTableSize(this.model!.country.regions.length);
-    await this.updateTableContent();
+    if (this.model) {
+      this.updateTableSize(this.model.country.regions.length);
+      await this.updateTableContent();
+    }
   }
 }

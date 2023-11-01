@@ -1,21 +1,17 @@
-import { Country } from "@/model/country";
-import { MatrixFactories } from "@/model/matrixFactories";
+import { Model } from "@/model/model";
+import { Region } from "@/model/region";
 
-export class RaceTrackMatrixFactories implements MatrixFactories {
-  country: Country;
-
-  constructor(country: Country) {
-    this.country = country;
-  }
-
-  createAdjacencyMatrix(): number[][] {
-    const numRegions = this.country.regions.length;
+export class RaceTrackModel extends Model {
+  createAdjacencyMatrix(numRegions: number): number[][] {
+    //const numRegions = this.country.regions.length;
     const matrix: number[][] = new Array<number[]>(numRegions);
+
+    if (numRegions == 0) {
+      return [[]];
+    }
+
     for (let i = 0; i < numRegions; i++) {
       matrix[i] = new Array<number>(numRegions);
-    }
-    if (numRegions == 0) {
-      return [];
     }
 
     matrix[0].fill(Number.POSITIVE_INFINITY);
@@ -71,12 +67,42 @@ export class RaceTrackMatrixFactories implements MatrixFactories {
     }
     const logTransportCost = Math.log(this.country.transportCost);
     for (let i = 0; i < numRegions; i++) {
-      for (let j = i; j < numRegions; j++) {
-        const dist =
-          (2.0 * this.country.matrices.distanceMatrix[i][j]) / numRegions;
-        matrix[i][j] = matrix[j][i] = Math.exp(logTransportCost * dist);
+      if (this.country.matrices.distanceMatrix[i]) {
+        for (let j = i; j < numRegions; j++) {
+          const dist =
+            (2.0 * this.country.matrices.distanceMatrix[i][j]) / numRegions;
+          matrix[i][j] = matrix[j][i] = Math.exp(logTransportCost * dist);
+        }
       }
     }
     return matrix;
+  }
+
+  appendRegions(numRegions: number): void {
+    const regions = new Array<Region>();
+    if (this.country.regions) {
+      for (const region of this.country.regions) {
+        region.manufacturingShare = 1.0 / numRegions;
+        region.agricultureShare = 1.0 / numRegions;
+        regions.push(region);
+      }
+    }
+    while (regions.length < numRegions) {
+      regions.push(
+        new Region(regions.length, 1.0 / numRegions, 1.0 / numRegions),
+      );
+    }
+    this.country.regions = regions;
+  }
+
+  extractRegions(selectedRegionIds: number[]): Promise<void> {
+    const numRegions = selectedRegionIds.length;
+    const regions = this.country.regions.slice(0, numRegions - 1);
+    for (const region of this.country.regions) {
+      region.manufacturingShare = 1.0 / numRegions;
+      region.agricultureShare = 1.0 / numRegions;
+    }
+    this.country.regions = regions;
+    return Promise.resolve(undefined);
   }
 }

@@ -5,14 +5,14 @@ export class Region {
   manufacturingShare: number;
   manufacturingShare0: number;
   agricultureShare: number;
-  priceIndex: number;
-  priceIndex0: number;
-  nominalWage: number;
-  nominalWage0: number;
-  realWage: number;
-  income: number;
-  income0: number;
-  deltaManufacturingShare: number;
+  priceIndex: number = 1.0;
+  priceIndex0: number = 1.0;
+  nominalWage: number = 1.0;
+  nominalWage0: number = 1.0;
+  realWage: number = 1.0;
+  income: number = 1.0;
+  income0: number = 1.0;
+  deltaManufacturingShare: number = 0.0;
 
   constructor(
     id: number,
@@ -23,6 +23,9 @@ export class Region {
     this.manufacturingShare = manufacturingShare;
     this.manufacturingShare0 = manufacturingShare;
     this.agricultureShare = agricultureShare;
+  }
+
+  reset() {
     this.priceIndex = 1.0;
     this.priceIndex0 = 1.0;
     this.nominalWage = 1.0;
@@ -63,13 +66,15 @@ export class Region {
   calcPriceIndex(country: Country): void {
     let priceIndex = 0;
     country.regions.forEach((region) => {
-      priceIndex +=
-        region.manufacturingShare *
-        Math.pow(
-          region.nominalWage0 *
-            country.matrices.transportCostMatrix[this.id][region.id],
-          1 - country.sigma,
-        );
+      if (country.matrices.transportCostMatrix[this.id]) {
+        priceIndex +=
+          region.manufacturingShare *
+          Math.pow(
+            region.nominalWage0 *
+              country.matrices.transportCostMatrix[this.id][region.id],
+            1 - country.sigma,
+          );
+      }
     });
     this.priceIndex = Math.pow(priceIndex, 1 / (1 - country.sigma));
   }
@@ -81,13 +86,15 @@ export class Region {
   calcNominalWage(country: Country): void {
     let nominalWage = 0;
     country.regions.forEach((region) => {
-      nominalWage +=
-        region.income0 *
-        Math.pow(
-          country.matrices.transportCostMatrix[this.id][region.id],
-          1 - country.sigma,
-        ) *
-        Math.pow(region.priceIndex0, country.sigma - 1);
+      if (country.matrices.transportCostMatrix[this.id]) {
+        nominalWage +=
+          region.income0 *
+          Math.pow(
+            country.matrices.transportCostMatrix[this.id][region.id],
+            1 - country.sigma,
+          ) *
+          Math.pow(region.priceIndex0, country.sigma - 1);
+      }
     });
     this.nominalWage = Math.pow(nominalWage, 1 / country.sigma);
   }

@@ -14,8 +14,6 @@ export class SliderSet {
 
   model: Model | undefined;
 
-  listeners: ((numRegions: number) => void)[];
-
   constructor() {
     this.numRegionsSlider = document.getElementById(
       "numRegionsSlider",
@@ -29,19 +27,20 @@ export class SliderSet {
     this.transportCostElem = document.getElementById("tcost") as HTMLElement;
     this.sigmaElem = document.getElementById("sigma") as HTMLElement;
 
-    this.numRegionsSlider.addEventListener("change", () =>
-      this.onNCitiesChanged(),
-    );
+    this.numRegionsSlider.addEventListener("change", async () => {
+      this.onNumRegionsChanged();
+    });
+
     this.piSlider.addEventListener("change", () => this.onPiChanged());
     this.transportCostSlider.addEventListener("change", () =>
-      this.onTcostChanged(),
+      this.onTransportCostChanged(),
     );
     this.sigmaSlider.addEventListener("change", () => this.onSigmaChanged());
-    this.listeners = [];
   }
 
   setModel(model: Model) {
     this.model = model;
+    this.numRegionsSlider.valueAsNumber = model.country.numRegions;
     this.piSlider.valueAsNumber = model.country.pi;
     this.transportCostSlider.valueAsNumber = model.country.transportCost;
     this.sigmaSlider.valueAsNumber = model.country.sigma;
@@ -52,12 +51,12 @@ export class SliderSet {
     this.piElem.innerText = this.piSlider.value;
   }
 
-  onNCitiesChanged() {
+  onNumRegionsChanged() {
     if (!this.model) throw new Error();
-    this.numRegionsElem.innerText = this.numRegionsSlider.value;
-    const numRegions = this.numRegionsSlider.valueAsNumber;
-    this.model.setNumRegions(numRegions);
-    this.model.notifyUpdateCountry();
+    const numRegions = Math.floor(this.numRegionsSlider.valueAsNumber);
+    this.model?.setNumRegions(numRegions);
+    this.numRegionsElem.innerText = `${numRegions}`;
+    this.model.notifyNumRegionsChanged();
   }
 
   onPiChanged() {
@@ -66,7 +65,7 @@ export class SliderSet {
     this.model.setPi(this.piSlider.valueAsNumber);
   }
 
-  onTcostChanged() {
+  onTransportCostChanged() {
     if (!this.model) throw new Error();
     this.transportCostElem.innerText =
       this.transportCostSlider.valueAsNumber.toPrecision(2);

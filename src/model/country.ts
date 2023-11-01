@@ -1,13 +1,14 @@
 import { Region } from "./region";
 import { Matrices } from "./matrices";
+import { Timer, TimerEvent } from "@/model/timer";
+import { random } from "@/model/random";
 
 export class Country {
-  width: number;
-  height: number;
-
   /* a country has her regions in this vector */
   regions: Array<Region>;
   matrices: Matrices;
+
+  numRegions: number;
 
   /*  ratio of workers */
   pi: number;
@@ -25,21 +26,38 @@ export class Country {
   avgRealWage: number;
 
   constructor(
-    width: number,
-    height: number,
+    numRegions: number,
     pi: number,
     transportCost: number,
     sigma: number,
   ) {
-    this.width = width;
-    this.height = height;
+    this.numRegions = numRegions;
     this.pi = pi;
     this.transportCost = transportCost;
     this.sigma = sigma;
     this.gamma = 1.0;
     this.avgRealWage = 1.0;
-    this.regions = this.createRegions(0);
+    this.regions = [];
     this.matrices = new Matrices(0);
+
+    Timer.getSimulationTimer().addTimeEventListener((event: TimerEvent) => {
+      switch (event.type) {
+        case "tick":
+          this.tick();
+          break;
+        case "start":
+          break;
+        case "stop":
+          break;
+        case "reset":
+          this.reset();
+          break;
+      }
+    });
+  }
+
+  setNumRegions(numRegions: number) {
+    this.numRegions = numRegions;
   }
 
   setSigma(d: number): void {
@@ -55,16 +73,24 @@ export class Country {
   }
 
   reset() {
-    this.regions = this.createRegions(this.regions.length);
+    for (let region of this.regions) {
+      region.manufacturingShare = 1 / this.regions.length;
+      region.agricultureShare = 1 / this.regions.length;
+      region.reset();
+    }
     this.disturb();
   }
 
   disturb(): void {
     const numCities = this.regions.length;
-    const dd = (1.0 / numCities) * 0.05;
-    for (let i = 0; i < numCities; i++) {
-      const index = Math.floor(Math.random() * numCities);
-      this.regions[index].changeManufacturingShare(dd);
+    if (numCities > 0) {
+      const dd = (1.0 / numCities) * 0.05;
+      for (let i = 0; i < numCities; i++) {
+        const from = Math.floor(random() * numCities);
+        const to = Math.floor(random() * numCities);
+        this.regions[from].changeManufacturingShare(dd);
+        this.regions[to].changeManufacturingShare(-1 * dd);
+      }
     }
     this.rescale();
   }
@@ -134,7 +160,7 @@ export class Country {
     this.rescale();
   }
 
-  procedure(): void {
+  tick(): void {
     /* simulation procedure */
     this.backupPreviousValues();
     this.calcIncome();
@@ -144,78 +170,5 @@ export class Country {
     this.calcAvgRealWage();
     this.calcDynamics();
     this.applyDynamics();
-  }
-
-  createRegion(
-    id: number,
-    manufacturingShare: number,
-    agricultureShare: number,
-  ): Region {
-    return new Region(id, manufacturingShare, agricultureShare);
-  }
-
-  createRegions(numRegions: number) {
-    const regions = new Array<Region>(numRegions);
-    for (let i = 0; i < numRegions; i++) {
-      regions[i] = this.createRegion(i, 1.0 / numRegions, 1.0 / numRegions);
-    }
-    return regions;
-  }
-
-  /*
-  updateNumRegions(numRegions: number){
-    this.regions = this.createRegions(numRegions);
-    this.matrices = new Matrices(numRegions);
-    this.disturb();
-  }
-   */
-
-  updateRegions(numRegions: number) {
-    if (this.regions.length < numRegions) {
-      for (const region of this.regions) {
-        region.manufacturingShare = 1.0 / numRegions;
-        region.agricultureShare = 1.0 / numRegions;
-      }
-      while (this.regions.length < numRegions) {
-        this.addNode(
-          this.createRegion(
-            this.regions.length,
-            1.0 / numRegions,
-            1.0 / numRegions,
-          ),
-        );
-      }
-    } else if (numRegions < this.regions.length) {
-      this.regions = this.regions.slice(0, numRegions - 1);
-    }
-    this.disturb();
-  }
-
-  addNode(region: Region) {
-    this.regions.push(region);
-  }
-
-  removeNode(id: number) {
-    const removingGeoRegion = this.regions.find((region) => region.id == id);
-    if (!removingGeoRegion) {
-      return;
-    }
-    this.regions = this.regions
-      .map((geoRegion, index) => {
-        if (index < removingGeoRegion.id) {
-          return geoRegion;
-        } else if (index == removingGeoRegion.id) {
-          return null;
-        } else {
-          geoRegion.id = geoRegion.id - 1;
-          return geoRegion;
-        }
-      })
-      .filter((region) => region != null) as Region[];
-
-    for (const region of this.regions) {
-      region.manufacturingShare = 1.0 / this.regions.length;
-      region.agricultureShare = 1.0 / this.regions.length;
-    }
   }
 }

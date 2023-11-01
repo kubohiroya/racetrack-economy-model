@@ -6,11 +6,13 @@ import { CaseSelector } from "./caseSelector";
 import { CommandButtonSet } from "./commandButtonSet";
 import { DiagonalMatrixViewSet } from "./diagonalMatrixViewSet";
 import { Model } from "@/model/model";
+import { BarChartTypeSelector } from "@/view/barChartTypeSelector";
 
 export class View {
   barChartView: BarChartView;
   visualizerTypeSelector: VisualizerTypeSelector;
   barChartScaleSelector: BarChartScaleSelector;
+  barChartTypeSelector: BarChartTypeSelector;
   sliderSet: SliderSet;
   caseSelector: CaseSelector;
   commandButtonSet: CommandButtonSet;
@@ -20,6 +22,7 @@ export class View {
     this.barChartView = new BarChartView();
     this.visualizerTypeSelector = new VisualizerTypeSelector();
     this.barChartScaleSelector = new BarChartScaleSelector();
+    this.barChartTypeSelector = new BarChartTypeSelector();
     this.sliderSet = new SliderSet();
     this.caseSelector = new CaseSelector(this.sliderSet);
     this.commandButtonSet = new CommandButtonSet();
@@ -30,18 +33,19 @@ export class View {
     this.barChartView.setModel(model);
     this.visualizerTypeSelector.setModel(model);
     this.barChartScaleSelector.setModel(model);
+    this.barChartTypeSelector.setModel(model);
     this.sliderSet.setModel(model);
     this.caseSelector.setModel(model);
     this.commandButtonSet.setModel(model);
     this.diagonalTableViewSet.setModel(model);
   }
 
-  notifyUpdateCountry() {
+  async update() {
+    await this.diagonalTableViewSet.update();
     this.barChartView.draw();
-    this.diagonalTableViewSet.update();
   }
 
-  notifyUpdateTime() {
+  tick() {
     this.barChartView.draw();
   }
 }
