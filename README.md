@@ -1,4 +1,6 @@
-# The Racetrack Economy
+# The Economic Geography Modeling Simulator
+
+## The Racetrack Economy
 
 https://kubohiroya.github.io/racetrack-economy-model
 
@@ -6,7 +8,8 @@ https://user-images.githubusercontent.com/1578247/214999618-4f7118dd-e70d-4267-a
 
 A recreation of the Krugman simulation.
 
-## The Model 
+### The Model
+
 Paul Krugman, the 2008 winner of the Nobel Prize in Economics, 
 conducted a simulation using a spatial economics model called 
 the "Racetrack Economy" model. 
@@ -24,7 +27,7 @@ Using these basic conditions, Krugman modified transportation
 cost (τ) and the degree of love of variety for industrial products (σ) in order to
 analyze changes in the numbers and locations of agglomerations.
 
-## Variables
+### Variables
 
 - K: The number of locations assumed to be laid out symmetrically in a circle, with transportation
                 possible only around the circumference. The distance between any two neighboring locations is set equal
@@ -38,7 +41,7 @@ analyze changes in the numbers and locations of agglomerations.
 Variables "Κ", "π", "T" and "σ" can be changed while the simulation is in progress.
 This allows the observation of agglomeration formation, agglomeration dispersal, and changes in the numbers and locations of agglomerations according to various parameters.
 
-## Simulator
+### Simulator
 
 The simulator is hosted on GitHub Pages: https://kubohiroya.github.io/racetrack-economy-model
 
@@ -49,10 +52,11 @@ The simulator is hosted on GitHub Pages: https://kubohiroya.github.io/racetrack-
 - The "Start" button starts and "Stop" button stops the simulation.
 - The "Reset" button resets the simulation.
 
-## Building your own bundle
+### Building your own bundle
 
   yarn install && yarn build
 
+## The Graph Structured Economy Model
 
 ## References
 * Krugman, P. (1993) On the number and location of cities. <i>European Economic Review</i>, Vol. 37 (2-3)

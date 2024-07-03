@@ -34,7 +34,7 @@ provideFASTDesignSystem().register(
 );
 
 const params = new URLSearchParams(location.search);
-const app = params.get("app") || "graph"; //'raceTrack';
+const app = params.get("app") || "raceTrack";//"graph"; //;
 const numRegions = parseInt(params.get("K") || "12");
 const pi = parseFloat(params.get("pi") || "0.2");
 const tau = parseFloat(params.get("tau") || "2");
@@ -48,7 +48,7 @@ function layout() {
   ) as HTMLDivElement;
 
   const raceTrackCanvas = document.getElementById("raceTrackCanvas");
-  const graphCanvas = document.getElementById("graphCountryCanvas");
+  const graphCanvas = document.getElementById("graphCanvas");
 
   const barChartCanvas = document.getElementById("barChartCanvas");
 
@@ -58,12 +58,12 @@ function layout() {
   barChartCanvas!.setAttribute("width", `${w * 0.35}`);
 
   const h = 500;
-  raceTrackCanvas!.setAttribute("height", `${h}px`);
-  graphCanvas!.setAttribute("height", `${h}px`);
-  barChartCanvas!.setAttribute("height", `${h}px`);
+  raceTrackCanvas!.setAttribute("height", `${h}`);
+  graphCanvas!.setAttribute("height", `${h}`);
+  barChartCanvas!.setAttribute("height", `${h}`);
 }
 
-function regionSelectListener(
+function decorateTableSet(
   sourceId: string,
   regionIds: number[],
   type: SelectType,
@@ -96,7 +96,7 @@ function initRaceTrack() {
 
   raceTrackModel.addRegionSelectListener(
     (sourceId: string, regionIds: number[], type: SelectType, set: boolean) => {
-      regionSelectListener(sourceId, regionIds, type, set);
+      decorateTableSet(sourceId, regionIds, type, set);
       if (set) {
         raceTrackModel.focusedRegionIds = regionIds;
       } else {
@@ -109,11 +109,11 @@ function initRaceTrack() {
 
   raceTrackModel.addNumRegionsChangedListener(async () => {
     const numRegions = view.sliderSet.numRegionsSlider.valueAsNumber;
-    raceTrackModel.adjustRegions(numRegions);
+    await raceTrackModel.adjustRegions(numRegions);
     raceTrackModel.updateAdjacencyMatrix();
     await raceTrackModel.updateDistanceMatrixAndTransportCostMatrix();
 
-    raceTrackModel.country.reset();
+    raceTrackModel.country.resetRegions();
     raceTrackView.draw();
     await view.update();
   });
@@ -152,21 +152,21 @@ function initRaceTrack() {
 }
 
 async function initGraph() {
-  const graphCountryCanvas = document.getElementById(
-    "graphCountryCanvas",
+  const graphCanvas = document.getElementById(
+    "graphCanvas",
   ) as HTMLCanvasElement;
 
   const country = new Country(numRegions, pi, tau, sigma);
 
-  const model = new GraphModel(country, 1.0, graphCountryCanvas);
+  const model = new GraphModel(country, 1.0, graphCanvas);
 
-  const graphView = new GraphView(graphCountryCanvas, model);
+  const graphView = new GraphView(graphCanvas, model);
 
   const graphLayout = new SpringGraphLayout(
     model,
     model.nodes,
-    graphCountryCanvas.width,
-    graphCountryCanvas.height,
+    graphCanvas.width,
+    graphCanvas.height,
   );
 
   model.addStartListener(() => {
@@ -182,7 +182,7 @@ async function initGraph() {
 
   model.addRegionSelectListener(
     (sourceId: string, regionIds: number[], type: SelectType, set: boolean) => {
-      regionSelectListener(sourceId, regionIds, type, set);
+      decorateTableSet(sourceId, regionIds, type, set);
 
       if (set) {
         if (type == SelectType.FOCUSED) {
@@ -208,7 +208,7 @@ async function initGraph() {
     model.updateAdjacencyMatrix();
     await model.updateDistanceMatrixAndTransportCostMatrix();
     await view.diagonalTableViewSet.updateTableContent();
-    model.country.reset();
+    model.country.resetRegions();
     graphView.draw();
     view.sliderSet.numRegionsElem.innerText = `${model.nodes.length}`;
     await view.update();

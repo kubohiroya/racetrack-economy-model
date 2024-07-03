@@ -54,7 +54,7 @@ export abstract class Model {
   reset() {
     this.selectedRegionIds = [];
     this.country.disturb();
-    this.country.reset();
+    this.country.resetRegions();
     this.timer?.reset();
     this.notifyReset();
   }

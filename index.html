@@ -7,6 +7,7 @@
     <link href="./src/style.css" rel="stylesheet">
 </head>
 <body>
+
 <div id="root">
 
     <h1 id="title">
@@ -177,17 +178,17 @@
 
                     <button id="importButton"
                             style="position: absolute; width: 42px; height: 42px; bottom: 68px; left: 5px; margin: 0; padding: 0"
-                            title="Import graph structure data">
+                            title="Import graph structure data from local file">
                         <div class="icon48" id="fileUploadIcon"></div>
                     </button>
 
                     <button class="button" id="exportButton"
                             style="position: absolute; width: 42px; height: 42px; bottom: 18px; left: 5px; margin: 0; padding: 0"
-                            title="Import graph structure data">
+                            title="Export graph structure data to local file">
                         <div class="icon48" id="fileDownloadIcon"></div>
                     </button>
 
-                    <canvas class="disable-scroll" id="graphCountryCanvas">
+                    <canvas class="disable-scroll" id="graphCanvas">
                     </canvas>
 
                 </div>
@@ -309,176 +310,176 @@
 
     </div>
 
+</div>
+
+<div style="display: flex">
+    <div style="flex:1">
+        <fast-radio-group id="caseSelector" name="case" value="0">
+            <fast-radio value="0">
+                <p class="preset">Base case: (K=12, π=0.2, τ=2, σ=4). All workers usually end up in two
+                    concentrations.</p>
+            </fast-radio>
+            <fast-radio value="1">
+                <p class="preset">Case i: Less differentiated products (K=12, π=0.2, τ=2, σ=2). In this case (in
+                    which
+                    firms have more market power, and in which the equilibrium degree of scale economies is also
+                    larger),
+                    all runs produced only a single city.</p>
+            </fast-radio>
+            <fast-radio value="2">
+                <p class="preset">Case ii: A larger manufacturing share (K=12, π=0.4, τ=2, σ=4). In this case, in
+                    which one
+                    would expect the backward and forward linkages driving agglomeration to be stronger, we also
+                    consistently get only a single city.</p>
+            </fast-radio>
+            <fast-radio value="3">
+                <p class="preset">Case iii: Lower transport costs (K=12, π=0.2, τ=1, σ=4). In this case we would
+                    expect
+                    there to be less incentive to set up multiple urban centers, and again all ten runs produce only
+                    a
+                    single city.</p>
+            </fast-radio>
+        </fast-radio-group>
     </div>
 
-    <div style="display: flex">
-        <div style="flex:1">
-            <fast-radio-group id="caseSelector" name="case" value="0">
-                <fast-radio value="0">
-                    <p class="preset">Base case: (K=12, π=0.2, τ=2, σ=4). All workers usually end up in two
-                        concentrations.</p>
-                </fast-radio>
-                <fast-radio value="1">
-                    <p class="preset">Case i: Less differentiated products (K=12, π=0.2, τ=2, σ=2). In this case (in
-                        which
-                        firms have more market power, and in which the equilibrium degree of scale economies is also
-                        larger),
-                        all runs produced only a single city.</p>
-                </fast-radio>
-                <fast-radio value="2">
-                    <p class="preset">Case ii: A larger manufacturing share (K=12, π=0.4, τ=2, σ=4). In this case, in
-                        which one
-                        would expect the backward and forward linkages driving agglomeration to be stronger, we also
-                        consistently get only a single city.</p>
-                </fast-radio>
-                <fast-radio value="3">
-                    <p class="preset">Case iii: Lower transport costs (K=12, π=0.2, τ=1, σ=4). In this case we would
-                        expect
-                        there to be less incentive to set up multiple urban centers, and again all ten runs produce only
-                        a
-                        single city.</p>
-                </fast-radio>
-            </fast-radio-group>
-        </div>
-
-        <div style="flex:1">
-            <div class="slider-container">
-                <div class="slider-label" id="K-label">
-                    <div class="icon" id="cityIcon"></div>
-                    <span class="slider-label">K = </span><span id="numRegions"></span>
-                </div>
-                <fast-tooltip anchor="K-label" position="top">
-                    K: The number of regions connected by transportation network.
-                </fast-tooltip>
-
-                <fast-slider
-                        id="numRegionsSlider"
-                        max="100" min="0"
-                        step="1"
-                        value="12">
-                    <fast-slider-label position="0">0</fast-slider-label>
-                    <fast-slider-label position="20">20</fast-slider-label>
-                    <fast-slider-label position="40">40</fast-slider-label>
-                    <fast-slider-label position="60">60</fast-slider-label>
-                    <fast-slider-label position="80">80</fast-slider-label>
-                    <fast-slider-label position="100">100</fast-slider-label>
-                </fast-slider>
+    <div style="flex:1">
+        <div class="slider-container">
+            <div class="slider-label" id="K-label">
+                <div class="icon" id="cityIcon"></div>
+                <span class="slider-label">K = </span><span id="numRegions"></span>
             </div>
+            <fast-tooltip anchor="K-label" position="top">
+                K: The number of regions connected by transportation network.
+            </fast-tooltip>
 
-            <div class="slider-container">
-                <div class="slider-label" id="pi-label">
-                    <div class="icon" id="factoryIcon"></div>
-                    <span class="slider-label">π = </span><span id="pi"></span>
-                </div>
-                <fast-tooltip anchor="pi-label" position="top">
-                    π: The share of manufacturing goods in expenditure.
-                </fast-tooltip>
-
-                <fast-slider
-                        id="piSlider"
-                        max="1.0" min="0" step="0.01"
-                        value="0.2">
-                    <fast-slider-label position="0">0</fast-slider-label>
-                    <fast-slider-label position="0.2">0.2</fast-slider-label>
-                    <fast-slider-label position="0.4">0.4</fast-slider-label>
-                    <fast-slider-label position="0.6">0.6</fast-slider-label>
-                    <fast-slider-label position="0.8">0.8</fast-slider-label>
-                    <fast-slider-label position="1.0">1.0</fast-slider-label>
-                </fast-slider>
-            </div>
-
-            <div class="slider-container">
-                <div class="slider-label" id="tcost-label">
-                    <div class="icon" id="truckIcon"></div>
-                    <span class="slider-label">τ = </span><span id="tcost"></span>
-                </div>
-                <fast-tooltip anchor="tcost-label" position="top">
-                    τ: The level of transportation cost among locations. A value of 1 represents no transportation cost,
-                    while a value of 10 represents significant transportation cost.
-                </fast-tooltip>
-                <fast-slider
-                        id="tcostSlider"
-                        max="10" min="1" step="0.1"
-                        value="2">
-                    <fast-slider-label position="1">1</fast-slider-label>
-                    <fast-slider-label position="4">4</fast-slider-label>
-                    <fast-slider-label position="7">7</fast-slider-label>
-                    <fast-slider-label position="10">10</fast-slider-label>
-                </fast-slider>
-            </div>
-
-            <div class="slider-container">
-                <div class="slider-label" id="sigma-label">
-                    <div class="icon" id="headHeartIcon"></div>
-                    <span class="slider-label">σ = </span><span id="sigma"></span>
-                </div>
-                <fast-tooltip anchor="sigma-label" position="top">
-                    σ: The elasticity of substitution among manufactured goods. A value of 1 represents a strong love of
-                    variety, while a value of 20 represents a limited love of variety.
-                </fast-tooltip>
-                <fast-slider
-                        id="sigmaSlider"
-                        max="20" min="1" step="0.1"
-                        value="4">
-                    <fast-slider-label position="1">1</fast-slider-label>
-                    <fast-slider-label position="5">5</fast-slider-label>
-                    <fast-slider-label position="10">10</fast-slider-label>
-                    <fast-slider-label position="15">15</fast-slider-label>
-                    <fast-slider-label position="20">20</fast-slider-label>
-                </fast-slider>
-            </div>
-        </div>
-    </div>
-
-    <div style="display:flex">
-        <div class="blink"
-             id="buttonPanel"
-             style="flex: 1"
-        >
-            <fast-button
-                    id="start"
-                    class="command"
-            >
-                <div class="iconButton">
-                    <div class="icon" id="startIcon"></div>
-                    <div>Start</div>
-                </div>
-            </fast-button>
-
-            <fast-button
-                    id="stop"
-                    class="command"
-            >
-                <div class="iconButton">
-                    <div class="icon" id="stopIcon"></div>
-                    <div>Stop</div>
-                </div>
-            </fast-button>
-
-            <fast-button
-                    id="reset"
-                    class="command"
-            >
-                <div class="iconButton">
-                    <div class="icon" id="resetIcon"></div>
-                    <div>Reset</div>
-                </div>
-            </fast-button>
-
-            <div id="counterDiv">
-                Time: <span id="counter">0</span>
-            </div>
-        </div>
-        <div style="flex:1; margin-top: 10px; margin-right: 50px">
             <fast-slider
-                    id="speedSlider"
-                    max="1.0" min="0" step="0.05"
-                    value="0.5">
-                <fast-slider-label position="0" style="left: 32px">🐢 slow</fast-slider-label>
-                <fast-slider-label position="1" style="margin-left: 24px">🐇 fast</fast-slider-label>
+                    id="numRegionsSlider"
+                    max="100" min="0"
+                    step="1"
+                    value="12">
+                <fast-slider-label position="0">0</fast-slider-label>
+                <fast-slider-label position="20">20</fast-slider-label>
+                <fast-slider-label position="40">40</fast-slider-label>
+                <fast-slider-label position="60">60</fast-slider-label>
+                <fast-slider-label position="80">80</fast-slider-label>
+                <fast-slider-label position="100">100</fast-slider-label>
+            </fast-slider>
+        </div>
+
+        <div class="slider-container">
+            <div class="slider-label" id="pi-label">
+                <div class="icon" id="factoryIcon"></div>
+                <span class="slider-label">π = </span><span id="pi"></span>
+            </div>
+            <fast-tooltip anchor="pi-label" position="top">
+                π: The share of manufacturing goods in expenditure.
+            </fast-tooltip>
+
+            <fast-slider
+                    id="piSlider"
+                    max="1.0" min="0" step="0.01"
+                    value="0.2">
+                <fast-slider-label position="0">0</fast-slider-label>
+                <fast-slider-label position="0.2">0.2</fast-slider-label>
+                <fast-slider-label position="0.4">0.4</fast-slider-label>
+                <fast-slider-label position="0.6">0.6</fast-slider-label>
+                <fast-slider-label position="0.8">0.8</fast-slider-label>
+                <fast-slider-label position="1.0">1.0</fast-slider-label>
+            </fast-slider>
+        </div>
+
+        <div class="slider-container">
+            <div class="slider-label" id="tcost-label">
+                <div class="icon" id="truckIcon"></div>
+                <span class="slider-label">τ = </span><span id="tcost"></span>
+            </div>
+            <fast-tooltip anchor="tcost-label" position="top">
+                τ: The level of transportation cost among locations. A value of 1 represents no transportation cost,
+                while a value of 10 represents significant transportation cost.
+            </fast-tooltip>
+            <fast-slider
+                    id="tcostSlider"
+                    max="10" min="1" step="0.1"
+                    value="2">
+                <fast-slider-label position="1">1</fast-slider-label>
+                <fast-slider-label position="4">4</fast-slider-label>
+                <fast-slider-label position="7">7</fast-slider-label>
+                <fast-slider-label position="10">10</fast-slider-label>
+            </fast-slider>
+        </div>
+
+        <div class="slider-container">
+            <div class="slider-label" id="sigma-label">
+                <div class="icon" id="headHeartIcon"></div>
+                <span class="slider-label">σ = </span><span id="sigma"></span>
+            </div>
+            <fast-tooltip anchor="sigma-label" position="top">
+                σ: The elasticity of substitution among manufactured goods. A value of 1 represents a strong love of
+                variety, while a value of 20 represents a limited love of variety.
+            </fast-tooltip>
+            <fast-slider
+                    id="sigmaSlider"
+                    max="20" min="1" step="0.1"
+                    value="4">
+                <fast-slider-label position="1">1</fast-slider-label>
+                <fast-slider-label position="5">5</fast-slider-label>
+                <fast-slider-label position="10">10</fast-slider-label>
+                <fast-slider-label position="15">15</fast-slider-label>
+                <fast-slider-label position="20">20</fast-slider-label>
             </fast-slider>
         </div>
     </div>
+</div>
+
+<div style="display:flex">
+    <div class="blink"
+         id="buttonPanel"
+         style="flex: 1"
+    >
+        <fast-button
+                class="command"
+                id="start"
+        >
+            <div class="iconButton">
+                <div class="icon" id="startIcon"></div>
+                <div>Start</div>
+            </div>
+        </fast-button>
+
+        <fast-button
+                class="command"
+                id="stop"
+        >
+            <div class="iconButton">
+                <div class="icon" id="stopIcon"></div>
+                <div>Stop</div>
+            </div>
+        </fast-button>
+
+        <fast-button
+                class="command"
+                id="reset"
+        >
+            <div class="iconButton">
+                <div class="icon" id="resetIcon"></div>
+                <div>Reset</div>
+            </div>
+        </fast-button>
+
+        <div id="counterDiv">
+            Time: <span id="counter">0</span>
+        </div>
+    </div>
+    <div style="flex:1; margin-top: 10px; margin-right: 50px">
+        <fast-slider
+                id="speedSlider"
+                max="1.0" min="0" step="0.05"
+                value="0.5">
+            <fast-slider-label position="0" style="left: 32px">🐢 slow</fast-slider-label>
+            <fast-slider-label position="1" style="margin-left: 24px">🐇 fast</fast-slider-label>
+        </fast-slider>
+    </div>
+</div>
 <!--
     <ul>
         <li>K: The number of locations assumed to be laid out symmetrically in a circle, with transportation
@@ -494,42 +495,42 @@
         </li>
     </ul>
 -->
-    <div style="display: flex; gap: 20px">
-        <div>
-            <h3 style="display: flex">
-                <div class="icon" id="adjacencyMatrixIcon"></div>
-                Adjacency distances between each pair of locations
-            </h3>
-            <table id="adjacencyMatrix">
-            </table>
-        </div>
-        <div>
-            <h3 style="display: flex">
-                <div class="icon" id="distanceMatrixIcon"></div>
-                Distances between each pair of locations
-            </h3>
-            <table id="distanceMatrix">
-            </table>
-        </div>
-        <div>
-            <h3 style="display: flex">
-                <div class="icon" id="transportCostMatrixIcon"></div>
-                Transportation costs between each pair of locations
-            </h3>
-            <table id="transportCostMatrix">
-            </table>
-        </div>
+<div style="display: flex; gap: 20px">
+    <div>
+        <h3 style="display: flex">
+            <div class="icon" id="adjacencyMatrixIcon"></div>
+            Adjacency distances between each pair of locations
+        </h3>
+        <table id="adjacencyMatrix">
+        </table>
     </div>
+    <div>
+        <h3 style="display: flex">
+            <div class="icon" id="distanceMatrixIcon"></div>
+            Distances between each pair of locations
+        </h3>
+        <table id="distanceMatrix">
+        </table>
+    </div>
+    <div>
+        <h3 style="display: flex">
+            <div class="icon" id="transportCostMatrixIcon"></div>
+            Transportation costs between each pair of locations
+        </h3>
+        <table id="transportCostMatrix">
+        </table>
+    </div>
+</div>
 
-    <h3>References</h3>
-    <ul>
-        <li>Krugman, P. (1993) On the number and location of cities. <i>European Economic Review</i>, Vol. 37 (2-3)
-            pp.293-298.
-        </li>
-        <li>Fujita, M., Krugman, P., Venables, A. (1999) "The Spatial Economy: Cities, Regions, and International
-            Trade", <i>MIT Press</i>.
-        </li>
-    </ul>
+<h3>References</h3>
+<ul>
+    <li>Krugman, P. (1993) On the number and location of cities. <i>European Economic Review</i>, Vol. 37 (2-3)
+        pp.293-298.
+    </li>
+    <li>Fujita, M., Krugman, P., Venables, A. (1999) "The Spatial Economy: Cities, Regions, and International
+        Trade", <i>MIT Press</i>.
+    </li>
+</ul>
 </div>
 
 <script src="src/index.ts" type="module"></script>

@@ -50,7 +50,7 @@ export class Country {
         case "stop":
           break;
         case "reset":
-          this.reset();
+          this.resetRegions();
           break;
       }
     });
@@ -72,7 +72,7 @@ export class Country {
     this.pi = mu;
   }
 
-  reset() {
+  resetRegions() {
     for (let region of this.regions) {
       region.manufacturingShare = 1 / this.regions.length;
       region.agricultureShare = 1 / this.regions.length;
@@ -86,10 +86,10 @@ export class Country {
     if (numCities > 0) {
       const dd = (1.0 / numCities) * 0.05;
       for (let i = 0; i < numCities; i++) {
-        const from = Math.floor(random() * numCities);
-        const to = Math.floor(random() * numCities);
-        this.regions[from].changeManufacturingShare(dd);
-        this.regions[to].changeManufacturingShare(-1 * dd);
+        const index = Math.floor(random() * numCities);
+        //const to = Math.floor(random() * numCities);
+        this.regions[index].changeManufacturingShare(dd);
+        //this.regions[to].changeManufacturingShare(-1 * dd);
       }
     }
     this.rescale();
