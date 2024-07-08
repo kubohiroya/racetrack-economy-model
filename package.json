@@ -1,4 +1,7 @@
 {
+  "name": "racetrack-economy-model",
+  "description": "Paul Krugman's Racetrack economy model simulator with parameter configuration UI",
+  "version": "0.1.0",
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",

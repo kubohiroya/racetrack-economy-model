@@ -16,9 +16,9 @@ export function drawRegionDetail(
     if (!region) return;
 
     const highlow: string =
-      region.realWage > model.country.avgRealWage
+      region.realWage > model.country.averageRealWage
         ? "↑"
-        : region.realWage < model.country.avgRealWage
+        : region.realWage < model.country.averageRealWage
         ? "↓"
         : "";
 
@@ -31,7 +31,7 @@ export function drawRegionDetail(
       " Income = " + region.income.toFixed(4),
       " Nominal wage = " + region.nominalWage.toFixed(4),
       " Real wage = " + region.realWage.toFixed(4) + " " + highlow,
-      " Average real wage = " + model.country.avgRealWage.toFixed(4),
+      " Average real wage = " + model.country.averageRealWage.toFixed(4),
     ].forEach((text, index) => {
       const c = new DOMPoint(
         center.x + offsetX,

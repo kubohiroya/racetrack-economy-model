@@ -61,8 +61,8 @@ export class Timer {
       clearInterval(this.timeout);
     }
     const expScale = (value: number): number => {
-      const minLog = Math.log(10);
-      const maxLog = Math.log(3000);
+      const minLog = Math.log(1);
+      const maxLog = Math.log(1000);
       const scale = minLog + (1 - value) * (maxLog - minLog);
       return Math.exp(scale);
     };

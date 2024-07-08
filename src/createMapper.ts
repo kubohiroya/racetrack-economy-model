@@ -23,7 +23,7 @@ export function createMapper(
       type: ValueType.multiply1000aroundOne,
     },
     {
-      mapper: (region: Region) => model.country.avgRealWage,
+      mapper: (region: Region) => model.country.averageRealWage,
       type: ValueType.multiply1000aroundOne,
     },
   ];

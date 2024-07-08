@@ -4,7 +4,7 @@ import { Timer, TimerEvent } from "@/model/timer";
 import { random } from "@/model/random";
 
 export class Country {
-  /* a country has her regions in this vector */
+  /* a country has her regions in this Array */
   regions: Array<Region>;
   matrices: Matrices;
 
@@ -13,7 +13,7 @@ export class Country {
   /*  ratio of workers */
   pi: number;
 
-  /* maximum transport cost between ach pair of cities */
+  /* maximum transport cost between ach pair of regions */
   transportCost: number;
 
   /* elasticity of substitution */
@@ -23,7 +23,7 @@ export class Country {
   gamma: number;
 
   /* average real wage of the country */
-  avgRealWage: number;
+  averageRealWage: number;
 
   constructor(
     numRegions: number,
@@ -36,7 +36,7 @@ export class Country {
     this.transportCost = transportCost;
     this.sigma = sigma;
     this.gamma = 1.0;
-    this.avgRealWage = 1.0;
+    this.averageRealWage = 1.0;
     this.regions = [];
     this.matrices = new Matrices(0);
 
@@ -60,51 +60,54 @@ export class Country {
     this.numRegions = numRegions;
   }
 
-  setSigma(d: number): void {
-    this.sigma = d + 0.1;
+  setSigma(sigma: number): void {
+    this.sigma = sigma + 0.1;
   }
 
-  setTransportCost(d: number): void {
-    this.transportCost = d;
+  setTransportCost(transportCost: number): void {
+    this.transportCost = transportCost;
   }
 
-  setPi(mu: number): void {
-    this.pi = mu;
+  setPi(pi: number): void {
+    this.pi = pi;
   }
 
   resetRegions() {
-    for (let region of this.regions) {
+    this.regions.forEach((region) => {
       region.manufacturingShare = 1 / this.regions.length;
       region.agricultureShare = 1 / this.regions.length;
       region.reset();
-    }
+    });
     this.disturb();
   }
 
   disturb(): void {
-    const numCities = this.regions.length;
-    if (numCities > 0) {
-      const dd = (1.0 / numCities) * 0.05;
-      for (let i = 0; i < numCities; i++) {
-        const index = Math.floor(random() * numCities);
-        //const to = Math.floor(random() * numCities);
-        this.regions[index].changeManufacturingShare(dd);
-        //this.regions[to].changeManufacturingShare(-1 * dd);
+    const numRegions = this.regions.length;
+    if (numRegions > 0) {
+      const dd = (1.0 / numRegions) * 0.05;
+      for (let i = 0; i < numRegions; i++) {
+        const target = this.regions[Math.floor(random() * numRegions)];
+        target.deltaManufacturingShare = dd;
+        target.manufacturingShare += target.deltaManufacturingShare;
       }
     }
     this.rescale();
   }
 
   rescale(): void {
-    let m = 0,
-      a = 0;
+    const manufacturingShareTotal = this.regions.reduce((acc, region) => {
+      return acc + region.manufacturingShare;
+    }, 0);
+    const agricultureShareTotal = this.regions.reduce((acc, region) => {
+      return acc + region.agricultureShare;
+    }, 0);
     this.regions.forEach((region) => {
-      m += region.manufacturingShare;
-      a += region.agricultureShare;
-    });
-    this.regions.forEach((region) => {
-      region.setManufacturingShare(region.manufacturingShare / m);
-      region.setAgricultureShare(region.agricultureShare / a);
+      region.setManufacturingShare(
+        region.manufacturingShare / manufacturingShareTotal,
+      );
+      region.setAgricultureShare(
+        region.agricultureShare / agricultureShareTotal,
+      );
     });
   }
 
@@ -115,60 +118,57 @@ export class Country {
     });
   }
 
-  calcIncome(): void {
+  updateIncome(): void {
     this.regions.forEach((region) => {
-      region.calcIncome(this);
+      region.updateIncomeWithPi(this.pi);
     });
   }
 
-  calcPriceIndex(): void {
+  updatePriceIndex(): void {
     this.regions.forEach((region) => {
-      region.calcPriceIndex(this);
+      region.updatePriceIndex(this.regions, this.matrices, this.sigma);
     });
   }
 
-  calcNominalWage(): void {
+  updateNominalWage(): void {
     this.regions.forEach((region) => {
-      region.calcNominalWage(this);
+      region.updateNominalWage(this.regions, this.matrices, this.sigma);
     });
   }
 
-  calcRealWage(): void {
+  updateRealWage(): void {
     this.regions.forEach((region) => {
-      region.calcRealWage(this);
+      region.updateRealWage(this.pi);
     });
   }
 
-  calcAvgRealWage(): void {
-    let avgRealWage = 0;
-    this.regions.forEach((region) => {
-      avgRealWage += region.realWage * region.manufacturingShare;
-    });
-    this.avgRealWage = avgRealWage;
+  updateAverageRealWage(): void {
+    this.averageRealWage = this.regions.reduce((acc, region) => {
+      return acc + region.realWage * region.manufacturingShare;
+    }, 0);
   }
 
-  calcDynamics(): void {
+  updateDynamics(): void {
     this.regions.forEach((region) => {
-      region.calcDynamics(this);
+      region.updateDynamics(this.gamma, this.averageRealWage);
     });
   }
 
   applyDynamics(): void {
     this.regions.forEach((region) => {
-      region.applyDynamics(this);
+      region.applyDynamics(this.regions);
     });
     this.rescale();
   }
 
   tick(): void {
-    /* simulation procedure */
     this.backupPreviousValues();
-    this.calcIncome();
-    this.calcPriceIndex();
-    this.calcNominalWage();
-    this.calcRealWage();
-    this.calcAvgRealWage();
-    this.calcDynamics();
+    this.updateIncome();
+    this.updatePriceIndex();
+    this.updateNominalWage();
+    this.updateRealWage();
+    this.updateAverageRealWage();
+    this.updateDynamics();
     this.applyDynamics();
   }
 }
