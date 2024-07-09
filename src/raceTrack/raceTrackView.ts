@@ -107,12 +107,6 @@ export class RaceTrackView {
 
     const vertices = this.model.country.regions.length;
 
-    console.log(
-      "draw:",
-      this.model.country.numRegions,
-      this.model.country.regions.length,
-    );
-
     const ctx = this.canvas.getContext("2d");
     if (!ctx) return;
 

@@ -66,10 +66,6 @@ export class Region {
     this.priceIndex = Math.pow(priceIndexBase, 1 / (1 - sigma));
   }
 
-  updateRealWage(pi: number): void {
-    this.realWage = this.nominalWage * Math.pow(this.priceIndex, -1 * pi);
-  }
-
   updateNominalWage(
     regions: Array<Region>,
     matrices: Matrices,
@@ -92,19 +88,20 @@ export class Region {
     this.nominalWage = Math.pow(nominalWageBase, 1 / sigma);
   }
 
+  updateRealWage(pi: number): void {
+    this.realWage = this.nominalWage * Math.pow(this.priceIndex, -1 * pi);
+  }
+
   updateDynamics(
     gamma: number,
     averageRealWage: number,
     numRegions: number,
   ): void {
-    const deltaManufacturingShare =
+    const newManufacturingShare =
+      this.manufacturingShare +
       gamma * (this.realWage - averageRealWage) * this.manufacturingShare;
     const minimumShare =
       Region.MINIMUM_MANUFACTURING_SHARE_NUMERATOR / numRegions;
-    if (this.manufacturingShare > minimumShare) {
-      this.manufacturingShare += deltaManufacturingShare;
-    } else {
-      this.manufacturingShare = minimumShare;
-    }
+    this.manufacturingShare = Math.max(newManufacturingShare, minimumShare);
   }
 }
