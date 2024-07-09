@@ -87,7 +87,7 @@ export class RaceTrackModel extends Model {
         regions.push(region);
       }
     }
-    while (regions.length < numRegions) {
+    for (let i = regions.length; i < numRegions; i++) {
       regions.push(
         new Region(regions.length, 1.0 / numRegions, 1.0 / numRegions),
       );
@@ -95,14 +95,18 @@ export class RaceTrackModel extends Model {
     this.country.regions = regions;
   }
 
-  extractRegions(selectedRegionIds: number[]): Promise<void> {
-    const numRegions = selectedRegionIds.length;
-    const regions = this.country.regions.slice(0, numRegions - 1);
-    for (const region of this.country.regions) {
+  extractRegions(numRegions: number): void {
+    const regions = this.country.regions.slice(0, numRegions);
+    for (const region of regions) {
       region.manufacturingShare = 1.0 / numRegions;
       region.agricultureShare = 1.0 / numRegions;
     }
     this.country.regions = regions;
-    return Promise.resolve(undefined);
+    console.log(
+      " extractRegions",
+      numRegions,
+      regions.length,
+      this.country.regions.length,
+    );
   }
 }

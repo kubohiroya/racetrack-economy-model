@@ -714,7 +714,7 @@ export class GraphView extends CanvasView {
       }
       extractingRegionIds.push(i);
     }
-    this.model.extractRegions(extractingRegionIds);
+    this.model.extractRegions(this.model.nodes.length, extractingRegionIds);
   }
 
   private drawEdge(

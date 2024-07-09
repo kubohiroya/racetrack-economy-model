@@ -56,7 +56,6 @@ export class SliderSet {
     const numRegions = Math.floor(this.numRegionsSlider.valueAsNumber);
     this.model?.setNumRegions(numRegions);
     this.numRegionsElem.innerText = `${numRegions}`;
-    this.model.notifyNumRegionsChanged();
   }
 
   onPiChanged() {

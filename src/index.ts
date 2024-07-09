@@ -109,10 +109,9 @@ function initRaceTrack() {
 
   raceTrackModel.addNumRegionsChangedListener(async () => {
     const numRegions = view.sliderSet.numRegionsSlider.valueAsNumber;
-    await raceTrackModel.adjustRegions(numRegions);
+    raceTrackModel.adjustRegions(numRegions);
     raceTrackModel.updateAdjacencyMatrix();
     await raceTrackModel.updateDistanceMatrixAndTransportCostMatrix();
-
     raceTrackModel.country.resetRegions();
     raceTrackView.draw();
     await view.update();
@@ -204,7 +203,8 @@ async function initGraph() {
   );
 
   model.addNumRegionsChangedListener(async () => {
-    await model.adjustRegions(country.numRegions);
+    const numRegions = view.sliderSet.numRegionsSlider.valueAsNumber;
+    await model.adjustRegions(numRegions);
     model.updateAdjacencyMatrix();
     await model.updateDistanceMatrixAndTransportCostMatrix();
     await view.diagonalTableViewSet.updateTableContent();
@@ -251,7 +251,7 @@ async function initGraph() {
   });
 
   graphView.setModel(model);
-  model.appendRegions(country.numRegions, true);
+  model.appendRegions(numRegions, true);
   graphView.fitToScreen();
   graphView.draw();
 

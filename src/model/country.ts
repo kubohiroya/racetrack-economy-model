@@ -4,23 +4,23 @@ import { Timer, TimerEvent } from "@/model/timer";
 import { random } from "@/model/random";
 
 export class Country {
+  static SPEED_OF_ADJUSTMENT: number = 0.1;
+  static DIFF_SCALE = 0.05;
+  static SIGMA_BASE = 0.1;
+
   /* a country has her regions in this Array */
+  numRegions: number;
   regions: Array<Region>;
   matrices: Matrices;
-
-  numRegions: number;
 
   /*  ratio of workers */
   pi: number;
 
-  /* maximum transport cost between ach pair of regions */
+  /* maximum transport cost between each pair of regions */
   transportCost: number;
 
   /* elasticity of substitution */
   sigma: number;
-
-  /* speed of adjustment */
-  gamma: number;
 
   constructor(
     numRegions: number,
@@ -32,9 +32,8 @@ export class Country {
     this.pi = pi;
     this.transportCost = transportCost;
     this.sigma = sigma;
-    this.gamma = 1.0;
     this.regions = [];
-    this.matrices = new Matrices(0);
+    this.matrices = new Matrices(numRegions);
 
     Timer.getSimulationTimer().addTimeEventListener((event: TimerEvent) => {
       switch (event.type) {
@@ -57,7 +56,7 @@ export class Country {
   }
 
   setSigma(sigma: number): void {
-    this.sigma = sigma + 0.1;
+    this.sigma = sigma + Country.SIGMA_BASE;
   }
 
   setTransportCost(transportCost: number): void {
@@ -78,12 +77,13 @@ export class Country {
   }
 
   disturb(): void {
-    const numRegions = this.regions.length;
-    if (numRegions > 0) {
-      const d = (1.0 / numRegions) * 0.05;
-      for (let i = 0; i < numRegions; i++) {
-        const target = this.regions[Math.floor(random() * numRegions)];
-        target.manufacturingShare += d;
+    if (this.numRegions > 0) {
+      const d = (1.0 / this.numRegions) * Country.DIFF_SCALE;
+      for (let i = 0; i < this.numRegions; i++) {
+        const target = this.regions[Math.floor(random() * this.numRegions)];
+        if (target) {
+          target.manufacturingShare += d;
+        }
       }
     }
     this.rescale();
@@ -139,7 +139,11 @@ export class Country {
   updateDynamics(): void {
     const averageRealWage = this.calculateAverageRealWage();
     this.regions.forEach((region) => {
-      region.updateDynamics(this.gamma, averageRealWage, this.numRegions);
+      region.updateDynamics(
+        Country.SPEED_OF_ADJUSTMENT,
+        averageRealWage,
+        this.numRegions,
+      );
     });
     this.rescale();
   }

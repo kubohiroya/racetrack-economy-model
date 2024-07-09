@@ -290,7 +290,7 @@ export class GraphModel extends Model {
     this.updateMatrices();
   }
 
-  extractRegions(extractingRegionIds: number[]) {
+  extractRegions(numRegions: number, extractingRegionIds: number[]) {
     this.nodes = this.nodes.filter((node) =>
       extractingRegionIds.includes(node.id),
     );

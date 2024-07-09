@@ -201,13 +201,14 @@ export abstract class Model {
       this.createTransportCostMatrix();
   }
 
-  async adjustRegions(numRegions: number): Promise<void> {
+  adjustRegions(numRegions: number): void {
     if (this.country.regions.length < numRegions) {
-      this.appendRegions(numRegions - this.country.regions.length);
+      this.appendRegions(numRegions);
     }
     if (this.country.regions.length > numRegions) {
-      this.extractRegions([...Array(numRegions).keys()]);
+      this.extractRegions(numRegions, [...Array(numRegions).keys()]);
     }
+    return;
   }
 
   abstract createAdjacencyMatrix(numRegions: number): number[][];
@@ -218,5 +219,8 @@ export abstract class Model {
 
   abstract appendRegions(desiredNumRegions: number): void;
 
-  abstract extractRegions(selectedRegionIds: number[]): void;
+  abstract extractRegions(
+    numRegions: number,
+    selectedRegionIds: number[],
+  ): void;
 }
