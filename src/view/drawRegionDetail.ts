@@ -15,23 +15,15 @@ export function drawRegionDetail(
 
     if (!region) return;
 
-    const highlow: string =
-      region.realWage > model.country.averageRealWage
-        ? "↑"
-        : region.realWage < model.country.averageRealWage
-        ? "↓"
-        : "";
-
     ctx.fillStyle = `black`;
     [
       "Region #" + region.id,
       " Share of manufacturing = " + region.manufacturingShare.toFixed(4),
       " Share of agriculture = " + region.agricultureShare.toFixed(4),
-      " Price index = " + region.priceIndex.toFixed(4),
       " Income = " + region.income.toFixed(4),
+      " Price index = " + region.priceIndex.toFixed(4),
       " Nominal wage = " + region.nominalWage.toFixed(4),
-      " Real wage = " + region.realWage.toFixed(4) + " " + highlow,
-      " Average real wage = " + model.country.averageRealWage.toFixed(4),
+      " Real wage = " + region.realWage.toFixed(4),
     ].forEach((text, index) => {
       const c = new DOMPoint(
         center.x + offsetX,

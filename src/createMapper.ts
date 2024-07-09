@@ -11,6 +11,10 @@ export function createMapper(
       type: ValueType.ratioToMax,
     },
     {
+      mapper: (region: Region) => region.income,
+      type: ValueType.multiply100,
+    },
+    {
       mapper: (region: Region) => region.priceIndex,
       type: ValueType.multiply100aroundOne,
     },
@@ -20,10 +24,6 @@ export function createMapper(
     },
     {
       mapper: (region: Region) => region.realWage,
-      type: ValueType.multiply1000aroundOne,
-    },
-    {
-      mapper: (region: Region) => model.country.averageRealWage,
       type: ValueType.multiply1000aroundOne,
     },
   ];

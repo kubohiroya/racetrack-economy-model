@@ -139,6 +139,8 @@ export class RaceTrackView {
       switch (type) {
         case ValueType.passThrough:
           return value;
+        case ValueType.multiply100:
+          return value * 100.0;
         case ValueType.priceIndex:
           return Math.max(0, value - 1.0);
         case ValueType.ratioToMax:

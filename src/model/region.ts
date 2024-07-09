@@ -1,20 +1,16 @@
 import { Matrices } from "@/model/matrices";
 
 export class Region {
+  static MINIMUM_MANUFACTURING_SHARE_NUMERATOR: number = 0.1;
+
   id: number;
-  manufacturingShare: number;
-  deltaManufacturingShare: number = 0.0;
   agricultureShare: number;
+  manufacturingShare: number;
 
-  realWage: number = 1.0;
-
+  income: number = 0;
   priceIndex: number = 1.0;
+  realWage: number = 1.0;
   nominalWage: number = 1.0;
-  income: number = 1.0;
-
-  private _priceIndex: number = 1.0;
-  private _nominalWage: number = 1.0;
-  private _income: number = 1.0;
 
   constructor(
     id: number,
@@ -24,20 +20,16 @@ export class Region {
     this.id = id;
     this.manufacturingShare = manufacturingShare;
     this.agricultureShare = agricultureShare;
+    this.reset();
   }
 
   reset() {
-    this.deltaManufacturingShare = 0.0;
+    this.income = 0;
     this.priceIndex = 1.0;
-    this.nominalWage = 1.0;
     this.realWage = 1.0;
-    this.income = 1.0;
-    this._priceIndex = 1.0;
-    this._nominalWage = 1.0;
-    this._income = 1.0;
+    this.nominalWage = 1.0;
   }
 
-  /* setters */
   setManufacturingShare(value: number): void {
     this.manufacturingShare = value;
   }
@@ -46,13 +38,7 @@ export class Region {
     this.agricultureShare = value;
   }
 
-  backupPreviousValues(): void {
-    this._nominalWage = this.nominalWage;
-    this._priceIndex = this.priceIndex;
-    this._income = this.income;
-  }
-
-  updateIncomeWithPi(pi: number): void {
+  updateIncome(pi: number): void {
     this.income =
       pi * this.manufacturingShare * this.nominalWage +
       (1 - pi) * this.agricultureShare;
@@ -63,22 +49,21 @@ export class Region {
     matrices: Matrices,
     sigma: number,
   ): void {
-    const priceIndex = regions.reduce((acc, region) => {
-      if (matrices.transportCostMatrix[this.id]) {
-        return (
-          acc +
-          region.manufacturingShare *
-            Math.pow(
-              region._nominalWage *
-                matrices.transportCostMatrix[this.id][region.id],
-              1 - sigma,
-            )
-        );
-      } else {
+    const priceIndexBase = regions.reduce((acc, region) => {
+      if (!matrices.transportCostMatrix[this.id]) {
         return acc;
       }
+      return (
+        acc +
+        region.manufacturingShare *
+          Math.pow(
+            region.nominalWage *
+              matrices.transportCostMatrix[this.id][region.id],
+            1 - sigma,
+          )
+      );
     }, 0);
-    this.priceIndex = Math.pow(priceIndex, 1 / (1 - sigma));
+    this.priceIndex = Math.pow(priceIndexBase, 1 / (1 - sigma));
   }
 
   updateRealWage(pi: number): void {
@@ -90,34 +75,36 @@ export class Region {
     matrices: Matrices,
     sigma: number,
   ): void {
-    const nominalWage = regions.reduce((acc, region) => {
-      if (matrices.transportCostMatrix[this.id]) {
-        return (
-          acc +
-          region._income *
-            Math.pow(
-              matrices.transportCostMatrix[this.id][region.id],
-              1 - sigma,
-            ) *
-            Math.pow(region._priceIndex, sigma - 1)
-        );
-      } else {
+    const nominalWageBase = regions.reduce((acc, region) => {
+      if (!matrices.transportCostMatrix[this.id]) {
         return acc;
       }
+      return (
+        acc +
+        region.income *
+          Math.pow(
+            matrices.transportCostMatrix[this.id][region.id],
+            1 - sigma,
+          ) *
+          Math.pow(region.priceIndex, sigma - 1)
+      );
     }, 0);
-    this.nominalWage = Math.pow(nominalWage, 1 / sigma);
+    this.nominalWage = Math.pow(nominalWageBase, 1 / sigma);
   }
 
-  updateDynamics(gamma: number, averageRealWage: number): void {
-    this.deltaManufacturingShare =
+  updateDynamics(
+    gamma: number,
+    averageRealWage: number,
+    numRegions: number,
+  ): void {
+    const deltaManufacturingShare =
       gamma * (this.realWage - averageRealWage) * this.manufacturingShare;
-  }
-
-  applyDynamics(regions: Array<Region>): void {
-    if (this.manufacturingShare > 1.0 / regions.length / 10.0) {
-      this.manufacturingShare += this.deltaManufacturingShare;
+    const minimumShare =
+      Region.MINIMUM_MANUFACTURING_SHARE_NUMERATOR / numRegions;
+    if (this.manufacturingShare > minimumShare) {
+      this.manufacturingShare += deltaManufacturingShare;
     } else {
-      this.manufacturingShare = 1.0 / regions.length / 10.0;
+      this.manufacturingShare = minimumShare;
     }
   }
 }

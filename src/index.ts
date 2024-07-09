@@ -139,10 +139,10 @@ function initRaceTrack() {
     () => {
       view.setModel(raceTrackModel);
       raceTrackModel.notifyNumRegionsChanged();
+      view.visualizerTypeSelector.incomeVisualizer.disabled = false;
       view.visualizerTypeSelector.priceIndexVisualizer.disabled = false;
       view.visualizerTypeSelector.nominalWageVisualizer.disabled = false;
       view.visualizerTypeSelector.realWageVisualizer.disabled = false;
-      view.visualizerTypeSelector.avgRealWageVisualizer.disabled = false;
       view.update();
     },
     () => {
@@ -266,10 +266,10 @@ async function initGraph() {
       view.setModel(model);
       model.setNumRegions(numRegions);
 
+      view.visualizerTypeSelector.incomeVisualizer.disabled = true;
       view.visualizerTypeSelector.priceIndexVisualizer.disabled = true;
       view.visualizerTypeSelector.nominalWageVisualizer.disabled = true;
       view.visualizerTypeSelector.realWageVisualizer.disabled = true;
-      view.visualizerTypeSelector.avgRealWageVisualizer.disabled = true;
 
       Timer.getLayoutTimer().start();
       view.update();

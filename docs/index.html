@@ -4,7 +4,7 @@
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
     <title>The Racetrack Economy</title>
     <meta charset="UTF-8"/>
-    <script crossorigin src="./assets/index-DSKaAiHx.js" type="module"></script>
+    <script crossorigin src="./assets/index-7bezfbsp.js" type="module"></script>
     <link crossorigin href="./assets/index-Dm1FOMRt.css" rel="stylesheet">
 </head>
 <body>
@@ -214,6 +214,20 @@
                 </select>
 
                 &gt;
+                <span id="incomeLabel">Income: </span>
+                <select id="incomeVisualizer">
+                    <option value="">--</option>
+                    <optgroup label="circle on circumference">
+                        <option value="radius">radius</option>
+                        <option value="color">color</option>
+                    </optgroup>
+                    <optgroup label="polygon">
+                        <option value="dot">dot</option>
+                        <option value="red">red</option>
+                        <option value="gray">gray</option>
+                    </optgroup>
+                </select>
+                &gt;
                 <span id="priceIndexLabel">PriceIndex:</span>
                 <select id="priceIndexVisualizer">
                     <option value="">--</option>
@@ -244,20 +258,6 @@
                 &gt;
                 <span id="realWageLabel">RealWage: </span>
                 <select id="realWageVisualizer">
-                    <option value="">--</option>
-                    <optgroup label="circle on circumference">
-                        <option value="radius">radius</option>
-                        <option value="color">color</option>
-                    </optgroup>
-                    <optgroup label="polygon">
-                        <option value="dot">dot</option>
-                        <option value="red">red</option>
-                        <option value="gray">gray</option>
-                    </optgroup>
-                </select>
-                &gt;
-                <span id="avgRealWageLabel">AverageRealWage: </span>
-                <select id="avgRealWageVisualizer">
                     <option value="">--</option>
                     <optgroup label="circle on circumference">
                         <option value="radius">radius</option>
@@ -300,6 +300,7 @@
                 <div class="caption">
                     <select id="barChartSelector">
                         <option>Share of Manufacturing</option>
+                        <option>Income</option>
                         <option>Price Index</option>
                         <option>Nominal Wage</option>
                         <option>Real Wage</option>

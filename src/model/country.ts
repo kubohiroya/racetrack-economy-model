@@ -22,9 +22,6 @@ export class Country {
   /* speed of adjustment */
   gamma: number;
 
-  /* average real wage of the country */
-  averageRealWage: number;
-
   constructor(
     numRegions: number,
     pi: number,
@@ -36,7 +33,6 @@ export class Country {
     this.transportCost = transportCost;
     this.sigma = sigma;
     this.gamma = 1.0;
-    this.averageRealWage = 1.0;
     this.regions = [];
     this.matrices = new Matrices(0);
 
@@ -84,11 +80,10 @@ export class Country {
   disturb(): void {
     const numRegions = this.regions.length;
     if (numRegions > 0) {
-      const dd = (1.0 / numRegions) * 0.05;
+      const d = (1.0 / numRegions) * 0.05;
       for (let i = 0; i < numRegions; i++) {
         const target = this.regions[Math.floor(random() * numRegions)];
-        target.deltaManufacturingShare = dd;
-        target.manufacturingShare += target.deltaManufacturingShare;
+        target.manufacturingShare += d;
       }
     }
     this.rescale();
@@ -111,16 +106,9 @@ export class Country {
     });
   }
 
-  /* simulation body */
-  backupPreviousValues(): void {
-    this.regions.forEach((region) => {
-      region.backupPreviousValues();
-    });
-  }
-
   updateIncome(): void {
     this.regions.forEach((region) => {
-      region.updateIncomeWithPi(this.pi);
+      region.updateIncome(this.pi);
     });
   }
 
@@ -142,33 +130,25 @@ export class Country {
     });
   }
 
-  updateAverageRealWage(): void {
-    this.averageRealWage = this.regions.reduce((acc, region) => {
+  calculateAverageRealWage(): number {
+    return this.regions.reduce((acc, region) => {
       return acc + region.realWage * region.manufacturingShare;
     }, 0);
   }
 
   updateDynamics(): void {
+    const averageRealWage = this.calculateAverageRealWage();
     this.regions.forEach((region) => {
-      region.updateDynamics(this.gamma, this.averageRealWage);
-    });
-  }
-
-  applyDynamics(): void {
-    this.regions.forEach((region) => {
-      region.applyDynamics(this.regions);
+      region.updateDynamics(this.gamma, averageRealWage, this.numRegions);
     });
     this.rescale();
   }
 
   tick(): void {
-    this.backupPreviousValues();
     this.updateIncome();
     this.updatePriceIndex();
     this.updateNominalWage();
     this.updateRealWage();
-    this.updateAverageRealWage();
     this.updateDynamics();
-    this.applyDynamics();
   }
 }

@@ -196,7 +196,7 @@
             </div>
 
             <div id="visualizerTypeSelector">
-                <span>
+                <span id="mshareLabel">
                 Share of Manufacturing:
                 </span>
                 <select id="mshareVisualizer">
@@ -212,6 +212,20 @@
                     </optgroup>
                 </select>
 
+                &gt;
+                <span id="incomeLabel">Income: </span>
+                <select id="incomeVisualizer">
+                    <option value="">--</option>
+                    <optgroup label="circle on circumference">
+                        <option value="radius">radius</option>
+                        <option value="color">color</option>
+                    </optgroup>
+                    <optgroup label="polygon">
+                        <option value="dot">dot</option>
+                        <option value="red">red</option>
+                        <option value="gray">gray</option>
+                    </optgroup>
+                </select>
                 &gt;
                 <span id="priceIndexLabel">PriceIndex:</span>
                 <select id="priceIndexVisualizer">
@@ -254,20 +268,6 @@
                         <option value="gray">gray</option>
                     </optgroup>
                 </select>
-                &gt;
-                <span id="avgRealWageLabel">AverageRealWage: </span>
-                <select id="avgRealWageVisualizer">
-                    <option value="">--</option>
-                    <optgroup label="circle on circumference">
-                        <option value="radius">radius</option>
-                        <option value="color">color</option>
-                    </optgroup>
-                    <optgroup label="polygon">
-                        <option value="dot">dot</option>
-                        <option value="red">red</option>
-                        <option value="gray">gray</option>
-                    </optgroup>
-                </select>
             </div>
 
         </div>
@@ -299,6 +299,7 @@
                 <div class="caption">
                     <select id="barChartSelector">
                         <option>Share of Manufacturing</option>
+                        <option>Income</option>
                         <option>Price Index</option>
                         <option>Nominal Wage</option>
                         <option>Real Wage</option>

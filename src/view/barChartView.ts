@@ -35,6 +35,17 @@ export class BarChartView {
       bar: (region: Region) => region.manufacturingShare,
       toFixed: 2,
     },
+    Income: {
+      min: 0,
+      max: 4,
+      oy: 0,
+      ticks: [
+        { min: 0, max: 4, step: 0.2 },
+        { min: 0, max: 0.2, step: 0.05 },
+      ],
+      line: (region: Region) => region.income,
+      toFixed: 2,
+    },
     "Price Index": {
       min: 0,
       max: 4,
