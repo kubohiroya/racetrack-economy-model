@@ -20,6 +20,7 @@ import { Timer } from "@/model/timer";
 import { RaceTrackModel } from "@/raceTrack/raceTrackModel";
 import { SpringGraphLayout } from "@/graph/springGraphLayout";
 import { SelectType } from "@/model/selectType";
+import { URL_SEARCH_PARAMS } from "@/model/urlSearchParams";
 
 provideFASTDesignSystem().register(
   fastTooltip(),
@@ -33,12 +34,11 @@ provideFASTDesignSystem().register(
   fastSliderLabel(),
 );
 
-const params = new URLSearchParams(location.search);
-const app = params.get("app") || "raceTrack";//"graph"; //;
-const numRegions = parseInt(params.get("K") || "12");
-const pi = parseFloat(params.get("pi") || "0.2");
-const tau = parseFloat(params.get("tau") || "2");
-const sigma = parseFloat(params.get("sigma") || "4");
+const app = URL_SEARCH_PARAMS.get("app") || "raceTrack"; //"graph"; //;
+const numRegions = parseInt(URL_SEARCH_PARAMS.get("K") || "12");
+const pi = parseFloat(URL_SEARCH_PARAMS.get("pi") || "0.2");
+const tau = parseFloat(URL_SEARCH_PARAMS.get("tau") || "2");
+const sigma = parseFloat(URL_SEARCH_PARAMS.get("sigma") || "4");
 
 const view = new View();
 

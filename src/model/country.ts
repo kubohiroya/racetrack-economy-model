@@ -2,11 +2,21 @@ import { Region } from "./region";
 import { Matrices } from "./matrices";
 import { Timer, TimerEvent } from "@/model/timer";
 import { random } from "@/model/random";
+import { URL_SEARCH_PARAMS } from "@/model/urlSearchParams";
 
 export class Country {
-  static SPEED_OF_ADJUSTMENT: number = 0.1;
-  static DIFF_SCALE = 0.05;
-  static SIGMA_BASE = 0.1;
+  static SPEED_OF_ADJUSTMENT: number = parseFloat(
+    URL_SEARCH_PARAMS.get("speed") || "0.1",
+  );
+  static DIFF_SCALE: number = parseFloat(
+    URL_SEARCH_PARAMS.get("diffScale") || "0.05",
+  );
+  static DIFF_RATIO: number = parseFloat(
+    URL_SEARCH_PARAMS.get("diffRatio") || "0.1",
+  );
+  static SIGMA_BASE: number = parseFloat(
+    URL_SEARCH_PARAMS.get("sigmaBase") || "0.1",
+  );
 
   /* a country has her regions in this Array */
   numRegions: number;
@@ -79,7 +89,7 @@ export class Country {
   disturb(): void {
     if (this.numRegions > 0) {
       const d = (1.0 / this.numRegions) * Country.DIFF_SCALE;
-      for (let i = 0; i < this.numRegions; i++) {
+      for (let i = 0; i < this.numRegions * Country.DIFF_RATIO; i++) {
         const target = this.regions[Math.floor(random() * this.numRegions)];
         if (target) {
           target.manufacturingShare += d;

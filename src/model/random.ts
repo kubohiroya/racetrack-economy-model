@@ -1,4 +1,5 @@
 import seedrandom from "seedrandom";
+import { URL_SEARCH_PARAMS } from "@/model/urlSearchParams";
 
 export class SeedRandom {
   rng: seedrandom.PRNG;
@@ -15,7 +16,7 @@ export class SeedRandom {
   }
 }
 
-const seed = new URLSearchParams(location.search).get("seed") || Math.random();
+const seed = URL_SEARCH_PARAMS.get("seed") || Math.random();
 let seedRandom: SeedRandom | null = null;
 
 export function random() {
