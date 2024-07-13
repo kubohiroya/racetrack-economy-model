@@ -38,7 +38,7 @@ export class Timer {
 
   static getSimulationTimer() {
     if (!Timer.simulationTimer) {
-      Timer.simulationTimer = new Timer(0.5);
+      Timer.simulationTimer = new Timer(1.0);
     }
     return Timer.simulationTimer;
   }
